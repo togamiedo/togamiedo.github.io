@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Fx, type FxKind } from "./Fx";
 import { RoseMark } from "./Petals";
 import type { Block } from "@/lib/story";
+import { playSplash } from "@/lib/sfx";
 
 type Part = { t: "plain" | "bold" | "red" | "bleed" | "rose" | "chiyo"; s: string };
 
@@ -61,6 +62,7 @@ function Bleed({ s }: { s: string }) {
           backgroundClip: "text",
           color: "transparent",
         }}
+        onViewportEnter={() => playSplash()}
         initial={{ backgroundPosition: "100% 0" }}
         whileInView={{ backgroundPosition: "0% 0" }}
         viewport={{ once: true, amount: 0.8 }}
@@ -208,14 +210,17 @@ const ENTER: TargetAndTransition[] = [
 ];
 
 function FxSide({ fx, left }: { fx: FxKind; left: boolean }) {
+  const bloody = fx === "blood" || fx === "bigblood";
   return (
-    <div
+    <motion.div
+      onViewportEnter={bloody ? () => playSplash(fx === "bigblood" ? 0.24 : 0.16) : undefined}
+      viewport={{ once: true, amount: 0.6 }}
       className={`pointer-events-none mb-2 flex justify-center md:absolute md:top-0 md:mb-0 md:block ${
         left ? "md:-left-48 lg:-left-56" : "md:-right-48 lg:-right-60"
       }`}
     >
       <Fx kind={fx} />
-    </div>
+    </motion.div>
   );
 }
 

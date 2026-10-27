@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import portrait from "@/assets/togami-notice.png.asset.json";
 import { Petals } from "./Petals";
@@ -9,6 +10,16 @@ type Phase = "idle" | "breaking" | "gone";
 /** Opening scene: a bounty notice sealed with a wax rose. Click to cut it open. */
 export function IntroGate() {
   const [phase, setPhase] = useState<Phase>("idle");
+  const navigate = useNavigate();
+  const path = useRouterState({ select: (s) => s.location.pathname });
+
+  // A refresh always starts over: back to the Introduction, at the top.
+  useEffect(() => {
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+    window.scrollTo(0, 0);
+    if (path !== "/") void navigate({ to: "/", replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     document.body.style.overflow = phase === "gone" ? "" : "hidden";

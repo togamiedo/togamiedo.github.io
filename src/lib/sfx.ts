@@ -42,6 +42,35 @@ export function playSlash(volume = 0.25) {
   n.stop(t + 0.45);
 }
 
+/** Small wet blood splash: a soft thud plus a short spray of filtered noise. */
+export function playSplash(volume = 0.18) {
+  const a = ac();
+  if (!a) return;
+  const t = a.currentTime;
+  const o = a.createOscillator();
+  o.type = "sine";
+  o.frequency.setValueAtTime(160, t);
+  o.frequency.exponentialRampToValueAtTime(55, t + 0.12);
+  const og = a.createGain();
+  og.gain.setValueAtTime(volume * 0.8, t);
+  og.gain.exponentialRampToValueAtTime(0.0001, t + 0.15);
+  o.connect(og).connect(a.destination);
+  o.start(t);
+  o.stop(t + 0.16);
+  const n = noise(a, 0.35);
+  const bp = a.createBiquadFilter();
+  bp.type = "bandpass";
+  bp.Q.value = 0.8;
+  bp.frequency.setValueAtTime(1800, t);
+  bp.frequency.exponentialRampToValueAtTime(500, t + 0.3);
+  const g = a.createGain();
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(volume, t + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.32);
+  n.connect(bp).connect(g).connect(a.destination);
+  n.start(t + 0.01);
+}
+
 /** Muffled wax crack. */
 export function playCrack(volume = 0.2) {
   const a = ac();
