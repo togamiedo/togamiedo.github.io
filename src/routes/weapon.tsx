@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { ClientOnly } from "@tanstack/react-router";
 import { lazy, Suspense } from "react";
 import { motion } from "framer-motion";
-import { StoryFlow } from "@/components/StoryFlow";
+import { WeaponFlow } from "@/components/WeaponFlow";
 import { weaponStory } from "@/lib/story";
 
 const KatanaViewer = lazy(() => import("@/components/KatanaViewer"));
@@ -46,7 +46,7 @@ function WeaponPage() {
           </Suspense>
         </ClientOnly>
       </section>
-      <StoryFlow blocks={weaponStory} />
+      <WeaponFlow blocks={weaponStory} />
     </main>
   );
 }
