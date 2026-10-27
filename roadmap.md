@@ -1,4 +1,5 @@
 # Tasks
+- [ ] Add and verify a wooden-sandal stomp crushing a white orchid at its Story sentence, with torn petals falling over the text.
 - [x] Remove Story rose, crushed-petal and coin animations; verify slow, staggered weapon blooms outside the text.
 - [x] Add an open study book to the right of the tenth-birthday paragraph with emerging Japanese words.
 - [x] Add Togami's face to the Discord share preview for https://togamigenshiro.github.io/.
