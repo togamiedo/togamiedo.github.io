@@ -34,12 +34,15 @@ export function SilkFan() {
   const reduced = useReducedMotion();
   return <div ref={ref} data-silk-fan className="ml-auto mt-5 w-60 max-w-full" aria-hidden="true">
     <svg viewBox="0 0 260 200" className="h-auto w-full">
-      <g transform="translate(130 180)">{Array.from({ length: 13 }, (_, i) => <motion.g key={i} initial={false} animate={{ rotate: active || reduced ? -72 + i * 12 : -7 + i * 1.1 }} transition={{ duration: reduced ? 0 : 1.6, delay: reduced ? 0 : 0.3 + i * 0.025, ease: [0.22, 1, 0.36, 1] }} style={{ transformOrigin: "0px 0px", transformBox: "view-box" }}>
-        <path d="M0 0L-15-145Q0-150 15-145Z" fill={i % 2 ? "var(--blood-deep)" : "var(--primary)"} stroke="var(--gold)" strokeWidth="0.6" />
-        <path d="M-12-119Q0-124 12-119 M-9-97Q0-101 9-97" fill="none" stroke="var(--sakura)" strokeOpacity="0.5" />
-        <path d="M0 0L0-146" stroke="var(--gold)" strokeWidth="1.8" />
-        <path d="M-5-80Q2-89 6-79Q2-67-5-80" fill="var(--paper)" opacity="0.65" />
-      </motion.g>)}</g>
+      {Array.from({ length: 13 }, (_, i) => {
+        const angle = active || reduced ? -72 + i * 12 : -7 + i * 1.1;
+        const point = (a: number, r: number) => `${130 + Math.sin(a * Math.PI / 180) * r} ${180 - Math.cos(a * Math.PI / 180) * r}`;
+        const transition = { duration: reduced ? 0 : 1.6, delay: reduced ? 0 : 0.3 + i * 0.025 };
+        return <g key={i}>
+          <motion.path initial={false} animate={{ d: `M130 180L${point(angle - 6, 145)}Q${point(angle, 150)} ${point(angle + 6, 145)}Z` }} transition={transition} fill={i % 2 ? "var(--blood-deep)" : "var(--primary)"} stroke="var(--gold)" strokeWidth="0.6" />
+          <motion.path initial={false} animate={{ d: `M130 180L${point(angle, 146)} M${point(angle - 5, 112)}Q${point(angle, 116)} ${point(angle + 5, 112)}` }} transition={transition} fill="none" stroke="var(--gold)" strokeWidth="1.2" />
+        </g>;
+      })}
       <circle cx="130" cy="180" r="5" fill="var(--gold)" /><path d="M130 185Q118 196 136 197" stroke="var(--sakura)" fill="none" strokeWidth="2" />
     </svg>
   </div>;
