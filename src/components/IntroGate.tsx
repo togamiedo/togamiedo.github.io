@@ -119,7 +119,7 @@ function Notice() {
       <p className="font-brush text-5xl tracking-widest text-blood">手配書</p>
       <p className="mt-1 font-display text-xs uppercase tracking-[0.4em]">Notice of Bounty · Kyōto</p>
       <div className="mt-4 h-[45%] w-full overflow-hidden border-2 border-lacquer">
-        <img src={portrait.url} alt="" className="h-full w-full object-cover object-top grayscale sepia contrast-125" />
+        <img src={portrait.url} alt="" className="h-full w-full object-cover object-center grayscale sepia contrast-125" />
       </div>
       <p className="mt-4 font-display text-3xl font-bold">GENSHIRO TOGAMI</p>
       <p className="font-body text-sm italic">Disgraced son of magistrates. Kabukimono. Bounty hunter.</p>
