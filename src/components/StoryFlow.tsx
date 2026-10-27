@@ -6,9 +6,11 @@ import type { Block } from "@/lib/story";
 import { playSplash } from "@/lib/sfx";
 import { PassageMoment } from "./PassageMoment";
 import { StudyBook } from "./StudyBook";
+import { DojoScene } from "./DojoScene";
 import { OrchidStomp } from "./OrchidStomp";
 import { BloodRoses } from "./BloodRoses";
 import { KatanaDraw, SilkFan } from "./StoryObjects";
+import { InsultStorm } from "./InsultStorm";
 
 type Part = { t: "plain" | "bold" | "red" | "bleed" | "rose" | "chiyo"; s: string };
 
@@ -365,19 +367,23 @@ export function StoryFlow({ blocks }: { blocks: Block[] }) {
         }
 
         const v = pIndex++ % 4;
+        const panel = (<div className={`relative my-10 ${PLACE[v]}`}>
+          <motion.div
+            className={`panel grain rounded-sm p-6 leading-relaxed md:p-8 ${SKIN[v]}`}
+            initial={ENTER[v] ?? false}
+            whileInView={{ opacity: 1, x: 0, y: 0, rotate: v === 3 ? -0.6 : 0, scale: 1, filter: "blur(0px)" }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: v === 2 ? 1.6 : 1.2, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <p className="text-lg md:text-xl"><Rich text={b.text} /></p>
+          </motion.div>
+          {b.id === "study-law" && <StudyBook />}
+          {b.id === "kenjutsu-dojo" && <DojoScene />}
+        </div>);
         return (
-          <PassageMoment key={i} kind={b.fx} {...(b.id ? { id: b.id } : {})}><div className={`relative my-10 ${PLACE[v]}`}>
-            <motion.div
-              className={`panel grain rounded-sm p-6 leading-relaxed md:p-8 ${SKIN[v]}`}
-              initial={ENTER[v] ?? false}
-              whileInView={{ opacity: 1, x: 0, y: 0, rotate: v === 3 ? -0.6 : 0, scale: 1, filter: "blur(0px)" }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: v === 2 ? 1.6 : 1.2, ease: [0.16, 1, 0.3, 1] }}
-            >
-              <p className="text-lg md:text-xl"><Rich text={b.text} /></p>
-            </motion.div>
-            {b.id === "study-law" && <StudyBook />}
-          </div></PassageMoment>
+          <PassageMoment key={i} kind={b.fx} {...(b.id ? { id: b.id } : {})}>
+            {b.id === "greenhouse-jeer" ? <InsultStorm>{panel}</InsultStorm> : panel}
+          </PassageMoment>
         );
       })}
     </div>

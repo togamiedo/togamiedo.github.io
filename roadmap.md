@@ -23,3 +23,5 @@
 - [x] Make the site deployable to GitHub Pages (self-contained media, static build config, deploy workflow).
 - [x] GitHub Pages live at https://togamiedo.github.io — deploy workflow run and verified (poster, story, weapon, unsheathe all work on the live site).
 - [x] Tidy the repository: remove leftover metadata files and the unused error-reporting module; point the README at the live address.
+- [x] Remove the slash from the kenjutsu paragraph and add a self-constructing dojo on its left.
+- [x] Add screaming Japanese insults and !! around the greenhouse paragraph, with the screen shaking a little.
