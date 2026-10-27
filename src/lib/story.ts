@@ -29,6 +29,7 @@ export const story: Block[] = [
   },
   {
     kind: "p",
+    id: "study-law",
     text: "By his *tenth* birthday he had mastered taxation law and the strict regulations of class. His father's plan backfired badly. Where the rest of the family saw the law as a *sacred*, unbreakable chain, young *Togami* saw a game. His mind found the spaces between the rules, and nothing amused him more than finding the exact loophole.",
   },
   {

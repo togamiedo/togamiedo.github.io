@@ -5,6 +5,7 @@ import { RoseMark } from "./Petals";
 import type { Block } from "@/lib/story";
 import { playSplash } from "@/lib/sfx";
 import { PassageMoment } from "./PassageMoment";
+import { StudyBook } from "./StudyBook";
 
 type Part = { t: "plain" | "bold" | "red" | "bleed" | "rose" | "chiyo"; s: string };
 
@@ -351,7 +352,7 @@ export function StoryFlow({ blocks }: { blocks: Block[] }) {
 
         const v = pIndex++ % 4;
         return (
-          <PassageMoment key={i} kind={b.fx}><div className={`relative my-10 ${PLACE[v]}`}>
+          <PassageMoment key={i} kind={b.fx} id={b.id}><div className={`relative my-10 ${PLACE[v]}`}>
             <motion.div
               className={`panel grain rounded-sm p-6 leading-relaxed md:p-8 ${SKIN[v]}`}
               initial={ENTER[v] ?? false}
@@ -361,6 +362,7 @@ export function StoryFlow({ blocks }: { blocks: Block[] }) {
             >
               <p className="text-lg md:text-xl"><Rich text={b.text} /></p>
             </motion.div>
+            {b.id === "study-law" && <StudyBook />}
           </div></PassageMoment>
         );
       })}

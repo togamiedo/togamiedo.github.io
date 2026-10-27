@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { roseLayout } from "./rose-layout";
 
 describe("weapon rose perimeter", () => {
-  for (const [w, h, gutter] of [[342, 420, 32], [600, 350, 56]]) {
+  for (const [w, h, gutter] of [[342, 420, 32], [600, 350, 56]] as const) {
     it(`keeps the complete bloom outside prose at ${w}px`, () => {
       for (const p of roseLayout(w, h)) {
         const r = p.size / 2;
