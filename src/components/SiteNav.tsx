@@ -8,8 +8,8 @@ const items = [
 
 export function SiteNav() {
   return (
-    <header className="fixed inset-x-0 top-0 z-50 bg-gradient-to-b from-lacquer to-transparent">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-gold/20 bg-lacquer/85 backdrop-blur-md">
+      <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
         <Link to="/" className="font-brush text-2xl text-primary glow-red">戸上</Link>
         <ul className="flex gap-6 md:gap-10">
           {items.map((it) => (
