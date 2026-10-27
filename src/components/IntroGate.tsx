@@ -131,13 +131,23 @@ function MusicToggle() {
     }
   };
   return (
+    <div className="fixed bottom-5 left-5 z-[70] flex flex-col items-start gap-1.5">
     <button
       onClick={toggle}
       aria-label={on ? "Mute music" : "Play music"}
-      className="fixed bottom-5 left-5 z-[70] border border-gold/50 bg-lacquer/70 px-4 py-2 font-display text-xs uppercase tracking-[0.3em] text-gold backdrop-blur transition hover:text-paper"
+      className="border border-gold/50 bg-lacquer/70 px-4 py-2 font-display text-xs uppercase tracking-[0.3em] text-gold backdrop-blur transition hover:text-paper"
     >
       {on ? "♪ Music · 音" : "♪ Muted · 無音"}
     </button>
+      <a
+        href="https://commons.wikimedia.org/wiki/File:Shikanotoone_new.ogg"
+        target="_blank"
+        rel="noreferrer"
+        className="max-w-[16rem] font-body text-xs italic text-paper/50 hover:text-paper/80"
+      >
+        Music: Shika no Tōne (鹿の遠音), traditional shakuhachi honkyoku. Wikimedia Commons, public domain.
+      </a>
+    </div>
   );
 }
 

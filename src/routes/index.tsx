@@ -120,7 +120,7 @@ function Index() {
 
       {/* Closing */}
       <section className="relative mx-auto flex max-w-4xl flex-col items-center gap-10 px-6 pb-32 pt-10 text-center md:flex-row md:text-left">
-        <img src={face.url} alt="Close-up of Togami's face" className="h-64 w-56 object-cover shadow-2xl ring-1 ring-gold/40" />
+        <div className="animate-drift shrink-0"><img src={face.url} alt="Close-up of Togami's face" className="h-64 w-56 object-cover shadow-2xl ring-1 ring-gold/40" /></div>
         <div>
           <p className="font-brush text-4xl text-primary">棘ある薔薇</p>
           <p className="mt-3 text-2xl italic">Every rose he keeps was paid for in blood. Most of it wasn't his.</p>
