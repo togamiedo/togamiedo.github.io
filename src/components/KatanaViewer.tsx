@@ -26,6 +26,10 @@ function useFadeable(url: string) {
     });
     return c;
   }, [scene]);
+  const scale = useMemo(() => {
+    const size = new THREE.Box3().setFromObject(clone).getSize(new THREE.Vector3());
+    return 4.2 / Math.max(size.x, size.y, size.z, 0.001);
+  }, [clone]);
   // Locate the rose guard: the widest slice along the blade's long axis.
   const guard = useMemo(() => {
     clone.updateMatrixWorld(true);
@@ -73,7 +77,7 @@ function useFadeable(url: string) {
         m.visible = v > 0.02;
       }
     });
-  return { obj: clone, setOpacity, isRose };
+  return { obj: clone, setOpacity, isRose, scale };
 }
 
 type Hover = (p: { x: number; y: number } | null) => void;
@@ -147,12 +151,12 @@ function Katanas({ state, flash, onRose, onHover, reduced }: { state: State; fla
       <pointLight ref={light} position={[0, 0.6, 1.6]} color="#ff3b30" distance={8} />
       <group ref={gS} {...pick(sheathed)}>
         <Center>
-          <primitive object={sheathed.obj} scale={1.6} />
+          <primitive object={sheathed.obj} scale={sheathed.scale} />
         </Center>
       </group>
       <group ref={gB} {...pick(blade)}>
         <Center>
-          <primitive object={blade.obj} scale={1.6} />
+          <primitive object={blade.obj} scale={blade.scale} />
         </Center>
       </group>
     </>
@@ -163,6 +167,13 @@ function Katanas({ state, flash, onRose, onHover, reduced }: { state: State; fla
 function CamRig({ settle, reduced }: { settle: React.MutableRefObject<number>; reduced: boolean }) {
   const controls = useThree((st) => st.controls) as unknown as OrbitImpl | null;
   const camera = useThree((st) => st.camera);
+  const width = useThree((st) => st.size.width);
+  const height = useThree((st) => st.size.height);
+  useEffect(() => {
+    const distance = Math.max(6.4, 5.2 / (2 * Math.tan(THREE.MathUtils.degToRad(20)) * width / height));
+    camera.position.setLength(distance);
+    controls?.update();
+  }, [camera, controls, width, height]);
   useFrame((_, raw) => {
     if (!controls) return;
     const dt = Math.min(raw, 0.05);
