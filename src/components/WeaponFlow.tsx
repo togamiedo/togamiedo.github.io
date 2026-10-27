@@ -1,14 +1,34 @@
 import { useRef, useState } from "react";
-import { motion, useReducedMotion, useScroll } from "framer-motion";
+import { motion, useInView, useReducedMotion, useScroll } from "framer-motion";
 import { Fx } from "./Fx";
 import { Rich } from "./StoryFlow";
 import type { Block } from "@/lib/story";
 import { ExecutionSplash } from "./ExecutionSplash";
 
+const KILL_LINE = "One clean slice through his jugular vein, and the man's head was off.";
+
+/** The execution passage: the spray is prepared early and fires on the exact sentence. */
+function ExecutionText({ text, className }: { text: string; className: string }) {
+  const reduced = useReducedMotion();
+  const sentence = useRef<HTMLSpanElement>(null);
+  const near = useInView(sentence, { once: true, margin: "100% 0px 100% 0px" });
+  const hit = useInView(sentence, { once: true, margin: "-45% 0px -35% 0px" });
+  const at = text.indexOf(KILL_LINE);
+  const before = at >= 0 ? text.slice(0, at) : text;
+  return (
+    <>
+      <p className={className}>
+        <Rich text={before} />
+        {at >= 0 && <span ref={sentence} data-kill-line className="text-primary transition-colors duration-500">{KILL_LINE}</span>}
+      </p>
+      {near && !reduced && <ExecutionSplash active={hit} target={sentence} />}
+    </>
+  );
+}
+
 function ChapterScene({ chapter, rows, index }: { chapter: Extract<Block, { kind: "chapter" }>; rows: Block[]; index: number }) {
   const ref = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
-  const [executionSeen, setExecutionSeen] = useState(false);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   return (
     <section ref={ref} id={chapter.id} className="relative scroll-mt-24 border-t border-gold/20" data-weapon-chapter>
@@ -32,10 +52,11 @@ function ChapterScene({ chapter, rows, index }: { chapter: Extract<Block, { kind
             const dramatic = b.fx === "bigblood" || b.fx === "sword";
             return (
               <motion.article key={n} id={b.id} data-weapon-passage className={`relative scroll-mt-32 ${dramatic ? "border-y border-primary/40 py-10" : n % 3 === 1 ? "border-l border-gold/40 pl-6 md:pl-10" : ""}`}
-                initial={reduced ? false : { opacity: 0, y: 35 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: b.id === "thief-execution" ? 0.35 : 0.15 }} transition={{ duration: 0.75 }}
-                onViewportEnter={() => { if (b.id === "thief-execution" && !reduced) setExecutionSeen(true); }}>
+                initial={reduced ? false : { opacity: 0, y: 35 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.15 }} transition={{ duration: 0.75 }}>
                 <p className="mb-5 font-display text-xs text-gold/60">{String(n + 1).padStart(2, "0")}</p>
-                <p className={`font-body leading-relaxed text-paper ${dramatic ? "text-3xl italic md:text-4xl" : n === 0 ? "text-2xl md:text-3xl" : "text-xl md:text-2xl"}`}><Rich text={b.text} /></p>
+                {b.id === "thief-execution"
+                  ? <ExecutionText text={b.text} className="font-body text-3xl italic leading-relaxed text-paper md:text-4xl" />
+                  : <p className={`font-body leading-relaxed text-paper ${dramatic ? "text-3xl italic md:text-4xl" : n === 0 ? "text-2xl md:text-3xl" : "text-xl md:text-2xl"}`}><Rich text={b.text} /></p>}
                 {b.fx && b.id !== "thief-execution" && <div className="mt-6 flex justify-end"><Fx kind={b.fx} /></div>}
                 {b.fx === "bloom" && <div className="absolute -left-3 top-16 h-20 w-px bg-primary/50" />}
               </motion.article>
@@ -43,7 +64,6 @@ function ChapterScene({ chapter, rows, index }: { chapter: Extract<Block, { kind
           })}
         </div>
       </div>
-      {executionSeen && <ExecutionSplash />}
     </section>
   );
 }
