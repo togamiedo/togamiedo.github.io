@@ -152,6 +152,6 @@ export const weaponStory: Block[] = [
   { kind: "p", id: "rose-origin", text: "He finally cornered the bleeding thief in an abandoned coastal cave. The stolen goods were a fragile, soil-packed wooden box of live, deep red Rosa gallica cuttings taken from a foreign merchant ship." },
   { kind: "p", id: "thief-execution", fx: "bigblood", text: "The thief begged for his life and offered to split the black-market fortune. Togami only smirked. The contract demanded the thief's head, and said nothing about recovering the goods. One clean slice through his jugular vein, and the man's head was off." },
   { kind: "p", text: "Holding to the exact wording, Togami turned in the head, collected his bounty, and quietly kept the unlisted contraband. He carried the cuttings back to Kyoto and decoded stolen Dutch botany journals until he grew his first flawless, blood red rose bloom." },
-  { kind: "p", fx: "bloom", text: "That first flower became his obsession. He cut it at the peak of its bloom, sealed it in wax, and handed it to a black-market metalworker with one demand: the guard of his new katana had to match it perfectly." },
+  { kind: "p", id: "first-flower", fx: "bloom", text: "That first flower became his obsession. He cut it at the peak of its bloom, sealed it in wax, and handed it to a black-market metalworker with one demand: the guard of his new katana had to match it perfectly." },
   { kind: "p", text: "Those cuttings never died, from now on he replaces each one that withers away from the wax." },
 ];

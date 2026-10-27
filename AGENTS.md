@@ -18,3 +18,4 @@
 - Animation sound cues are cancellable Web Audio textures; cancel pending cues on unmount, and lock katana controls during staged drawing to prevent conflicting sequences.
 - Weapon history uses typographic chapter bands with sticky reading progress and unframed varied passages; keep its text sourced from the shared typed story blocks.
 - Passage blood effects use a local client-side canvas prepared before the target sentence enters the reading zone, resolve colors from CSS tokens, and cancel animation frames on unmount to keep static rendering and navigation safe.
+- Shared PassageMoment effects prepare reusable rose and coin sprites before reading triggers, remain local to the text, play once, fade out, and respect reduced motion so story and weapon passages share consistent timing.

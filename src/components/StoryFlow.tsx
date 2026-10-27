@@ -4,6 +4,7 @@ import { Fx, type FxKind } from "./Fx";
 import { RoseMark } from "./Petals";
 import type { Block } from "@/lib/story";
 import { playSplash } from "@/lib/sfx";
+import { PassageMoment } from "./PassageMoment";
 
 type Part = { t: "plain" | "bold" | "red" | "bleed" | "rose" | "chiyo"; s: string };
 
@@ -265,8 +266,7 @@ export function StoryFlow({ blocks }: { blocks: Block[] }) {
           const first = b.text.replace(/^[*{~^#]/, "")[0] ?? "";
           const rest = b.text.replace(first, "");
           return (
-            <div key={i} className="relative my-16">
-              {b.fx && <FxSide fx={b.fx} left={false} />}
+            <PassageMoment key={i} kind={b.fx}><div className="relative my-16">
               <motion.p
                 className="text-xl leading-relaxed md:text-2xl"
                 initial={{ opacity: 0 }}
@@ -292,18 +292,17 @@ export function StoryFlow({ blocks }: { blocks: Block[] }) {
                 viewport={{ once: true }}
                 transition={{ duration: 1.8, delay: 0.4 }}
               />
-            </div>
+            </div></PassageMoment>
           );
         }
 
         if (look === "words") {
           return (
-            <div key={i} className="relative my-20 md:mx-4">
-              {b.fx && <FxSide fx={b.fx} left />}
+            <PassageMoment key={i} kind={b.fx}><div className="relative my-20 md:mx-4">
               <p className="font-display text-2xl font-bold italic leading-snug text-paper md:text-4xl">
                 <Words text={b.text} />
               </p>
-            </div>
+            </div></PassageMoment>
           );
         }
 
@@ -352,18 +351,17 @@ export function StoryFlow({ blocks }: { blocks: Block[] }) {
 
         const v = pIndex++ % 4;
         return (
-          <div key={i} className={`relative my-10 ${PLACE[v]}`}>
-            {b.fx && <FxSide fx={b.fx} left={v === 1} />}
+          <PassageMoment key={i} kind={b.fx}><div className={`relative my-10 ${PLACE[v]}`}>
             <motion.div
               className={`panel grain rounded-sm p-6 leading-relaxed md:p-8 ${SKIN[v]}`}
-              initial={ENTER[v]!}
+              initial={ENTER[v] ?? false}
               whileInView={{ opacity: 1, x: 0, y: 0, rotate: v === 3 ? -0.6 : 0, scale: 1, filter: "blur(0px)" }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: v === 2 ? 1.6 : 1.2, ease: [0.16, 1, 0.3, 1] }}
             >
               <p className="text-lg md:text-xl"><Rich text={b.text} /></p>
             </motion.div>
-          </div>
+          </div></PassageMoment>
         );
       })}
     </div>

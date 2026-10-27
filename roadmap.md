@@ -1,4 +1,8 @@
 # Tasks
+- [x] Add Togami's face to the Discord share preview for https://togamigenshiro.github.io/.
+- [x] Bloom many roses around the first-flower paragraph, then fade them away.
+- [x] Add prepared, reading-triggered blood, rose, coin and crushed-petal moments to the main story.
+- [x] Add Gin Ichimaru (Bleach) voiceclaim hyperlink and verify the new flows.
 - [x] Prepare the blood spray ahead of time, trigger on the exact execution sentence, and position wet droplets over its text.
 - [x] Replace the browser icon with Togami's portrait and set the homepage share title to Togami Genshiro, description to .....
 - [x] Minimize removable attribution references and hide the published badge; automatic configuration and old history remain outside this cleanup.

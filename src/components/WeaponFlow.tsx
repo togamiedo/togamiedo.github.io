@@ -4,6 +4,7 @@ import { Fx } from "./Fx";
 import { Rich } from "./StoryFlow";
 import type { Block } from "@/lib/story";
 import { ExecutionSplash } from "./ExecutionSplash";
+import { PassageMoment } from "./PassageMoment";
 
 const KILL_LINE = "One clean slice through his jugular vein, and the man's head was off.";
 
@@ -56,8 +57,9 @@ function ChapterScene({ chapter, rows, index }: { chapter: Extract<Block, { kind
                 <p className="mb-5 font-display text-xs text-gold/60">{String(n + 1).padStart(2, "0")}</p>
                 {b.id === "thief-execution"
                   ? <ExecutionText text={b.text} className="font-body text-3xl italic leading-relaxed text-paper md:text-4xl" />
+                  : b.id === "first-flower" ? <PassageMoment kind="bloom"><p className="font-body text-xl leading-relaxed text-paper md:text-2xl"><Rich text={b.text} /></p></PassageMoment>
                   : <p className={`font-body leading-relaxed text-paper ${dramatic ? "text-3xl italic md:text-4xl" : n === 0 ? "text-2xl md:text-3xl" : "text-xl md:text-2xl"}`}><Rich text={b.text} /></p>}
-                {b.fx && b.id !== "thief-execution" && <div className="mt-6 flex justify-end"><Fx kind={b.fx} /></div>}
+                {b.fx && b.id !== "thief-execution" && b.id !== "first-flower" && <div className="mt-6 flex justify-end"><Fx kind={b.fx} /></div>}
                 {b.fx === "bloom" && <div className="absolute -left-3 top-16 h-20 w-px bg-primary/50" />}
               </motion.article>
             );
