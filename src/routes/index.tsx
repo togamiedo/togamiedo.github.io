@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import portrait from "@/assets/togami-portrait.png.asset.json";
+import portrait from "@/assets/togami-intro.png.asset.json";
 import face from "@/assets/togami-face.png.asset.json";
 import { Petals, RoseMark } from "@/components/Petals";
 import { Fx, type FxKind } from "@/components/Fx";
@@ -10,7 +10,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Togami Genshiro · Introduction" },
-      { name: "description", content: "Meet Togami Genshiro, disgraced son of Kyoto magistrates, kabukimono and bounty hunter of the Edo period." },
+      { name: "description", content: "Meet Togami Genshiro, disgraced son of Kyoto magistrates, kabukimono and bounty hunter." },
       { property: "og:title", content: "Togami Genshiro · Introduction" },
       { property: "og:description", content: "Disgraced ronin, kabukimono, bounty hunter, and keeper of illegal roses." },
     ],
@@ -64,7 +64,7 @@ function Index() {
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2, delay: 0.6 }}>
-            <p className="font-display text-xs uppercase tracking-[0.5em] text-gold">Kyōto · Edo period · 江戸時代</p>
+            <p className="font-display text-xs uppercase tracking-[0.5em] text-gold">Kyōto · 京都</p>
             <h1 className="mt-4 font-display text-6xl font-extrabold leading-none text-paper md:text-8xl">
               Togami
               <span className="block text-primary glow-red">Genshiro</span>

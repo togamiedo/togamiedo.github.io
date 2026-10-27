@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import portrait from "@/assets/togami-portrait.png.asset.json";
+import portrait from "@/assets/togami-notice.png.asset.json";
 import { Petals } from "./Petals";
 
 type Phase = "idle" | "breaking" | "gone";
 
-/** Opening scene: an Edo bounty notice sealed with a wax rose. Click to cut it open. */
+/** Opening scene: a bounty notice sealed with a wax rose. Click to cut it open. */
 export function IntroGate() {
   const [phase, setPhase] = useState<Phase>("idle");
 

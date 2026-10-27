@@ -3,7 +3,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Center, Environment, Lightformer, OrbitControls, useGLTF, useProgress, Html } from "@react-three/drei";
 import * as THREE from "three";
 import sheathedAsset from "@/assets/katana-sheathed.glb.asset.json";
-import bladeAsset from "@/assets/katana-blade.glb.asset.json";
+import bladeAsset from "@/assets/katana-blade-v2.glb.asset.json";
 
 type State = "intro" | "sheathed" | "drawn";
 
