@@ -1,4 +1,7 @@
 import { Link } from "@tanstack/react-router";
+import { useEffect } from "react";
+import type Lenis from "lenis";
+import { smooth } from "@/lib/scroll";
 
 const items = [
   { to: "/", en: "Introduction", jp: "序" },
@@ -7,6 +10,27 @@ const items = [
 ] as const;
 
 export function SiteNav() {
+  useEffect(() => {
+    let raf = 0;
+    let lenis: Lenis | null = null;
+    void import("lenis").then(({ default: L }) => {
+      lenis = new L({ lerp: 0.07, smoothWheel: true });
+      smooth.lenis = lenis;
+      const loop = (t: number) => {
+        if (document.body.style.overflow === "hidden") lenis?.stop();
+        else lenis?.start();
+        lenis?.raf(t);
+        raf = requestAnimationFrame(loop);
+      };
+      raf = requestAnimationFrame(loop);
+    });
+    return () => {
+      cancelAnimationFrame(raf);
+      lenis?.destroy();
+      smooth.lenis = null;
+    };
+  }, []);
+
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-gold/20 bg-lacquer/85 backdrop-blur-md">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
