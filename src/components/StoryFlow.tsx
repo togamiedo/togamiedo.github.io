@@ -46,7 +46,22 @@ export function ChapterTitle({ jp, en }: { jp: string; en: string }) {
   );
 }
 
+const PLACE = ["md:mr-20", "md:ml-20", "md:mx-6", "md:mr-10 md:ml-4"];
+const SKIN = [
+  "border-l-4 border-l-primary",
+  "border-r-4 border-r-primary text-right",
+  "text-center",
+  "border-t-2 border-t-gold/60",
+];
+const ENTER = [
+  { opacity: 0, x: -90, filter: "blur(6px)" },
+  { opacity: 0, x: 90, filter: "blur(6px)" },
+  { opacity: 0, clipPath: "inset(0 100% 0 0)" },
+  { opacity: 0, y: 60, rotate: 3, scale: 0.94 },
+];
+
 export function StoryFlow({ blocks }: { blocks: Block[] }) {
+  let pIndex = 0;
   return (
     <div className="mx-auto max-w-3xl px-6">
       {blocks.map((b, i) => {
@@ -79,16 +94,28 @@ export function StoryFlow({ blocks }: { blocks: Block[] }) {
               <span className="font-display text-4xl font-bold italic tracking-[0.3em] text-paper md:text-5xl">{b.text}</span>
             </Ink>
           );
+        const v = pIndex++ % 4;
+        const fxLeft = v === 1;
         return (
-          <div key={i} className="relative my-8">
+          <div key={i} className={`relative my-10 ${PLACE[v]}`}>
             {b.fx && (
-              <div className="pointer-events-none mb-2 flex justify-center md:absolute md:top-0 md:mb-0 md:block md:-right-48 lg:-right-60">
+              <div
+                className={`pointer-events-none mb-2 flex justify-center md:absolute md:top-0 md:mb-0 md:block ${
+                  fxLeft ? "md:-left-48 lg:-left-56" : "md:-right-48 lg:-right-60"
+                }`}
+              >
                 <Fx kind={b.fx} />
               </div>
             )}
-            <Ink className="panel grain rounded-sm p-6 leading-relaxed md:p-8">
+            <motion.div
+              className={`panel grain rounded-sm p-6 leading-relaxed md:p-8 ${SKIN[v]}`}
+              initial={ENTER[v]}
+              whileInView={{ opacity: 1, x: 0, y: 0, rotate: v === 3 ? -0.6 : 0, scale: 1, clipPath: "inset(0 0% 0 0)", filter: "blur(0px)" }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: v === 2 ? 1.6 : 1.2, ease: [0.16, 1, 0.3, 1] }}
+            >
               <p className="text-lg md:text-xl"><Rich text={b.text} /></p>
-            </Ink>
+            </motion.div>
           </div>
         );
       })}
