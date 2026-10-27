@@ -9,6 +9,7 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 
+
 - Story text lives as typed blocks in src/lib/story.ts (with inline *bold* / {red} markers and optional fx), rendered by StoryFlow; edit content there, not in route files.
 - Katana 3D models are meshopt-compressed GLBs loaded only client-side (lazy + ClientOnly) because three.js cannot run during SSR.
 - Site media (photos, katana GLBs, background music) ships inside the repo under public/ and is referenced by absolute path, so the site serves itself on any static host; do not move it back to hosted asset pointers.

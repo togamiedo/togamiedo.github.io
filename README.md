@@ -13,4 +13,4 @@ Made by: f1ras_, SoLongGONETEDZ, Siiiilkbind.-., velcrozzz, cu!lan
 - Katana model: @rosepath on Roblox
 - Music: *Shika no Tōne* (鹿の遠音), traditional shakuhachi, Wikimedia Commons (public domain)
 
-Live site: https://togami-edo-blade-chronicle.lovable.app
+Live site: https://togamiedo.github.io
