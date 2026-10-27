@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import portrait from "@/assets/togami-intro.png.asset.json";
-import face from "@/assets/togami-face.png.asset.json";
+const INTRO_PORTRAIT = "/img/togami-intro.png";
+const FACE_CLOSEUP = "/img/togami-face.png";
 import { Petals, RoseMark } from "@/components/Petals";
 import { Fx, type FxKind } from "@/components/Fx";
 import { Rich } from "@/components/StoryFlow";
@@ -61,7 +61,7 @@ function Index() {
             transition={{ duration: 1.2, delay: 0.3 }}
           >
             <div className="absolute -inset-3 border border-gold/40" />
-            <img src={portrait.url} alt="Togami Genshiro in his blood-red kimono" className="h-full w-full object-cover object-top shadow-2xl" />
+            <img src={INTRO_PORTRAIT} alt="Togami Genshiro in his blood-red kimono" className="h-full w-full object-cover object-top shadow-2xl" />
             <span className="font-brush text-vertical absolute -right-12 top-4 hidden text-5xl text-primary glow-red md:block">玄城戸上</span>
           </motion.div>
 
@@ -122,7 +122,7 @@ function Index() {
 
       {/* Closing */}
       <section className="relative mx-auto flex max-w-4xl flex-col items-center gap-10 px-6 pb-32 pt-10 text-center md:flex-row md:text-left">
-        <div className="animate-drift shrink-0"><img src={face.url} alt="Close-up of Togami's face" className="h-64 w-56 object-cover shadow-2xl ring-1 ring-gold/40" /></div>
+        <div className="animate-drift shrink-0"><img src={FACE_CLOSEUP} alt="Close-up of Togami's face" className="h-64 w-56 object-cover shadow-2xl ring-1 ring-gold/40" /></div>
         <div>
           <p className="font-brush text-4xl text-primary">棘ある薔薇</p>
           <p className="mt-3 text-2xl italic">Every rose he keeps was paid for in blood. Most of it wasn't his.</p>
