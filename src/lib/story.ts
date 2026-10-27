@@ -1,14 +1,16 @@
 import type { FxKind } from "@/components/Fx";
 
+export type Speaker = "togami" | "thug" | "chiyo";
+
 export type Block =
   | { kind: "chapter"; jp: string; en: string }
   | { kind: "p"; text: string; fx?: FxKind }
-  | { kind: "quote"; text: string; note?: string; side?: "left" | "right" }
+  | { kind: "quote"; text: string; note?: string; side?: "left" | "right"; who?: Speaker }
   | { kind: "beat"; text: string; fx?: FxKind };
 
 export const story: Block[] = [
   { kind: "chapter", jp: "第壱章：根", en: "Chapter I · The Root" },
-  { kind: "quote", text: "Ma, why are we doing this?", side: "left" },
+  { kind: "quote", text: "Ma, why are we doing this?", side: "left", who: "togami" },
   {
     kind: "p",
     text: "The {Genshiro} family never bled on battlefields. They bled people dry in courtrooms. For generations they served the shogunate in Kyoto as high-ranking magistrates and legal inspectors. Their ancestral estate was a fortress of immaculate white sand, kept by retainers in identical, uninspired indigo robes. They were the living shape of the rigid rules they enforced.",
@@ -72,14 +74,57 @@ export const story: Block[] = [
     fx: "coin",
     text: "To fund his extravagant new life, he took his *first* private contract. While the gang relied on messy brawls, *Togami* cornered a local gang leader alone in an alleyway.",
   },
-  { kind: "quote", text: "A magistrate's exiled son?", note: "The thug sneered, drawing his blade.", side: "right" },
-  { kind: "quote", text: "Bold assumption.", side: "left" },
+  { kind: "quote", text: "A magistrate's exiled son?", note: "The thug sneered, drawing his blade.", side: "right", who: "thug" },
+  { kind: "quote", text: "Bold assumption.", side: "left", who: "togami" },
   {
     kind: "p",
     fx: "bigblood",
     text: "Togami smirked, stepped past the clumsy strike without effort, and {severed the man's artery}.",
   },
-  { kind: "quote", text: "Just a gardener pulling roots.", side: "left" },
+  { kind: "quote", text: "Just a gardener pulling roots.", side: "left", who: "togami" },
+  {
+    kind: "p",
+    fx: "coin",
+    text: "His terrifyingly clean reputation soon drew the attention of a wealthy, enigmatic merchant woman named {Kuroda Chiyo}.",
+  },
+  { kind: "quote", text: "I need my most stubborn rivals pruned.", side: "right", who: "chiyo" },
+  {
+    kind: "p",
+    text: "*Chiyo* purred the words at their first secret meeting, her lips painted a poisonous crimson as she gracefully poured his tea.",
+  },
+  { kind: "quote", text: "And I've heard you have a talent for cutting stems.", side: "right", who: "chiyo" },
+  {
+    kind: "p",
+    fx: "bloom",
+    text: "As they worked through these highly illegal, bloody contracts, a dark and twisted romance blossomed between *Togami* and *Kuroda*. She shared his pragmatic view of the world, and *Togami* found himself truly captivated by her *sharp*, calculating mind and by the rare imported red roses she pinned with care into her elaborate hair. Yet *Chiyo's* affection slowly turned into a suffocating, possessive obsession.",
+  },
+  { kind: "quote", text: "You are my greatest investment, Togami.", side: "right", who: "chiyo" },
+  {
+    kind: "p",
+    text: "She whispered it one evening, tracing the scars on his chest with the edge of a silk fan.",
+  },
+  { kind: "quote", text: "You belong in my collection...", side: "right", who: "chiyo" },
+  {
+    kind: "p",
+    text: "In one fatal, arrogant overstep, *Chiyo* used her vast merchant fortune to bribe the {Genshiro} patriarch. In secret she arranged a grand, forced wedding inside the very estate that had exiled him.",
+  },
+  { kind: "quote", text: "Surprise, my wild ronin.", side: "right", who: "chiyo" },
+  {
+    kind: "p",
+    text: "*Chiyo* smiled in triumph in the family courtyard, flanked by heavily armed retainers and his glaring father. To *Togami*, this arranged marriage was no rescue. It was a gilded cage dressed up as {love}.",
+  },
+  { kind: "quote", text: "You bought a dying name, Chiyo.", side: "left", who: "togami" },
+  { kind: "quote", text: "But you forgot to read the fine print of our contract.", side: "left", who: "togami" },
+  {
+    kind: "p",
+    fx: "bigblood",
+    text: "Filled with despair and *disgust*, he {struck her down} with ruthless precision before the ceremony could even begin.",
+  },
+  {
+    kind: "p",
+    fx: "bloom",
+    text: "As he left his ancestral home for the last time, he plucked the deep red roses from her hair and made them his own, worn ever since as his permanent ornaments.",
+  },
 ];
 
 export const weaponStory: Block[] = [
