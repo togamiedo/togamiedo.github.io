@@ -5,6 +5,7 @@ import * as THREE from "three";
 import sheathedAsset from "@/assets/katana-sheathed.glb.asset.json";
 import bladeAsset from "@/assets/katana-blade-v2.glb.asset.json";
 import { playSlash } from "@/lib/sfx";
+import { scrollToId } from "@/lib/scroll";
 
 type State = "intro" | "sheathed" | "drawn";
 
@@ -39,12 +40,12 @@ function useFadeable(url: string) {
   return { obj: clone, setOpacity };
 }
 
-function Katanas({ state, flash }: { state: State; flash: React.MutableRefObject<number> }) {
+function Katanas({ state, flash, onRose }: { state: State; flash: React.MutableRefObject<number>; onRose: () => void }) {
   const sheathed = useFadeable(sheathedAsset.url);
   const blade = useFadeable(bladeAsset.url);
   const gS = useRef<THREE.Group>(null);
   const gB = useRef<THREE.Group>(null);
-  const t = useRef({ sx: 6, sOp: 1, bx: 2.5, bOp: 0, shake: 0 });
+  const t = useRef({ sx: -6, sOp: 1, bx: -2.5, bOp: 0 });
   const light = useRef<THREE.PointLight>(null);
 
   useFrame((_, raw) => {
@@ -52,9 +53,9 @@ function Katanas({ state, flash }: { state: State; flash: React.MutableRefObject
     const k = (s: number) => 1 - Math.exp(-s * dt);
     const v = t.current;
     const drawn = state === "drawn";
-    v.sx += ((drawn ? 3.6 : 0) - v.sx) * k(drawn ? 3 : 4);
+    v.sx += ((drawn ? -3.6 : 0) - v.sx) * k(drawn ? 3 : 4);
     v.sOp += ((drawn ? 0 : 1) - v.sOp) * k(3);
-    v.bx += ((drawn ? 0 : 2.5) - v.bx) * k(drawn ? 5 : 3);
+    v.bx += ((drawn ? 0 : -2.5) - v.bx) * k(drawn ? 5 : 3);
     v.bOp += ((drawn ? 1 : 0) - v.bOp) * k(drawn ? 4 : 6);
     if (gS.current) {
       gS.current.position.x = v.sx;
@@ -67,15 +68,24 @@ function Katanas({ state, flash }: { state: State; flash: React.MutableRefObject
     if (light.current) light.current.intensity = 2 + flash.current * 60;
   });
 
+  const click = {
+    onClick: (e: { stopPropagation: () => void }) => {
+      e.stopPropagation();
+      onRose();
+    },
+    onPointerOver: () => (document.body.style.cursor = "pointer"),
+    onPointerOut: () => (document.body.style.cursor = ""),
+  };
+
   return (
     <>
       <pointLight ref={light} position={[0, 0.6, 1.6]} color="#ff3b30" distance={8} />
-      <group ref={gS}>
+      <group ref={gS} {...click}>
         <Center>
           <primitive object={sheathed.obj} scale={1.6} />
         </Center>
       </group>
-      <group ref={gB}>
+      <group ref={gB} {...click}>
         <Center>
           <primitive object={blade.obj} scale={1.6} />
         </Center>
@@ -124,7 +134,7 @@ export default function KatanaViewer() {
           <Lightformer intensity={0.8} color="#e8d5b0" position={[4, 0, -2]} rotation-y={-Math.PI / 2} scale={[10, 1, 1]} />
         </Environment>
         <Suspense fallback={<Loader />}>
-          <Katanas state={state} flash={flash} />
+          <Katanas state={state} flash={flash} onRose={() => scrollToId("rose-origin")} />
         </Suspense>
         <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.8} minPolarAngle={Math.PI / 3} maxPolarAngle={(2 * Math.PI) / 3} />
       </Canvas>
@@ -136,7 +146,7 @@ export default function KatanaViewer() {
         >
           {state === "drawn" ? "Sheathe · 納刀" : "Unsheathe · 抜刀"}
         </button>
-        <p className="font-display text-[10px] uppercase tracking-[0.4em] text-muted-foreground">Drag to turn the blade</p>
+        <p className="font-display text-[10px] uppercase tracking-[0.4em] text-muted-foreground">Drag to turn the blade · Click the rose to learn where it came from</p>
       </div>
       <p className="pointer-events-none absolute bottom-4 right-5 font-body text-sm italic text-paper/50">
         Model by @rosepath on Roblox
