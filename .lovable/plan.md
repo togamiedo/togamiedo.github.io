@@ -28,8 +28,9 @@ Un site en anglais avec des touches de japonais décoratif, dans l'ambiance "Nui
 3. **Weapon (/weapon)**
    - Titre au même format, traduit : 🌹 - 刀の章：薔薇の鍔 - 🌹 ("The Rose Tsuba")
    - Ta photo de l'épée détourée, qui entre en glissant avec un éclat de lame
-   - Vraie 3D : ton modèle du katana affiché en 3D, qu'on fait tourner en glissant, avec lumière rouge et rotation lente automatique
-   - Si le modèle n'est pas encore là, la photo détourée avec effet 3D à la souris sert de remplacement
+   - Vraie 3D : le katana rengainé apparaît, puis la lame glisse hors du fourreau rouge (chaînes qui bougent, éclat de lumière sur l'acier, pétales), le fourreau s'écarte et la lame nue reste au centre
+   - On fait ensuite tourner le katana en glissant, lumière rouge et rotation lente automatique ; bouton "Sheathe / Unsheathe" pour rejouer l'animation
+   - Si les modèles ne sont pas encore là, la photo détourée avec effet 3D à la souris sert de remplacement
    - Histoire de l'épée en défilement, avec les mêmes animations
 
 ## Style
@@ -40,7 +41,7 @@ Un site en anglais avec des touches de japonais décoratif, dans l'ambiance "Nui
 
 ## En attente de toi
 
-- Le modèle 3D du katana (.glb de préférence, sinon .obj + .mtl + textures)
+- Les modèles 3D en .glb : la lame (avec tsuba et poignée) et le fourreau séparément, ou rengainé + dégainé
 - La photo de l'épée, en secours
 
 ## Détails techniques
