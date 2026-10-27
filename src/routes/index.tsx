@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 const INTRO_PORTRAIT = "/img/togami-intro.png";
-const FACE_CLOSEUP = "/img/togami-face.png";
+const FACE_CLOSEUP = "https://togamigenshiro.github.io/img/togami-face.png";
 import { Petals, RoseMark } from "@/components/Petals";
 import { Fx, type FxKind } from "@/components/Fx";
 import { Rich } from "@/components/StoryFlow";
@@ -14,8 +14,12 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "....." },
       { property: "og:title", content: "Togami Genshiro" },
       { property: "og:description", content: "....." },
+      { property: "og:image", content: FACE_CLOSEUP },
+      { property: "og:image:alt", content: "Togami Genshiro" },
+      { property: "og:url", content: "https://togamigenshiro.github.io/" },
       { name: "twitter:title", content: "Togami Genshiro" },
       { name: "twitter:description", content: "....." },
+      { name: "twitter:image", content: FACE_CLOSEUP },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

@@ -87,7 +87,7 @@ function GardenCanvas({ active, kind }: { active: boolean; kind: FxKind }) {
 }
 
 /** Prepare before arrival; fire once inside the reader's central viewing band. */
-export function PassageMoment({ kind, children, id }: { kind?: FxKind; children: ReactNode; id?: string }) {
+export function PassageMoment({ kind, children, id }: { kind?: FxKind | undefined; children: ReactNode; id?: string }) {
   const target = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
   const near = useInView(target, { once: true, margin: "100% 0px 100% 0px" });

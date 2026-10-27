@@ -354,7 +354,7 @@ export function StoryFlow({ blocks }: { blocks: Block[] }) {
           <PassageMoment key={i} kind={b.fx}><div className={`relative my-10 ${PLACE[v]}`}>
             <motion.div
               className={`panel grain rounded-sm p-6 leading-relaxed md:p-8 ${SKIN[v]}`}
-              initial={ENTER[v]}
+              initial={ENTER[v] ?? false}
               whileInView={{ opacity: 1, x: 0, y: 0, rotate: v === 3 ? -0.6 : 0, scale: 1, filter: "blur(0px)" }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: v === 2 ? 1.6 : 1.2, ease: [0.16, 1, 0.3, 1] }}
