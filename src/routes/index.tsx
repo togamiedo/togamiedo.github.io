@@ -9,10 +9,12 @@ import { Rich } from "@/components/StoryFlow";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Togami Genshiro · Introduction" },
-      { name: "description", content: "Meet Togami Genshiro, disgraced son of Kyoto magistrates, kabukimono and bounty hunter." },
-      { property: "og:title", content: "Togami Genshiro · Introduction" },
-      { property: "og:description", content: "Disgraced ronin, kabukimono, bounty hunter, and keeper of illegal roses." },
+      { title: "Togami Genshiro" },
+      { name: "description", content: "....." },
+      { property: "og:title", content: "Togami Genshiro" },
+      { property: "og:description", content: "....." },
+      { name: "twitter:title", content: "Togami Genshiro" },
+      { name: "twitter:description", content: "....." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
