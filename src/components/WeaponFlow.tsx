@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { motion, useInView, useReducedMotion, useScroll } from "framer-motion";
 import { Fx } from "./Fx";
 import { Rich } from "./StoryFlow";
