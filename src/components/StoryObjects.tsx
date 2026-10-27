@@ -34,12 +34,12 @@ export function SilkFan() {
   const reduced = useReducedMotion();
   return <div ref={ref} data-silk-fan className="ml-auto mt-5 w-60 max-w-full" aria-hidden="true">
     <svg viewBox="0 0 260 200" className="h-auto w-full">
-      {Array.from({ length: 13 }, (_, i) => <motion.g key={i} initial={false} animate={{ rotate: active || reduced ? -72 + i * 12 : -7 + i * 1.1 }} transition={{ duration: reduced ? 0 : 1.6, delay: reduced ? 0 : 0.3 + i * 0.025, ease: [0.22, 1, 0.36, 1] }} style={{ transformOrigin: "130px 180px" }}>
-        <path d="M130 180L115 35Q130 30 145 35Z" fill={i % 2 ? "var(--blood-deep)" : "var(--primary)"} stroke="var(--gold)" strokeWidth="0.6" />
-        <path d="M118 61Q130 56 142 61 M121 83Q130 79 139 83" fill="none" stroke="var(--sakura)" strokeOpacity="0.5" />
-        <path d="M130 180L130 34" stroke="var(--gold)" strokeWidth="1.8" />
-        <path d="M125 100Q132 91 136 101Q132 113 125 100" fill="var(--paper)" opacity="0.65" />
-      </motion.g>)}
+      <g transform="translate(130 180)">{Array.from({ length: 13 }, (_, i) => <motion.g key={i} initial={false} animate={{ rotate: active || reduced ? -72 + i * 12 : -7 + i * 1.1 }} transition={{ duration: reduced ? 0 : 1.6, delay: reduced ? 0 : 0.3 + i * 0.025, ease: [0.22, 1, 0.36, 1] }} style={{ transformOrigin: "0px 0px", transformBox: "view-box" }}>
+        <path d="M0 0L-15-145Q0-150 15-145Z" fill={i % 2 ? "var(--blood-deep)" : "var(--primary)"} stroke="var(--gold)" strokeWidth="0.6" />
+        <path d="M-12-119Q0-124 12-119 M-9-97Q0-101 9-97" fill="none" stroke="var(--sakura)" strokeOpacity="0.5" />
+        <path d="M0 0L0-146" stroke="var(--gold)" strokeWidth="1.8" />
+        <path d="M-5-80Q2-89 6-79Q2-67-5-80" fill="var(--paper)" opacity="0.65" />
+      </motion.g>)}</g>
       <circle cx="130" cy="180" r="5" fill="var(--gold)" /><path d="M130 185Q118 196 136 197" stroke="var(--sakura)" fill="none" strokeWidth="2" />
     </svg>
   </div>;

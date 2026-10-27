@@ -1,7 +1,7 @@
 # Tasks
-- [ ] Keep lord slash on text and stagger the soaked roses underneath.
-- [ ] Add a katana unsheathing below the thug's drawing-blade note.
-- [ ] Add an opening silk fan beneath the right side of the silk-fan sentence.
+- [x] Keep lord slash on text and stagger the soaked roses underneath.
+- [x] Add a katana unsheathing below the thug's drawing-blade note.
+- [x] Add an opening silk fan beneath the right side of the silk-fan sentence.
 - [x] Add persistent white roses synchronized with the lord passage's blood slash; stain and sway them at impact.
 - [x] Add and verify a wooden-sandal stomp crushing a white orchid at its Story sentence, with torn petals falling over the text.
 - [x] Remove Story rose, crushed-petal and coin animations; verify slow, staggered weapon blooms outside the text.
