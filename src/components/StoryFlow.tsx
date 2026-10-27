@@ -77,7 +77,7 @@ function Bleed({ s }: { s: string }) {
           className="pointer-events-none absolute top-full block w-1 rounded-b-full bg-primary"
           style={{ left: `${left}%` }}
           initial={{ height: 0, opacity: 0 }}
-          whileInView={{ height: [0, 14 + k * 6, 22 + k * 8], opacity: [0, 1, 0.8] }}
+          whileInView={{ height: [0, 6 + k * 2, 10 + k * 3], opacity: [0, 1, 0.7] }}
           viewport={{ once: true }}
           transition={{ duration: 2.2, delay: 1.6 + k * 0.25, ease: "easeIn" }}
         />
