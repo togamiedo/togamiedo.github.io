@@ -1,6 +1,6 @@
 import { motion, type TargetAndTransition } from "framer-motion";
 import type { ReactNode } from "react";
-import { Fx } from "./Fx";
+import { Fx, type FxKind } from "./Fx";
 import { RoseMark } from "./Petals";
 import type { Block } from "@/lib/story";
 
@@ -207,7 +207,7 @@ const ENTER: TargetAndTransition[] = [
   { opacity: 0, y: 60, rotate: 3, scale: 0.94 },
 ];
 
-function FxSide({ fx, left }: { fx: Block extends never ? never : Parameters<typeof Fx>[0]["kind"]; left: boolean }) {
+function FxSide({ fx, left }: { fx: FxKind; left: boolean }) {
   return (
     <div
       className={`pointer-events-none mb-2 flex justify-center md:absolute md:top-0 md:mb-0 md:block ${

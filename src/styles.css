@@ -37,10 +37,13 @@
   --font-body: "Cormorant Garamond", Georgia, serif;
   --font-brush: "Yuji Syuku", "Shippori Mincho B1", serif;
   --font-thug: "Dela Gothic One", Impact, sans-serif;
+  --font-chiyo: "Klee One", "Cormorant Garamond", serif;
+  --color-sakura: var(--sakura);
 }
 
 :root {
   --radius: 0.25rem;
+  --sakura: oklch(0.82 0.08 5);
   --background: oklch(0.13 0.008 30);
   --foreground: oklch(0.9 0.025 80);
   --card: oklch(0.17 0.02 25);
@@ -130,6 +133,18 @@
   animation: flicker 2.6s infinite ease-in-out;
 }
 
-@utility text-sakura {
-  color: oklch(0.82 0.08 5);
+@keyframes rose-highlight {
+  0%, 100% { box-shadow: 0 0 0 0 transparent; }
+  30%, 70% { box-shadow: 0 0 0 3px var(--primary), 0 0 50px 6px color-mix(in oklab, var(--primary) 55%, transparent); }
+}
+.rose-highlight {
+  animation: rose-highlight 1.6s ease-in-out 3;
+}
+
+@keyframes drift {
+  0%, 100% { transform: translateY(0) rotate(-0.6deg); }
+  50% { transform: translateY(-14px) rotate(0.6deg); }
+}
+@utility animate-drift {
+  animation: drift 6s ease-in-out infinite;
 }

@@ -34,7 +34,6 @@ export function WeaponFlow({ blocks }: { blocks: Block[] }) {
             >
               <div className="relative bg-blood px-10 pb-10 pt-6 text-center shadow-2xl [clip-path:polygon(0_0,100%_0,100%_85%,75%_100%,50%_88%,25%_100%,0_85%)]">
                 <p className="font-brush text-3xl text-paper md:text-4xl">{b.jp}</p>
-                <p className="mt-2 font-display text-xs uppercase tracking-[0.5em] text-gold">{b.en}</p>
               </div>
             </motion.div>
           );
@@ -43,7 +42,7 @@ export function WeaponFlow({ blocks }: { blocks: Block[] }) {
         const n = step++;
         const right = n % 2 === 1;
         return (
-          <div key={i} className={`relative my-14 flex pl-16 md:pl-0 ${right ? "md:justify-end" : "md:justify-start"}`}>
+          <div key={i} id={b.id} className={`relative my-14 flex scroll-mt-28 pl-16 md:pl-0 ${right ? "md:justify-end" : "md:justify-start"}`}>
             {/* node on the spine */}
             <motion.span
               className="absolute left-8 top-6 z-10 flex h-12 w-12 -translate-x-1/2 items-center justify-center rounded-full border border-gold bg-lacquer font-brush text-xl text-gold md:left-1/2"
