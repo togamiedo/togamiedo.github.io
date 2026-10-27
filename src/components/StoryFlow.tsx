@@ -61,7 +61,7 @@ export function StoryFlow({ blocks }: { blocks: Block[] }) {
                   thug
                     ? "font-thug text-2xl tracking-wide text-paper md:text-3xl"
                     : b.who === "chiyo"
-                      ? "font-display text-2xl font-bold text-pink-300 md:text-3xl"
+                      ? "font-display text-2xl font-bold text-sakura md:text-3xl"
                       : "font-display text-2xl font-bold text-primary glow-red md:text-3xl"
                 }
               >

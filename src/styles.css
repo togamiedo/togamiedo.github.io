@@ -129,3 +129,7 @@
 @utility animate-flicker {
   animation: flicker 2.6s infinite ease-in-out;
 }
+
+@utility text-sakura {
+  color: oklch(0.82 0.08 5);
+}
