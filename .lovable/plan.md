@@ -28,7 +28,8 @@ Un site en anglais avec des touches de japonais décoratif, dans l'ambiance "Nui
 3. **Weapon (/weapon)**
    - Titre au même format, traduit : 🌹 - 刀の章：薔薇の鍔 - 🌹 ("The Rose Tsuba")
    - Ta photo de l'épée détourée, qui entre en glissant avec un éclat de lame
-   - Effet 3D : l'épée pivote et brille selon la souris / le doigt (option 1, une seule photo)
+   - Vraie 3D : ton modèle du katana affiché en 3D, qu'on fait tourner en glissant, avec lumière rouge et rotation lente automatique
+   - Si le modèle n'est pas encore là, la photo détourée avec effet 3D à la souris sert de remplacement
    - Histoire de l'épée en défilement, avec les mêmes animations
 
 ## Style
@@ -39,14 +40,14 @@ Un site en anglais avec des touches de japonais décoratif, dans l'ambiance "Nui
 
 ## En attente de toi
 
-- La photo de l'épée (pour la page Weapon). En attendant, emplacement temporaire.
-- Optionnel : captures à 360° ou modèle 3D si tu veux une vraie rotation
+- Le modèle 3D du katana (.glb de préférence, sinon .obj + .mtl + textures)
+- La photo de l'épée, en secours
 
 ## Détails techniques
 
 - Routes `index.tsx`, `story.tsx`, `weapon.tsx`, menu dans `__root.tsx`, head() propre à chaque page
 - Scène d'ouverture jouée une fois par visite (mémorisée en session)
 - Animations au défilement avec framer-motion ; épée et sang en SVG animé
-- Détourage de la photo de l'épée par outil d'édition d'image ; 3D par transformation perspective CSS
+- Visionneuse 3D avec three.js / @react-three/fiber + drei (chargée uniquement côté navigateur), modèle via Lovable Assets
 - Couleurs en tokens dans `src/styles.css`, polices via `<link>` (Shippori Mincho + Cormorant)
 - Captures envoyées via Lovable Assets ; pas de base de données
