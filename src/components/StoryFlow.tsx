@@ -213,7 +213,7 @@ function FxSide({ fx, left }: { fx: FxKind; left: boolean }) {
   const bloody = fx === "blood" || fx === "bigblood";
   return (
     <motion.div
-      onViewportEnter={bloody ? () => playSplash(fx === "bigblood" ? 0.24 : 0.16) : undefined}
+      onViewportEnter={() => bloody && playSplash(fx === "bigblood" ? 0.24 : 0.16)}
       viewport={{ once: true, amount: 0.6 }}
       className={`pointer-events-none mb-2 flex justify-center md:absolute md:top-0 md:mb-0 md:block ${
         left ? "md:-left-48 lg:-left-56" : "md:-right-48 lg:-right-60"
