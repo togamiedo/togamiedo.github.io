@@ -78,6 +78,22 @@
 .transition-blade { box-shadow: var(--shadow-transition-blade); }
 .transition-kanji { text-shadow: var(--shadow-transition-kanji); }
 
+@keyframes blade-calligraphy {
+  0% { opacity: 0; transform: translateY(25px); }
+  25%, 65% { opacity: 0.8; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-20px); }
+}
+@keyframes blade-draw-flash {
+  0%, 30% { opacity: 0; transform: scaleX(0); }
+  48% { opacity: 0.8; transform: scaleX(1); }
+  100% { opacity: 0; transform: scaleX(1); }
+}
+.blade-calligraphy { animation: blade-calligraphy 1.8s ease both; }
+.blade-draw-flash { animation: blade-draw-flash 1.6s ease both; }
+@media (prefers-reduced-motion: reduce) {
+  .blade-calligraphy, .blade-draw-flash { animation: none; }
+}
+
 @layer base {
   * {
     border-color: var(--color-border);

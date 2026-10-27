@@ -3,9 +3,12 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Center, Environment, Lightformer, OrbitControls, useGLTF, useProgress } from "@react-three/drei";
 import type { OrbitControls as OrbitImpl } from "three-stdlib";
 import * as THREE from "three";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { Sword } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import sheathedAsset from "@/assets/katana-sheathed.glb.asset.json";
 import bladeAsset from "@/assets/katana-blade-v2.glb.asset.json";
-import { playSlash } from "@/lib/sfx";
+import { playMotionCue } from "@/lib/sfx";
 import { scrollToId } from "@/lib/scroll";
 
 type State = "intro" | "sheathed" | "drawn";
@@ -23,6 +26,10 @@ function useFadeable(url: string) {
     });
     return c;
   }, [scene]);
+  const scale = useMemo(() => {
+    const size = new THREE.Box3().setFromObject(clone).getSize(new THREE.Vector3());
+    return 4.2 / Math.max(size.x, size.y, size.z, 0.001);
+  }, [clone]);
   // Locate the rose guard: the widest slice along the blade's long axis.
   const guard = useMemo(() => {
     clone.updateMatrixWorld(true);
@@ -70,37 +77,48 @@ function useFadeable(url: string) {
         m.visible = v > 0.02;
       }
     });
-  return { obj: clone, setOpacity, isRose };
+  return { obj: clone, setOpacity, isRose, scale };
 }
 
 type Hover = (p: { x: number; y: number } | null) => void;
 
-function Katanas({ state, flash, onRose, onHover }: { state: State; flash: React.MutableRefObject<number>; onRose: () => void; onHover: Hover }) {
+function Katanas({ state, flash, onRose, onHover, reduced }: { state: State; flash: React.MutableRefObject<number>; onRose: () => void; onHover: Hover; reduced: boolean }) {
   const sheathed = useFadeable(sheathedAsset.url);
   const blade = useFadeable(bladeAsset.url);
   const gS = useRef<THREE.Group>(null);
   const gB = useRef<THREE.Group>(null);
   const t = useRef({ sx: 0, sOp: 1, bx: -2.5, bOp: 0 });
   const light = useRef<THREE.PointLight>(null);
+  const elapsed = useRef(2);
+  useEffect(() => { elapsed.current = state === "intro" ? 2 : 0; }, [state]);
 
   useFrame((_, raw) => {
     const dt = Math.min(raw, 0.05);
     const k = (s: number) => 1 - Math.exp(-s * dt);
     const v = t.current;
     const drawn = state === "drawn";
-    v.sx += ((drawn ? 3.6 : 0) - v.sx) * k(drawn ? 3 : 4);
-    v.sOp += ((drawn ? 0 : 1) - v.sOp) * k(3);
-    v.bx += ((drawn ? 0 : -2.5) - v.bx) * k(drawn ? 5 : 3);
-    v.bOp += ((drawn ? 1 : 0) - v.bOp) * k(drawn ? 4 : 6);
+    elapsed.current += dt;
+    const progress = THREE.MathUtils.clamp((elapsed.current - (reduced ? 0 : 0.42)) / (reduced ? 0.15 : 0.68), 0, 1);
+    const eased = progress * progress * (3 - 2 * progress);
+    const amount = drawn ? eased : 1 - eased;
+    v.sx = amount * 3.6;
+    v.sOp = 1 - THREE.MathUtils.smoothstep(amount, 0.05, 0.5);
+    v.bx = -2.5 * (1 - amount);
+    v.bOp = THREE.MathUtils.smoothstep(amount, 0.3, 0.7);
     if (gS.current) {
       gS.current.position.x = v.sx;
-      gS.current.rotation.z = v.sx * 0.05;
+      gS.current.position.y = -amount * 0.18;
+      gS.current.rotation.z = amount * -0.12;
     }
-    if (gB.current) gB.current.position.x = v.bx;
+    if (gB.current) {
+      gB.current.position.x = v.bx;
+      gB.current.position.y = reduced ? 0 : Math.sin(progress * Math.PI) * 0.12;
+      gB.current.rotation.z = reduced ? 0 : Math.sin(progress * Math.PI) * -0.09;
+    }
     sheathed.setOpacity(v.sOp);
     blade.setOpacity(v.bOp);
     flash.current = Math.max(0, flash.current - dt * 2.2);
-    if (light.current) light.current.intensity = 2 + flash.current * 60;
+    if (light.current) light.current.intensity = 2 + (reduced ? 0 : Math.sin(progress * Math.PI) * 10);
   });
 
   type Ev = { stopPropagation: () => void; point: THREE.Vector3; nativeEvent: PointerEvent | MouseEvent };
@@ -133,12 +151,12 @@ function Katanas({ state, flash, onRose, onHover }: { state: State; flash: React
       <pointLight ref={light} position={[0, 0.6, 1.6]} color="#ff3b30" distance={8} />
       <group ref={gS} {...pick(sheathed)}>
         <Center>
-          <primitive object={sheathed.obj} scale={1.6} />
+          <primitive object={sheathed.obj} scale={sheathed.scale} />
         </Center>
       </group>
       <group ref={gB} {...pick(blade)}>
         <Center>
-          <primitive object={blade.obj} scale={1.6} />
+          <primitive object={blade.obj} scale={blade.scale} rotation={[0, Math.PI, 0]} />
         </Center>
       </group>
     </>
@@ -146,14 +164,21 @@ function Katanas({ state, flash, onRose, onHover }: { state: State; flash: React
 }
 
 /** While drawing/sheathing, swing the camera to the front so the motion always reads left to right. */
-function CamRig({ settle }: { settle: React.MutableRefObject<number> }) {
+function CamRig({ settle, reduced }: { settle: React.MutableRefObject<number>; reduced: boolean }) {
   const controls = useThree((st) => st.controls) as unknown as OrbitImpl | null;
   const camera = useThree((st) => st.camera);
+  const width = useThree((st) => st.size.width);
+  const height = useThree((st) => st.size.height);
+  useEffect(() => {
+    const distance = Math.max(6.4, 5.2 / (2 * Math.tan(THREE.MathUtils.degToRad(20)) * width / height));
+    camera.position.setLength(distance);
+    controls?.update();
+  }, [camera, controls, width, height]);
   useFrame((_, raw) => {
     if (!controls) return;
     const dt = Math.min(raw, 0.05);
     const active = settle.current > 0;
-    controls.autoRotate = !active;
+    controls.autoRotate = !active && !reduced;
     if (!active) return;
     settle.current -= dt;
     const az = controls.getAzimuthalAngle();
@@ -184,6 +209,13 @@ export default function KatanaViewer() {
   const settle = useRef(0);
   const box = useRef<HTMLDivElement>(null);
   const [tip, setTip] = useState<{ x: number; y: number } | null>(null);
+  const reduced = !!useReducedMotion();
+  const { active: loading } = useProgress();
+  const [drawing, setDrawing] = useState(false);
+  const [take, setTake] = useState(0);
+  const busy = useRef(false);
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const sounds = useRef<(() => void)[]>([]);
   const onHover: Hover = (p) => {
     if (!p || !box.current) return setTip(null);
     const r = box.current.getBoundingClientRect();
@@ -192,20 +224,36 @@ export default function KatanaViewer() {
 
   useEffect(() => {
     const a = setTimeout(() => setState("sheathed"), 300);
-    return () => clearTimeout(a);
+    return () => {
+      clearTimeout(a);
+      timers.current.forEach(clearTimeout);
+      sounds.current.forEach((stop) => stop());
+      document.body.style.cursor = "";
+    };
   }, []);
 
   const toggle = () => {
+    if (busy.current || loading) return;
+    busy.current = true;
+    setTip(null);
+    setDrawing(true);
+    setTake((n) => n + 1);
     flash.current = 1;
-    settle.current = 2.2;
-    playSlash(0.5);
+    settle.current = reduced ? 0.3 : 1.8;
+    sounds.current.forEach((stop) => stop());
+    sounds.current = [playMotionCue("lock")];
+    timers.current.push(setTimeout(() => sounds.current.push(playMotionCue("draw")), reduced ? 0 : 420));
+    timers.current.push(setTimeout(() => {
+      sounds.current.push(playMotionCue("lock"));
+      setDrawing(false);
+      busy.current = false;
+    }, reduced ? 350 : 1800));
     setState((s) => (s === "drawn" ? "sheathed" : "drawn"));
   };
 
   return (
-    <div ref={box} className="relative h-full w-full">
+    <div ref={box} className="relative h-full w-full" data-blade-state={state} data-blade-moving={drawing}>
       <Canvas camera={{ position: [0, 0.4, 3.6], fov: 40 }} dpr={[1, 2]}>
-        <fog attach="fog" args={["#120b0a", 4, 10]} />
         <ambientLight intensity={0.45} />
         <directionalLight position={[3, 4, 2]} intensity={1.6} color="#ffe2c0" />
         <directionalLight position={[-4, -1, -2]} intensity={1.2} color="#b3261e" />
@@ -215,20 +263,39 @@ export default function KatanaViewer() {
           <Lightformer intensity={0.8} color="#e8d5b0" position={[4, 0, -2]} rotation-y={-Math.PI / 2} scale={[10, 1, 1]} />
         </Environment>
         <Suspense fallback={null}>
-          <Katanas state={state} flash={flash} onHover={onHover} onRose={() => scrollToId("rose-origin", true)} />
-          <CamRig settle={settle} />
+          <Katanas state={state} flash={flash} reduced={reduced} onHover={onHover} onRose={() => { if (!busy.current) scrollToId("rose-origin", true); }} />
+          <CamRig settle={settle} reduced={reduced} />
         </Suspense>
         <OrbitControls makeDefault enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.8} minPolarAngle={Math.PI / 3} maxPolarAngle={(2 * Math.PI) / 3} />
       </Canvas>
       <Loader />
 
+      <AnimatePresence>
+        {drawing && !reduced && (
+          <motion.div key={take} className="pointer-events-none absolute inset-0 overflow-hidden" exit={{ opacity: 0 }}>
+            <motion.div className="absolute inset-0 border-y border-gold/30 bg-lacquer/20"
+              initial={{ clipPath: "inset(50% 0)" }} animate={{ clipPath: ["inset(50% 0)", "inset(9% 0)", "inset(0% 0)"], opacity: [0, 0.7, 0] }}
+              transition={{ duration: 1.7, times: [0, 0.28, 1] }} />
+            <p className="blade-calligraphy absolute right-6 top-1/3 font-brush text-7xl text-primary/60 md:right-12 md:text-9xl">{state === "drawn" ? "抜刀" : "納刀"}</p>
+            <div className="blade-draw-flash absolute left-0 top-1/2 h-px w-full origin-left bg-paper transition-blade" />
+            {Array.from({ length: 16 }, (_, i) => (
+              <motion.span key={i} className={`absolute left-1/3 top-1/2 ${i % 4 === 0 ? "bg-gold" : "bg-primary"}`}
+                style={{ width: 6 + i % 4 * 3, height: 5 + i % 3 * 2, borderRadius: "85% 0 85% 0" }}
+                initial={{ x: 0, y: 0, opacity: 0.9, rotate: 0 }}
+                animate={{ x: 80 + i * 24, y: Math.sin(i * 2.2) * (40 + i * 9), opacity: 0, rotate: 80 + i * 34 }}
+                transition={{ delay: 0.6 + i % 3 * 0.025, duration: 1.05, ease: "easeOut" }} />
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="absolute inset-x-0 bottom-14 flex flex-col items-center gap-3">
-        <button
+        <Button variant="outline" size="lg" disabled={drawing || loading || state === "intro"}
           onClick={toggle}
-          className="border border-gold/60 bg-lacquer/70 px-8 py-3 font-display text-sm uppercase tracking-[0.4em] text-paper backdrop-blur transition hover:bg-primary"
+          className="h-12 min-w-56 rounded-sm border-gold/60 bg-lacquer/70 font-display text-sm uppercase text-paper backdrop-blur hover:bg-primary hover:text-paper"
         >
-          {state === "drawn" ? "Sheathe · 納刀" : "Unsheathe · 抜刀"}
-        </button>
+          <Sword />{state === "drawn" ? "Sheathe · 納刀" : "Unsheathe · 抜刀"}
+        </Button>
         <p className="font-display text-[10px] uppercase tracking-[0.4em] text-muted-foreground">Drag to turn the blade</p>
       </div>
       {tip && (
