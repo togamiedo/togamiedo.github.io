@@ -46,6 +46,7 @@ export const story: Block[] = [
   },
   {
     kind: "p",
+    id: "orchid-stomp",
     look: "words",
     text: "Without a second thought, *the lord's heavy wooden sandal came down on a pristine, blooming wild orchid and twisted its delicate stem in half.*",
   },

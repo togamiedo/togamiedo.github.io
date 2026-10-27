@@ -6,6 +6,7 @@ import type { Block } from "@/lib/story";
 import { playSplash } from "@/lib/sfx";
 import { PassageMoment } from "./PassageMoment";
 import { StudyBook } from "./StudyBook";
+import { OrchidStomp } from "./OrchidStomp";
 
 type Part = { t: "plain" | "bold" | "red" | "bleed" | "rose" | "chiyo"; s: string };
 
@@ -298,6 +299,9 @@ export function StoryFlow({ blocks }: { blocks: Block[] }) {
         }
 
         if (look === "words") {
+          if (b.id === "orchid-stomp") return <div key={i} className="relative my-20 md:mx-4"><OrchidStomp>
+            <p className="font-display text-2xl font-bold italic leading-snug text-paper md:text-4xl"><Words text={b.text} /></p>
+          </OrchidStomp></div>;
           return (
             <PassageMoment key={i} kind={b.fx}><div className="relative my-20 md:mx-4">
               <p className="font-display text-2xl font-bold italic leading-snug text-paper md:text-4xl">

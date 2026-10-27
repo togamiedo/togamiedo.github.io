@@ -21,3 +21,4 @@
 - Shared PassageMoment effects prepare reusable rose and coin sprites before reading triggers, remain local to the text, play once, fade out, and respect reduced motion so story and weapon passages share consistent timing.
 - Bloom canvases use reserved perimeter space and the tested rose-layout helper; each flower opens in separately prepared petal layers so prose stays unobscured without per-frame sprite generation.
 - StudyBook is attached via the typed study passage ID, occupies the desktop right margin and flows below on smaller screens to avoid covering story prose.
+- OrchidStomp is attached by passage ID and coordinates one foot impact with local torn-petal trajectories after the sentence reveal; reduced motion keeps a static orchid without falling overlays.
