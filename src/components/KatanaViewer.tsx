@@ -277,15 +277,15 @@ export default function KatanaViewer() {
               initial={{ clipPath: "inset(50% 0)" }} animate={{ clipPath: ["inset(50% 0)", "inset(9% 0)", "inset(0% 0)"], opacity: [0, 0.7, 0] }}
               transition={{ duration: 1.7, times: [0, 0.28, 1] }} />
             <motion.p className="absolute right-6 top-1/3 font-brush text-7xl text-primary/40 md:right-12 md:text-9xl"
-              initial={{ y: 20, opacity: 0 }} animate={{ y: -15, opacity: [0, 1, 0] }} transition={{ duration: 1.5 }}>{state === "drawn" ? "抜刀" : "納刀"}</motion.p>
+              initial={{ y: 20, opacity: 0.8 }} animate={{ y: -15, opacity: 0 }} transition={{ duration: 1.75, ease: "linear" }}>{state === "drawn" ? "抜刀" : "納刀"}</motion.p>
             <motion.div className="absolute left-0 top-1/2 h-px w-full origin-left bg-paper transition-blade"
-              initial={{ scaleX: 0, opacity: 0 }} animate={{ scaleX: [0, 1, 1], opacity: [0, 0.7, 0] }}
-              transition={{ delay: 0.55, duration: 0.55, times: [0, 0.45, 1] }} />
+              initial={{ scaleX: 0, opacity: 0.8 }} animate={{ scaleX: 1, opacity: 0 }}
+              transition={{ delay: 0.55, duration: 0.9, ease: "easeOut" }} />
             {Array.from({ length: 16 }, (_, i) => (
               <motion.span key={i} className={`absolute left-1/3 top-1/2 ${i % 4 === 0 ? "bg-gold" : "bg-primary"}`}
                 style={{ width: 6 + i % 4 * 3, height: 5 + i % 3 * 2, borderRadius: "85% 0 85% 0" }}
-                initial={{ x: 0, y: 0, opacity: 0, rotate: 0 }}
-                animate={{ x: 80 + i * 24, y: Math.sin(i * 2.2) * (40 + i * 9), opacity: [0, 0.9, 0], rotate: 80 + i * 34 }}
+                initial={{ x: 0, y: 0, opacity: 0.9, rotate: 0 }}
+                animate={{ x: 80 + i * 24, y: Math.sin(i * 2.2) * (40 + i * 9), opacity: 0, rotate: 80 + i * 34 }}
                 transition={{ delay: 0.6 + i % 3 * 0.025, duration: 1.05, ease: "easeOut" }} />
             ))}
           </motion.div>
