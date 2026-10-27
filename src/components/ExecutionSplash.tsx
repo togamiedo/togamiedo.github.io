@@ -6,7 +6,7 @@ type Drop = { x: number; y: number; vx: number; vy: number; r: number; delay: nu
 /**
  * Blood spray drawn on a canvas laid over the passage. Particles are prepared
  * ahead of time (mounted before the passage is reached) and only play when
- * `active` turns true, so the burst never stutters.
+ * `active` turns true, reducing work at the moment of impact.
  */
 export function ExecutionSplash({ active, target }: { active: boolean; target: React.RefObject<HTMLElement | null> }) {
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -79,12 +79,14 @@ export function ExecutionSplash({ active, target }: { active: boolean; target: R
       }
       ctx.globalAlpha = fade;
       for (let i = 0; i < drops.length; i++) {
-        const d = drops[i]!;
+        const d = drops[i];
+        const landing = landT[i];
+        if (!d || landing === undefined) continue;
         const age = t - 0.06 - d.delay;
         if (age <= 0) continue;
-        const fly = Math.min(age, landT[i]! - 0.06 - d.delay);
+        const fly = Math.min(age, landing - 0.06 - d.delay);
         const x = d.x + d.vx * fly, y = d.y + d.vy * fly + 900 * fly * fly;
-        const flying = age < landT[i]! - 0.06 - d.delay;
+        const flying = age < landing - 0.06 - d.delay;
         const sp = Math.hypot(d.vx, d.vy + 1800 * fly) || 1;
         const dx = d.vx / sp, dy = (d.vy + 1800 * fly) / sp;
         if (flying) {
@@ -98,11 +100,17 @@ export function ExecutionSplash({ active, target }: { active: boolean; target: R
         ctx.save(); ctx.translate(x, y); ctx.rotate(Math.atan2(dy, dx));
         const g = ctx.createRadialGradient(-d.r * 0.2, -d.r * 0.2, 0, 0, 0, d.r * len);
         g.addColorStop(0, wet); g.addColorStop(0.7, wet); g.addColorStop(1, deep);
-        ctx.fillStyle = g; ctx.beginPath();
-        d.outline.forEach((rr, j) => {
+        ctx.fillStyle = g;
+        const points = d.outline.map((rr, j) => {
           const a = (j / d.outline.length) * Math.PI * 2;
-          const px = Math.cos(a) * d.r * rr * len, py = Math.sin(a) * d.r * rr;
-          if (j === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+          return { x: Math.cos(a) * d.r * rr * len, y: Math.sin(a) * d.r * rr };
+        });
+        const first = points[0], last = points.at(-1);
+        if (!first || !last) { ctx.restore(); continue; }
+        ctx.beginPath(); ctx.moveTo((last.x + first.x) / 2, (last.y + first.y) / 2);
+        points.forEach((point, j) => {
+          const next = points[(j + 1) % points.length];
+          if (next) ctx.quadraticCurveTo(point.x, point.y, (point.x + next.x) / 2, (point.y + next.y) / 2);
         });
         ctx.closePath(); ctx.fill();
         // Tail droplets thrown forward from bigger splats.

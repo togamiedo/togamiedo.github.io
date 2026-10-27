@@ -17,4 +17,4 @@
 - Page transitions cover navigation before revealing three aligned artwork fragments; finish on animation completion rather than a fixed navigation timeout so slow page loads remain hidden.
 - Animation sound cues are cancellable Web Audio textures; cancel pending cues on unmount, and lock katana controls during staged drawing to prevent conflicting sequences.
 - Weapon history uses typographic chapter bands with sticky reading progress and unframed varied passages; keep its text sourced from the shared typed story blocks.
-- Full-screen passage effects use a client-side canvas mounted on visibility, resolve colors from CSS tokens, and cancel animation frames on unmount to keep static rendering and navigation safe.
+- Passage blood effects use a local client-side canvas prepared before the target sentence enters the reading zone, resolve colors from CSS tokens, and cancel animation frames on unmount to keep static rendering and navigation safe.
