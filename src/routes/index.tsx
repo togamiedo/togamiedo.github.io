@@ -13,6 +13,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Meet Togami Genshiro, disgraced son of Kyoto magistrates, kabukimono and bounty hunter." },
       { property: "og:title", content: "Togami Genshiro · Introduction" },
       { property: "og:description", content: "Disgraced ronin, kabukimono, bounty hunter, and keeper of illegal roses." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Index,
