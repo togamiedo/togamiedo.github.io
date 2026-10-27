@@ -156,7 +156,7 @@ function Katanas({ state, flash, onRose, onHover, reduced }: { state: State; fla
       </group>
       <group ref={gB} {...pick(blade)}>
         <Center>
-          <primitive object={blade.obj} scale={blade.scale} />
+          <primitive object={blade.obj} scale={blade.scale} rotation={[0, Math.PI, 0]} />
         </Center>
       </group>
     </>
@@ -276,11 +276,8 @@ export default function KatanaViewer() {
             <motion.div className="absolute inset-0 border-y border-gold/30 bg-lacquer/20"
               initial={{ clipPath: "inset(50% 0)" }} animate={{ clipPath: ["inset(50% 0)", "inset(9% 0)", "inset(0% 0)"], opacity: [0, 0.7, 0] }}
               transition={{ duration: 1.7, times: [0, 0.28, 1] }} />
-            <motion.p className="absolute right-6 top-1/3 font-brush text-7xl text-primary/40 md:right-12 md:text-9xl"
-              initial={{ y: 20, opacity: 0.8 }} animate={{ y: -15, opacity: 0 }} transition={{ duration: 1.75, ease: "linear" }}>{state === "drawn" ? "抜刀" : "納刀"}</motion.p>
-            <motion.div className="absolute left-0 top-1/2 h-px w-full origin-left bg-paper transition-blade"
-              initial={{ scaleX: 0, opacity: 0.8 }} animate={{ scaleX: 1, opacity: 0 }}
-              transition={{ delay: 0.55, duration: 0.9, ease: "easeOut" }} />
+            <p className="blade-calligraphy absolute right-6 top-1/3 font-brush text-7xl text-primary/60 md:right-12 md:text-9xl">{state === "drawn" ? "抜刀" : "納刀"}</p>
+            <div className="blade-draw-flash absolute left-0 top-1/2 h-px w-full origin-left bg-paper transition-blade" />
             {Array.from({ length: 16 }, (_, i) => (
               <motion.span key={i} className={`absolute left-1/3 top-1/2 ${i % 4 === 0 ? "bg-gold" : "bg-primary"}`}
                 style={{ width: 6 + i % 4 * 3, height: 5 + i % 3 * 2, borderRadius: "85% 0 85% 0" }}
