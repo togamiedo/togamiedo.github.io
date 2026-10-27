@@ -59,10 +59,10 @@ export function KatanaDraw() {
             <path d="M350 136q6-9 13 0q-6 8-13 0m9-1 7-4m-7 8 7 4" stroke="var(--gold)" fill="none" strokeWidth="1.5" />
           </motion.g>
           {/* Opaque scabbard masks the steel until it physically clears the mouth. */}
-          <path d="M444 120Q610 122 754 107Q791 98 794 115Q793 140 755 147Q594 162 444 157Z" fill={`url(#${id}-saya)`} stroke="var(--gold)" strokeWidth="1.2" />
+          <path d="M444 120Q610 122 754 107Q799 85 800 110Q802 140 755 147Q594 162 444 157Z" fill={`url(#${id}-saya)`} stroke="var(--gold)" strokeWidth="1.2" />
           <path d="M457 127Q613 129 765 113" fill="none" stroke="var(--blood-glint)" strokeWidth="1.5" opacity="0.55" />
           <path d="M455 151Q624 158 767 137" fill="none" stroke="var(--lacquer)" strokeWidth="2.5" />
-          <path d="M444 120v37m6-37v37m328-53q12 18-2 35" fill="none" stroke={`url(#${id}-fittings)`} strokeWidth="5" />
+          <path d="M444 120v37m6-37v37m336-59q12 18-2 34" fill="none" stroke={`url(#${id}-fittings)`} strokeWidth="5" />
           <path d="M491 120v37m8-37v37m8-38v38m8-38v38" stroke="var(--lacquer)" strokeWidth="4" />
           <path d="M492 125l23 25m-23 0 23-25" stroke="var(--gold)" strokeWidth="1" />
           <motion.g initial={false} animate={{ y: drawn ? [0, 0, 4, -3, 0] : 0 }} transition={{ duration, times: [0, 0.3, 0.65, 0.9, 1] }}>

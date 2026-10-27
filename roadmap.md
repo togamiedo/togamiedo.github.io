@@ -1,5 +1,5 @@
 # Tasks
-- [ ] Polish the Story katana draw with detailed fittings, a slow staged release, and a traveling steel highlight; verify desktop and mobile.
+- [x] Polish the Story katana draw with detailed fittings, a slow staged release, and a traveling steel highlight; verify desktop and mobile.
 - [x] Keep lord slash on text and stagger the soaked roses underneath.
 - [x] Add a katana unsheathing below the thug's drawing-blade note.
 - [x] Add an opening silk fan beneath the right side of the silk-fan sentence.
