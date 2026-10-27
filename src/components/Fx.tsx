@@ -33,7 +33,7 @@ export function SwordFx() {
 
 /** Blood splatter that bursts and drips. */
 export function BloodFx({ big = false }: { big?: boolean }) {
-  const drops = [
+  const drops: [number, number, number][] = [
     [60, 50, 22], [95, 40, 10], [30, 70, 9], [110, 75, 13], [80, 90, 7], [20, 35, 6], [125, 45, 5], [45, 25, 7],
   ];
   return (
@@ -52,7 +52,7 @@ export function BloodFx({ big = false }: { big?: boolean }) {
           style={{ transformOrigin: `${x}px ${y}px` }}
         />
       ))}
-      {[[60, 70], [110, 86], [30, 78]].map(([x, y], i) => (
+      {([[60, 70], [110, 86], [30, 78]] as [number, number][]).map(([x, y], i) => (
         <motion.rect
           key={`d${i}`}
           x={x - 2.5}
