@@ -3,7 +3,7 @@ import type { FxKind } from "@/components/Fx";
 export type Speaker = "togami" | "thug" | "chiyo";
 
 export type Block =
-  | { kind: "chapter"; jp: string; en: string }
+  | { kind: "chapter"; jp: string; en: string; id?: string }
   | { kind: "p"; text: string; fx?: FxKind }
   | { kind: "quote"; text: string; note?: string; side?: "left" | "right"; who?: Speaker }
   | { kind: "beat"; text: string; fx?: FxKind };
@@ -152,7 +152,7 @@ export const weaponStory: Block[] = [
     fx: "sword",
     text: "Last of all, he had the mounting brackets moved. With its center of gravity thrown off on purpose, the sword could no longer sit formally in a belt. It rests across his lower back instead, a respected family treasure turned into the ultimate law-breaking kabukimono prop.",
   },
-  { kind: "chapter", jp: "密輸ノ章：記載無き品", en: "The Unlisted Contraband" },
+  { kind: "chapter", jp: "密輸ノ章：記載無き品", en: "The Unlisted Contraband", id: "rose-origin" },
   {
     kind: "p",
     text: "Early in his life as a disgraced ronin, *Togami* took a well paid contract from a Nagasaki magistrate: hunt down a dockworker who had stolen a crate of restricted Dutch imports.",
