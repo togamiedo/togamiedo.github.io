@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useRouterState } from "@tanstack/react-router";
+import { useRouter } from "@tanstack/react-router";
 import { playSlash } from "@/lib/sfx";
 
 const PAGES: Record<string, { jp: string; en: string }> = {
@@ -9,89 +9,145 @@ const PAGES: Record<string, { jp: string; en: string }> = {
   "/weapon": { jp: "刀", en: "Weapon" },
 };
 
-// Two halves of a diagonal cut, like a shoji screen sliced in one stroke.
-const TOP = "polygon(0 0, 100% 0, 100% 38%, 0 62%)";
-const BOTTOM = "polygon(0 62%, 100% 38%, 100% 100%, 0 100%)";
+const STRIPS = 6;
+const EASE = [0.76, 0, 0.24, 1] as const;
+type Run = { key: number; to: string; x: number; y: number; phase: "cover" | "reveal" };
 
-/** On every tab change: an ink ensō paints the page's kanji, a blade cuts the screen diagonally, and the halves slide apart. */
+/**
+ * Tab change, in two acts. Cover: blood ink blooms out from where you clicked,
+ * the destination kanji is brushed on stroke by stroke, a blade flashes across.
+ * Reveal: the screen splits into shoji panels that slide away one after another.
+ * Navigation happens hidden under the ink, so the old page never pops.
+ */
 export function PageTransition() {
-  const path = useRouterState({ select: (s) => s.location.pathname });
-  const first = useRef(true);
-  const [run, setRun] = useState<{ key: number; path: string } | null>(null);
+  const router = useRouter();
+  const [run, setRun] = useState<Run | null>(null);
+  const busy = useRef(false);
 
   useEffect(() => {
-    if (first.current) {
-      first.current = false;
-      return;
-    }
-    window.scrollTo(0, 0);
-    setRun({ key: Date.now(), path });
-    const s = setTimeout(() => playSlash(0.22), 750);
-    const t = setTimeout(() => setRun(null), 1900);
-    return () => {
-      clearTimeout(s);
-      clearTimeout(t);
+    const onClick = (e: MouseEvent) => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
+      const a = (e.target as HTMLElement).closest("a");
+      if (!a || a.target === "_blank") return;
+      const url = new URL(a.href, location.href);
+      if (url.origin !== location.origin || url.pathname === location.pathname || !(url.pathname in PAGES)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      if (busy.current) return;
+      busy.current = true;
+      const to = url.pathname;
+      setRun({ key: Date.now(), to, x: e.clientX, y: e.clientY, phase: "cover" });
+      setTimeout(() => playSlash(0.22), 650);
+      setTimeout(async () => {
+        await router.navigate({ to });
+        window.scrollTo(0, 0);
+        setRun((r) => (r ? { ...r, phase: "reveal" } : r));
+      }, 1050);
+      setTimeout(() => {
+        setRun(null);
+        busy.current = false;
+      }, 2200);
     };
-  }, [path]);
+    document.addEventListener("click", onClick, true);
+    return () => document.removeEventListener("click", onClick, true);
+  }, [router]);
 
-  const page = run ? (PAGES[run.path] ?? { jp: "頁", en: "" }) : null;
+  const page = run ? PAGES[run.to] : null;
+  const reveal = run?.phase === "reveal";
 
   return (
     <AnimatePresence>
       {run && page && (
-        <motion.div key={run.key} className="pointer-events-none fixed inset-0 z-[90]" exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
-          {[TOP, BOTTOM].map((clip, i) => (
+        <motion.div key={run.key} className="fixed inset-0 z-[90] overflow-hidden" exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
+          {/* Shoji strips: carry the ink while covering, slide away one by one on reveal */}
+          {Array.from({ length: STRIPS }).map((_, i) => (
             <motion.div
               key={i}
-              className="grain absolute inset-0 bg-lacquer"
-              style={{ clipPath: clip }}
-              initial={{ x: 0, y: 0 }}
-              animate={{ x: i === 0 ? "-12%" : "12%", y: i === 0 ? "-110%" : "110%" }}
-              transition={{ delay: 0.95, duration: 0.8, ease: [0.7, 0, 0.2, 1] }}
+              className="absolute top-0 h-full bg-lacquer"
+              style={{ left: `${(i * 100) / STRIPS}%`, width: `${100 / STRIPS + 0.2}%` }}
+              initial={{ clipPath: `circle(0% at ${run.x - (i * innerWidth) / STRIPS}px ${run.y}px)` }}
+              animate={
+                reveal
+                  ? { y: i % 2 ? "105%" : "-105%", clipPath: "circle(150% at 50% 50%)" }
+                  : { clipPath: `circle(150% at ${run.x - (i * innerWidth) / STRIPS}px ${run.y}px)` }
+              }
+              transition={reveal ? { duration: 0.75, delay: 0.05 * Math.abs(i - (STRIPS - 1) / 2) * 2, ease: EASE } : { duration: 0.75, ease: EASE }}
             >
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <svg viewBox="0 0 200 200" className="absolute h-72 w-72 md:h-96 md:w-96">
-                  <motion.circle
-                    cx="100"
-                    cy="100"
-                    r="82"
-                    fill="none"
-                    stroke="var(--primary)"
-                    strokeWidth="9"
-                    strokeLinecap="round"
-                    initial={{ pathLength: 0, rotate: -100 }}
-                    animate={{ pathLength: 0.9 }}
-                    transition={{ duration: 0.6, ease: "easeOut" }}
-                    style={{ originX: "50%", originY: "50%" }}
-                  />
-                </svg>
-                <motion.p
-                  className="relative font-brush text-8xl text-paper md:text-9xl"
-                  initial={{ opacity: 0, scale: 1.6, filter: "blur(12px)" }}
-                  animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                  transition={{ duration: 0.45, delay: 0.15 }}
-                >
-                  {page.jp}
-                </motion.p>
-                <motion.p
-                  className="relative mt-4 font-display text-xs uppercase tracking-[0.6em] text-gold"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.4 }}
-                >
-                  {page.en}
-                </motion.p>
-              </div>
+              <div className="grain absolute inset-0" />
+              <div className="absolute inset-y-0 right-0 w-px bg-gold/15" />
             </motion.div>
           ))}
-          {/* the cut */}
+
+          {/* Blood bloom chasing the ink */}
+          {!reveal && (
+            <motion.div
+              className="absolute rounded-full bg-primary/25 blur-3xl"
+              style={{ left: run.x, top: run.y, x: "-50%", y: "-50%" }}
+              initial={{ width: 0, height: 0, opacity: 0.9 }}
+              animate={{ width: 1400, height: 1400, opacity: 0 }}
+              transition={{ duration: 1.1, ease: "easeOut" }}
+            />
+          )}
+
+          {/* Kanji brushed on, then sliced */}
           <motion.div
-            className="absolute left-1/2 top-1/2 h-[3px] w-[160vw] bg-primary shadow-[0_0_24px_4px_var(--primary)]"
-            style={{ x: "-50%", y: "-50%", rotate: -13 }}
-            initial={{ scaleX: 0, opacity: 1 }}
-            animate={{ scaleX: [0, 1, 1], opacity: [1, 1, 0] }}
-            transition={{ delay: 0.75, duration: 0.6, times: [0, 0.35, 1] }}
+            className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center"
+            animate={reveal ? { opacity: 0, scale: 1.15, filter: "blur(10px)" } : { opacity: 1 }}
+            transition={{ duration: 0.45 }}
+          >
+            <div className="relative">
+              <motion.p
+                className="font-brush text-[9rem] leading-none text-paper md:text-[13rem]"
+                initial={{ clipPath: "inset(0 0 100% 0)", filter: "blur(6px)" }}
+                animate={{ clipPath: "inset(0 0 0% 0)", filter: "blur(0px)" }}
+                transition={{ delay: 0.25, duration: 0.55, ease: EASE }}
+              >
+                {page.jp}
+              </motion.p>
+              <motion.span
+                className="absolute -right-10 -top-4 flex h-12 w-12 items-center justify-center border-2 border-primary font-brush text-xl text-primary"
+                initial={{ scale: 2.5, opacity: 0, rotate: -25 }}
+                animate={{ scale: 1, opacity: 1, rotate: -8 }}
+                transition={{ delay: 0.75, duration: 0.25, ease: "easeIn" }}
+              >
+                印
+              </motion.span>
+            </div>
+            <motion.p
+              className="mt-6 font-display text-xs uppercase text-gold"
+              initial={{ opacity: 0, letterSpacing: "1.4em" }}
+              animate={{ opacity: 1, letterSpacing: "0.6em" }}
+              transition={{ delay: 0.4, duration: 0.7 }}
+            >
+              {page.en}
+            </motion.p>
+          </motion.div>
+
+          {/* Blade flash */}
+          <motion.div
+            className="pointer-events-none absolute left-1/2 top-1/2 h-[2px] w-[180vw] bg-gradient-to-r from-transparent via-paper to-transparent shadow-[0_0_30px_6px_var(--primary)]"
+            style={{ x: "-50%", y: "-50%", rotate: -18 }}
+            initial={{ scaleX: 0, opacity: 0 }}
+            animate={{ scaleX: [0, 1, 1], opacity: [0, 1, 0] }}
+            transition={{ delay: 0.65, duration: 0.5, times: [0, 0.4, 1], ease: "easeOut" }}
           />
+
+          {/* Petals thrown by the cut */}
+          {Array.from({ length: 14 }).map((_, i) => (
+            <motion.span
+              key={`p${i}`}
+              className="pointer-events-none absolute left-1/2 top-1/2 block bg-primary"
+              style={{ width: 12, height: 9, borderRadius: "80% 0 80% 0" }}
+              initial={{ x: 0, y: 0, opacity: 0, rotate: 0 }}
+              animate={{
+                x: Math.cos((i / 14) * Math.PI * 2) * (260 + (i % 4) * 90),
+                y: Math.sin((i / 14) * Math.PI * 2) * (180 + (i % 3) * 70) + 120,
+                opacity: [0, 1, 0],
+                rotate: 360 + i * 40,
+              }}
+              transition={{ delay: 0.7, duration: 1.3, ease: "easeOut" }}
+            />
+          ))}
         </motion.div>
       )}
     </AnimatePresence>
