@@ -63,6 +63,7 @@ export const story: Block[] = [
   { kind: "beat", text: "WOOSH", fx: "bigblood" },
   {
     kind: "p",
+    id: "lord-blood-roses",
     fx: "blood",
     text: "The moment the steel left its scabbard, *Togami* drew his own blade and cut through the lord with terrifying brutality. ~Blood gushed across the white roses and stained their petals a deep, wet crimson.~ Staring at the contrast, *Togami* understood that this bloodied ^dark red rose^ was infinitely more beautiful than the original.",
   },
