@@ -10,6 +10,7 @@ import { DojoScene } from "./DojoScene";
 import { OrchidStomp } from "./OrchidStomp";
 import { BloodRoses } from "./BloodRoses";
 import { KatanaDraw, SilkFan } from "./StoryObjects";
+import { InsultStorm } from "./InsultStorm";
 
 type Part = { t: "plain" | "bold" | "red" | "bleed" | "rose" | "chiyo"; s: string };
 

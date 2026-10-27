@@ -58,6 +58,7 @@ export const story: Block[] = [
   { kind: "beat", text: "!!!", fx: "sword" },
   {
     kind: "p",
+    id: "greenhouse-jeer",
     text: "The next morning, *Togami* cornered the lord in the greenhouse. With a sadistic smirk he delivered insult after insult, each one sharper than the last, until the lord's fragile pride gave way and the furious man finally drew his sword.",
   },
   { kind: "beat", text: "WOOSH", fx: "bigblood" },
