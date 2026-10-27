@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import portrait from "@/assets/togami-notice.png.asset.json";
 import { Petals } from "./Petals";
-import { playCrack, playSlash } from "@/lib/sfx";
+import { getMusic, playCrack, playSlash, startMusic } from "@/lib/sfx";
 
 type Phase = "idle" | "breaking" | "gone";
 
@@ -21,6 +21,7 @@ export function IntroGate() {
     if (phase !== "idle") return;
     setPhase("breaking");
     playCrack();
+    startMusic();
     setTimeout(() => playSlash(), 330);
     setTimeout(() => setPhase("gone"), 2300);
   };
@@ -28,6 +29,8 @@ export function IntroGate() {
   const breaking = phase === "breaking";
 
   return (
+    <>
+    {phase === "gone" && <MusicToggle />}
     <AnimatePresence>
       {phase !== "gone" && (
         <motion.div
@@ -64,7 +67,7 @@ export function IntroGate() {
 
             {/* wax rose seal */}
             <motion.div
-              className="absolute left-1/2 top-1/2 z-10 h-24 w-24 -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_6px_10px_rgba(0,0,0,0.6)]"
+              className="absolute -right-6 -top-6 z-10 h-24 w-24 rotate-12 drop-shadow-[0_6px_10px_rgba(0,0,0,0.6)]"
               animate={
                 breaking
                   ? { scale: [1, 1.2, 0], rotate: [0, -15, 60], opacity: [1, 1, 0] }
@@ -110,6 +113,31 @@ export function IntroGate() {
         </motion.div>
       )}
     </AnimatePresence>
+    </>
+  );
+}
+
+function MusicToggle() {
+  const [on, setOn] = useState(() => !(getMusic()?.paused ?? true));
+  const toggle = () => {
+    const m = getMusic();
+    if (!m) return;
+    if (m.paused) {
+      startMusic();
+      setOn(true);
+    } else {
+      m.pause();
+      setOn(false);
+    }
+  };
+  return (
+    <button
+      onClick={toggle}
+      aria-label={on ? "Mute music" : "Play music"}
+      className="fixed bottom-5 left-5 z-[70] border border-gold/50 bg-lacquer/70 px-4 py-2 font-display text-xs uppercase tracking-[0.3em] text-gold backdrop-blur transition hover:text-paper"
+    >
+      {on ? "♪ Music · 音" : "♪ Muted · 無音"}
+    </button>
   );
 }
 
