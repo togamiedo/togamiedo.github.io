@@ -39,10 +39,10 @@ Un site en anglais avec des touches de japonais décoratif, dans l'ambiance "Nui
 - Papier washi sombre, sceaux rouges, traits d'encre en séparateurs
 - Menu discret : Introduction / Story / Weapon
 
-## En attente de toi
+## Modèles reçus
 
-- Les modèles 3D en .glb : la lame (avec tsuba et poignée) et le fourreau séparément, ou rengainé + dégainé
-- La photo de l'épée, en secours
+- Katana rengainé et katana dégainé (.glb, environ 27 Mo chacun). Je les compresse pour qu'ils chargent vite, avec un écran de chargement à l'encre pendant l'attente.
+- Animation : le modèle rengainé glisse, tremble, puis un éclair de lame fait la transition vers le modèle dégainé (fondu + mouvement de dégainage).
 
 ## Détails techniques
 
