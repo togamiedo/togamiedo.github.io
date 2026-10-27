@@ -71,7 +71,12 @@
   --gradient-night: radial-gradient(ellipse at 50% 0%, oklch(0.24 0.07 25 / 0.55), transparent 60%),
     radial-gradient(ellipse at 100% 100%, oklch(0.2 0.06 25 / 0.4), transparent 55%);
   --shadow-panel: 0 30px 60px -30px oklch(0 0 0 / 0.9), inset 0 0 0 1px oklch(0.68 0.08 75 / 0.18);
+  --shadow-transition-blade: 0 0 8px 2px var(--paper), 0 0 28px 6px var(--primary);
+  --shadow-transition-kanji: 4px 6px 0 var(--blood), 0 0 35px color-mix(in oklab, var(--primary) 35%, transparent);
 }
+
+.transition-blade { box-shadow: var(--shadow-transition-blade); }
+.transition-kanji { text-shadow: var(--shadow-transition-kanji); }
 
 @layer base {
   * {
