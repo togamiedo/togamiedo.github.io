@@ -5,4 +5,4 @@
 - [x] Further refine dynamic sheathing and drawing.
 - [x] Remove generated weapon-story pictures and smooth blade transitions.
 - [x] Make the site deployable to GitHub Pages (self-contained media, static build config, deploy workflow).
-- [ ] Turn on GitHub Pages for the repository (user must pick "GitHub Actions" as the source in the repository's Settings → Pages). Repo is public and synced; the Actions build step passed, but the deploy step failed because Pages is not enabled yet.
+- [ ] GitHub Pages: source is now GitHub Actions; the first build succeeded but the published site was overwritten by a branch-based Jekyll build. Re-run the deploy workflow and confirm the live site serves the built pages.
