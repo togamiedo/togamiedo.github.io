@@ -21,7 +21,6 @@ export const story: Block[] = [
   },
   {
     kind: "p",
-    fx: "bloom",
     text: "Into this world of ink and strict edicts, *Togami* was born. The only sanctuary of color in the whole Genshiro compound was a walled, heavily guarded courtyard kept by his mother. She was the *daughter* of a powerful Nagasaki merchant, a man who used quiet trade ties with Dutch smugglers to bring in highly illegal, exotic seeds from foreign lands.",
   },
   {
@@ -30,6 +29,7 @@ export const story: Block[] = [
   },
   {
     kind: "p",
+    id: "study-law",
     text: "By his *tenth* birthday he had mastered taxation law and the strict regulations of class. His father's plan backfired badly. Where the rest of the family saw the law as a *sacred*, unbreakable chain, young *Togami* saw a game. His mind found the spaces between the rules, and nothing amused him more than finding the exact loophole.",
   },
   {
@@ -46,7 +46,6 @@ export const story: Block[] = [
   },
   {
     kind: "p",
-    fx: "crush",
     look: "words",
     text: "Without a second thought, *the lord's heavy wooden sandal came down on a pristine, blooming wild orchid and twisted its delicate stem in half.*",
   },
@@ -79,7 +78,6 @@ export const story: Block[] = [
   },
   {
     kind: "p",
-    fx: "coin",
     text: "To fund his extravagant new life, he took his *first* private contract. While the gang relied on messy brawls, *Togami* cornered a local gang leader alone in an alleyway.",
   },
   { kind: "quote", text: "A magistrate's exiled son?", note: "The thug sneered, drawing his blade.", side: "right", who: "thug" },
@@ -93,7 +91,6 @@ export const story: Block[] = [
   { kind: "quote", text: "Just a gardener pulling roots.", side: "left", who: "togami" },
   {
     kind: "p",
-    fx: "coin",
     text: "His *terrifyingly clean reputation* spread through every back alley of Kyoto, and it soon drew the attention of a wealthy, enigmatic merchant woman named #Kuroda Chiyo#.",
   },
   { kind: "quote", text: "I need my most stubborn rivals pruned.", side: "right", who: "chiyo" },
@@ -105,7 +102,6 @@ export const story: Block[] = [
   { kind: "quote", text: "And I've heard you have a talent for cutting stems.", side: "right", who: "chiyo" },
   {
     kind: "p",
-    fx: "bloom",
     text: "As they worked through these highly illegal, bloody contracts, a dark and twisted romance blossomed between *Togami* and *Kuroda*. She shared his pragmatic view of the world, and *Togami* found himself truly captivated by her *sharp*, calculating mind and by the rare imported ^red roses^ she pinned with care into her elaborate hair. Yet *Chiyo's* affection slowly turned into a suffocating, possessive obsession.",
   },
   { kind: "quote", text: "You are my greatest investment, Togami.", side: "right", who: "chiyo" },
@@ -135,7 +131,6 @@ export const story: Block[] = [
   },
   {
     kind: "p",
-    fx: "bloom",
     text: "As he left his ancestral home for the last time, he plucked the ^deep red roses^ from her hair and made them his own, worn ever since as his permanent ornaments.",
   },
 ];
