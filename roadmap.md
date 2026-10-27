@@ -1,4 +1,5 @@
 # Tasks
+- [ ] Add Togami's face to the Discord share preview for https://togamigenshiro.github.io/.
 - [ ] Bloom many roses around the first-flower paragraph, then fade them away.
 - [ ] Add prepared, reading-triggered blood, rose, coin and crushed-petal moments to the main story.
 - [ ] Add Gin Ichimaru (Bleach) voiceclaim hyperlink and verify the new flows.
