@@ -205,7 +205,7 @@ const SKIN = [
 const ENTER: TargetAndTransition[] = [
   { opacity: 0, x: -90, filter: "blur(6px)" },
   { opacity: 0, x: 90, filter: "blur(6px)" },
-  { opacity: 0, clipPath: "inset(0 100% 0 0)" },
+  { opacity: 0, scale: 1.08, filter: "blur(14px)" },
   { opacity: 0, y: 60, rotate: 3, scale: 0.94 },
 ];
 
@@ -357,7 +357,7 @@ export function StoryFlow({ blocks }: { blocks: Block[] }) {
             <motion.div
               className={`panel grain rounded-sm p-6 leading-relaxed md:p-8 ${SKIN[v]}`}
               initial={ENTER[v]!}
-              whileInView={{ opacity: 1, x: 0, y: 0, rotate: v === 3 ? -0.6 : 0, scale: 1, clipPath: "inset(0 0% 0 0)", filter: "blur(0px)" }}
+              whileInView={{ opacity: 1, x: 0, y: 0, rotate: v === 3 ? -0.6 : 0, scale: 1, filter: "blur(0px)" }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: v === 2 ? 1.6 : 1.2, ease: [0.16, 1, 0.3, 1] }}
             >
