@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 const INTRO_PORTRAIT = "/img/togami-intro.png";
 const FACE_CLOSEUP = "https://togamigenshiro.github.io/img/togami-face.png";
+const SHARE_IMAGE = "https://togamigenshiro.github.io/img/share-roses.jpg";
 import { Petals, RoseMark } from "@/components/Petals";
 import { Fx, type FxKind } from "@/components/Fx";
 import { Rich } from "@/components/StoryFlow";
