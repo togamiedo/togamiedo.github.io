@@ -142,55 +142,16 @@ export const story: Block[] = [
 
 export const weaponStory: Block[] = [
   { kind: "chapter", jp: "刀ノ章：薔薇ノ鍔", en: "The Rose Tsuba" },
-  {
-    kind: "p",
-    text: "When he was cast out, *Togami* left with one thing that still belonged to the {Genshiro} name: the family katana, a sober blade with a plain iron guard, made to stand for duty and restraint.",
-  },
-  {
-    kind: "p",
-    fx: "coin",
-    text: "He carried it to a black-market metalworker in the Nagasaki smuggling district and paid an outrageous sum to have that honorable, understated iron handguard melted down entirely.",
-  },
-  {
-    kind: "p",
-    fx: "bloom",
-    text: "In its place the artisan cast a heavy, blooming red rose tsuba, a direct tribute to the rare Dutch flowers his mother once imported against the law.",
-  },
-  {
-    kind: "p",
-    text: "To finish the insult to his former masters, he had the saya lacquered in a blinding, illegal blood red and draped it with noisy chains made to rattle and annoy every samurai he passed.",
-  },
-  {
-    kind: "p",
-    fx: "sword",
-    text: "Then he had the brackets moved. Now the sword hangs all wrong, too lopsided to wear at the hip like a proper samurai would. So he slings it across his lower back. His family's treasure, reduced to one more loud piece of a kabukimono's outfit. *Exactly how he wanted it.*",
-  },
+  { kind: "p", text: "When he was chasen away, Togami left with the family katana, a blade with a plain iron guard, made to stand for duty and restraint." },
+  { kind: "p", fx: "coin", text: "He carried it to a black-market metalworker in the Nagasaki smuggling district and paid an outrageous sum to have that honorable, iron handguard melted down entirely." },
+  { kind: "p", fx: "bloom", text: "By replacement, the artisan replaced it with a heavy, blooming red rose tsuba, a direct reference to the rare Dutch flowers his mother once imported against the law." },
+  { kind: "p", text: "To finish the insult to his former masters, he had the saya lacquered in an illegal blood red and draped it with noisy chains made to rattle and annoy every samurai he passed by." },
+  { kind: "p", fx: "sword", text: "Then he had the brackets moved.The sword hung all wrong, too lopsided to wear at the hip like a proper samurai would. So he slings it across his lower back." },
   { kind: "chapter", jp: "密輸ノ章：記載無き品", en: "The Unlisted Contraband" },
-  {
-    kind: "p",
-    text: "Early in his life as a disgraced ronin, *Togami* took a well paid contract from a Nagasaki magistrate: hunt down a dockworker who had stolen a crate of restricted Dutch imports.",
-  },
-  {
-    kind: "p",
-    id: "rose-origin",
-    text: "He finally cornered the bleeding thief in an abandoned coastal cave. The stolen goods were not gold or velvet. They were a fragile, soil-packed wooden box of live, deep red *Rosa gallica* cuttings taken from a foreign merchant ship.",
-  },
-  {
-    kind: "p",
-    fx: "bigblood",
-    text: "The thief begged for his life and offered to split the black-market fortune. Togami only smirked. The contract demanded the thief's head, and said nothing about recovering the goods. {One clean stroke}, and the man's head was off.",
-  },
-  {
-    kind: "p",
-    text: "Holding to the exact wording, Togami turned in the head, collected his bounty, and quietly kept the *unlisted contraband*. He carried the cuttings back to Kyoto and decoded stolen Dutch botany journals until he grew his first flawless, blood red bloom.",
-  },
-  {
-    kind: "p",
-    fx: "bloom",
-    text: "That first flower became his obsession. He cut it at the peak of its bloom, sealed it in wax, and handed it to a black-market metalworker with one demand: the guard of his new katana had to match its petals perfectly.",
-  },
-  {
-    kind: "p",
-    text: "Those cuttings never died. Their descendants still grow in his private greenhouse, and between bounties he prunes them like his life depends on it.",
-  },
+  { kind: "p", text: "Early in his life as a ronin, Togami took a well paid contract from a Nagasaki magistrate: hunt down a dockworker who had stolen a crate of restricted Dutch imports." },
+  { kind: "p", id: "rose-origin", text: "He finally cornered the bleeding thief in an abandoned coastal cave. The stolen goods were a fragile, soil-packed wooden box of live, deep red Rosa gallica cuttings taken from a foreign merchant ship." },
+  { kind: "p", id: "thief-execution", fx: "bigblood", text: "The thief begged for his life and offered to split the black-market fortune. Togami only smirked. The contract demanded the thief's head, and said nothing about recovering the goods. One clean slice through his jugular vein, and the man's head was off." },
+  { kind: "p", text: "Holding to the exact wording, Togami turned in the head, collected his bounty, and quietly kept the unlisted contraband. He carried the cuttings back to Kyoto and decoded stolen Dutch botany journals until he grew his first flawless, blood red rose bloom." },
+  { kind: "p", fx: "bloom", text: "That first flower became his obsession. He cut it at the peak of its bloom, sealed it in wax, and handed it to a black-market metalworker with one demand: the guard of his new katana had to match it perfectly." },
+  { kind: "p", text: "Those cuttings never died, from now on he replaces each one that withers away from the wax." },
 ];

@@ -1,7 +1,7 @@
 # Tasks
-- [ ] Remove remaining removable builder references without disrupting the connected site; hide the published badge if approved.
-- [ ] Replace Rose Sword history with the user's supplied paragraphs.
-- [ ] Add and verify a full-screen slash and realistic-looking blood splash at the thief paragraph, without generated imagery.
+- [x] Minimize removable attribution references and hide the published badge; automatic configuration and old history remain outside this cleanup.
+- [x] Replace Rose Sword history with the user's supplied paragraphs.
+- [x] Add and verify a full-screen slash and liquid blood splash at the thief paragraph, without generated imagery.
 - [x] Add layered, synchronized transition sounds.
 - [x] Upgrade and verify staged katana drawing and sheathing.
 - [x] Redesign weapon-story presentation with richer cinematic scenes.
