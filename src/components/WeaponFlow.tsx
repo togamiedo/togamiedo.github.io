@@ -20,8 +20,7 @@ function ChapterScene({ chapter, rows, index }: { chapter: Extract<Block, { kind
         <div className="absolute inset-0 bg-gradient-to-t from-lacquer via-lacquer/20 to-transparent" />
         <div className="absolute inset-x-0 bottom-8 mx-auto max-w-6xl px-6 md:bottom-12">
           <p className="mb-4 font-brush text-xl text-gold">{index === 0 ? "壱" : "弐"}</p>
-          <h2 className="max-w-3xl font-display text-4xl text-paper md:text-6xl">{chapter.en}</h2>
-          <p className="mt-4 font-brush text-xl text-paper/70 md:text-3xl">{chapter.jp}</p>
+          <h2 className="max-w-3xl font-brush text-3xl text-paper md:text-5xl">{chapter.jp}</h2>
         </div>
       </div>
       <div className="mx-auto grid max-w-6xl gap-10 px-6 py-16 md:grid-cols-[1fr_1.5fr] md:gap-20 md:py-24">
@@ -29,7 +28,6 @@ function ChapterScene({ chapter, rows, index }: { chapter: Extract<Block, { kind
           <div className="sticky top-32">
             <p className="font-brush text-[8rem] leading-none text-primary/30">{index === 0 ? "鍛" : "薔薇"}</p>
             <div className="mt-8 h-px w-28 bg-gold/50" />
-            <p className="mt-6 max-w-56 font-display text-sm uppercase text-muted-foreground">{chapter.en}</p>
             <motion.div className="mt-8 h-1 w-40 origin-left bg-primary" style={{ scaleX: scrollYProgress }} />
           </div>
         </aside>
