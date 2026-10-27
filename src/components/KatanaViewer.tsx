@@ -254,7 +254,6 @@ export default function KatanaViewer() {
   return (
     <div ref={box} className="relative h-full w-full" data-blade-state={state} data-blade-moving={drawing}>
       <Canvas camera={{ position: [0, 0.4, 3.6], fov: 40 }} dpr={[1, 2]}>
-        <fog attach="fog" args={["#120b0a", 4, 10]} />
         <ambientLight intensity={0.45} />
         <directionalLight position={[3, 4, 2]} intensity={1.6} color="#ffe2c0" />
         <directionalLight position={[-4, -1, -2]} intensity={1.2} color="#b3261e" />
