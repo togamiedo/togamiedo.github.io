@@ -72,7 +72,7 @@ export function ExecutionSplash() {
         }
       }
       if (t < 3.2) frame = requestAnimationFrame(paint);
-      else el.dataset.phase = "complete";
+      else el.dataset["phase"] = "complete";
     };
     frame = requestAnimationFrame(paint);
     return () => { cancelAnimationFrame(frame); cancelSound(); };
