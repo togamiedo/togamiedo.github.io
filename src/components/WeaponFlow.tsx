@@ -16,7 +16,7 @@ function ChapterScene({ chapter, rows, index }: { chapter: Extract<Block, { kind
     <section ref={ref} id={chapter.id} className="relative scroll-mt-24 border-t border-gold/20" data-weapon-chapter>
       <div className="relative h-[62vh] min-h-96 overflow-hidden">
         <motion.img src={image} alt={index === 0 ? "Rose handguard at a swordsmith's forge" : "Rose cuttings hidden in a coastal cave"}
-          width={1536} height={1024} loading="lazy" className="absolute inset-0 h-full w-full object-cover" style={reduced ? undefined : { y }} />
+          width={1536} height={1024} loading="lazy" className="absolute inset-0 h-full w-full object-cover" style={reduced ? {} : { y }} />
         <div className="absolute inset-0 bg-gradient-to-t from-lacquer via-lacquer/20 to-transparent" />
         <div className="absolute inset-x-0 bottom-8 mx-auto max-w-6xl px-6 md:bottom-12">
           <p className="mb-4 font-brush text-xl text-gold">{index === 0 ? "壱" : "弐"}</p>
