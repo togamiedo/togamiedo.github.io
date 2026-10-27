@@ -55,11 +55,17 @@ export function ExecutionSplash() {
         const liquid = ctx.createRadialGradient(-d.r * 0.25, -d.r * 0.35, 0, 0, 0, d.r * 1.2);
         liquid.addColorStop(0, blood); liquid.addColorStop(0.65, blood); liquid.addColorStop(1, dark);
         ctx.fillStyle = liquid;
-        ctx.beginPath();
-        d.outline.forEach((radius, i) => {
+        const points = d.outline.map((radius, i) => {
           const a = (i / d.outline.length) * Math.PI * 2;
-          const px = Math.cos(a) * d.r * radius, py = Math.sin(a) * d.r * radius;
-          if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+          return { x: Math.cos(a) * d.r * radius, y: Math.sin(a) * d.r * radius };
+        });
+        ctx.beginPath();
+        const first = points[0], last = points.at(-1);
+        if (!first || !last) { ctx.restore(); continue; }
+        ctx.moveTo((last.x + first.x) / 2, (last.y + first.y) / 2);
+        points.forEach((point, i) => {
+          const next = points[(i + 1) % points.length];
+          if (next) ctx.quadraticCurveTo(point.x, point.y, (point.x + next.x) / 2, (point.y + next.y) / 2);
         });
         ctx.closePath(); ctx.fill();
         ctx.globalAlpha *= 0.4; ctx.fillStyle = shine;
