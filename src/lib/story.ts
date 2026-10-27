@@ -34,7 +34,7 @@ export const story: Block[] = [
   },
   {
     kind: "p",
-    fx: "sword",
+    id: "kenjutsu-dojo",
     text: "He never wanted to break the law. He wanted to make it powerless. That duality shaped his adolescence. Every morning he trained in traditional kenjutsu and drove his instructors mad with unorthodox strikes. His style obeyed every rule of the dojo on paper, while spitting on the honorable spirit of the formal samurai duel.",
   },
 

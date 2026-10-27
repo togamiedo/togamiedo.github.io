@@ -377,6 +377,7 @@ export function StoryFlow({ blocks }: { blocks: Block[] }) {
               <p className="text-lg md:text-xl"><Rich text={b.text} /></p>
             </motion.div>
             {b.id === "study-law" && <StudyBook />}
+            {b.id === "kenjutsu-dojo" && <DojoScene />}
           </div></PassageMoment>
         );
       })}
