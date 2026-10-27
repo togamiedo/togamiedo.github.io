@@ -14,7 +14,6 @@ export function StudyBook() {
         initial={reduced ? false : { opacity: 0, y: 24 }} animate={active ? { opacity: 1, y: 0 } : undefined} transition={{ duration: 1.4 }}>
         <ellipse cx="110" cy="274" rx="87" ry="9" fill="var(--blood-deep)" opacity="0.35" />
         <motion.g initial={reduced ? false : { scaleX: 0.35 }} animate={active ? { scaleX: 1 } : undefined} transition={{ duration: 2, ease: "easeOut" }} style={{ transformOrigin: "110px 220px" }}>
-          <path d="M13 184 Q61 172 109 192 Q155 171 207 183 L209 260 Q155 249 110 269 Q sixty 250 11 262Z" fill="var(--blood-deep)" />
           <path d="M13 184 Q61 172 109 192 Q155 171 207 183 L209 260 Q155 249 110 269 Q61 250 11 262Z" fill="var(--blood-deep)" stroke="var(--gold)" strokeWidth="1" />
           <path d="M18 174 Q63 165 110 187 L110 258 Q65 237 17 250Z" fill="var(--paper)" />
           <path d="M110 187 Q156 162 201 174 L202 250 Q156 237 110 258Z" fill="var(--paper)" />
