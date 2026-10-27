@@ -88,6 +88,33 @@ export function playCrack(volume = 0.2) {
 }
 
 let bgm: HTMLAudioElement | null = null;
+/** Rounded, stereo-moving textures. Returns cancellation for interrupted animations. */
+export function playMotionCue(kind: "ink" | "cut" | "reveal" | "draw" | "lock") {
+  const a = ac();
+  if (!a) return () => {};
+  const duration = kind === "draw" ? 1.15 : kind === "reveal" ? 0.75 : 0.45;
+  const t = a.currentTime;
+  const source = noise(a, duration);
+  const filter = a.createBiquadFilter();
+  filter.type = "lowpass";
+  filter.Q.value = 0.5;
+  filter.frequency.setValueAtTime(kind === "lock" ? 400 : 650, t);
+  filter.frequency.linearRampToValueAtTime(kind === "cut" || kind === "draw" ? 1900 : 950, t + duration * 0.4);
+  filter.frequency.linearRampToValueAtTime(350, t + duration);
+  const gain = a.createGain();
+  gain.gain.setValueAtTime(0.0001, t);
+  gain.gain.exponentialRampToValueAtTime(kind === "cut" ? 0.11 : 0.07, t + 0.06);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + duration);
+  const pan = a.createStereoPanner();
+  pan.pan.setValueAtTime(kind === "lock" ? 0 : -0.65, t);
+  pan.pan.linearRampToValueAtTime(kind === "lock" ? 0 : 0.65, t + duration);
+  source.connect(filter).connect(gain).connect(pan).connect(a.destination);
+  source.start(t);
+  source.stop(t + duration);
+  source.onended = () => { source.disconnect(); filter.disconnect(); gain.disconnect(); pan.disconnect(); };
+  return () => { try { source.stop(); } catch { /* already ended */ } };
+}
+
 export function getMusic() {
   if (typeof window === "undefined") return null;
   if (!bgm) {

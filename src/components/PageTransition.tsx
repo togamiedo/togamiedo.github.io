@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useRouter } from "@tanstack/react-router";
-import { playSlash } from "@/lib/sfx";
+import { playMotionCue } from "@/lib/sfx";
 
 const PAGES: Record<string, { jp: string; en: string; cut: number }> = {
   "/": { jp: "序", en: "Introduction", cut: -12 },
@@ -23,6 +23,11 @@ export function PageTransition() {
   const [run, setRun] = useState<Run | null>(null);
   const busy = useRef(false);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const sounds = useRef<(() => void)[]>([]);
+
+  useEffect(() => {
+    if (run?.phase === "reveal") sounds.current.push(playMotionCue("reveal"));
+  }, [run?.phase]);
 
   useEffect(() => {
     let alive = true;
@@ -38,7 +43,13 @@ export function PageTransition() {
       if (busy.current) return;
       busy.current = true;
       setRun({ key: Date.now(), to: url.pathname, phase: "cover" });
-      if (!reduced) later(() => playSlash(0.16), 780);
+      sounds.current.forEach((stop) => stop());
+      sounds.current = [playMotionCue("ink")];
+      if (!reduced) {
+        later(() => sounds.current.push(playMotionCue("lock")), 670);
+        later(() => sounds.current.push(playMotionCue("cut")), 780);
+        later(() => sounds.current.push(playMotionCue("cut")), 900);
+      }
       later(() => {
         void (async () => {
           try {
@@ -57,6 +68,8 @@ export function PageTransition() {
       document.removeEventListener("click", onClick, true);
       timers.current.forEach(clearTimeout);
       timers.current = [];
+      sounds.current.forEach((stop) => stop());
+      sounds.current = [];
       busy.current = false;
     };
   }, [router, reduced]);
