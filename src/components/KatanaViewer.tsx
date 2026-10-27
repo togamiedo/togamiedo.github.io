@@ -4,6 +4,7 @@ import { Center, Environment, Lightformer, OrbitControls, useGLTF, useProgress, 
 import * as THREE from "three";
 import sheathedAsset from "@/assets/katana-sheathed.glb.asset.json";
 import bladeAsset from "@/assets/katana-blade-v2.glb.asset.json";
+import { playSlash } from "@/lib/sfx";
 
 type State = "intro" | "sheathed" | "drawn";
 
@@ -50,11 +51,9 @@ function Katanas({ state, flash }: { state: State; flash: React.MutableRefObject
     v.sOp += ((drawn ? 0 : 1) - v.sOp) * k(3);
     v.bx += ((drawn ? 0 : 2.5) - v.bx) * k(drawn ? 5 : 3);
     v.bOp += ((drawn ? 1 : 0) - v.bOp) * k(drawn ? 4 : 6);
-    v.shake = Math.max(0, v.shake - dt);
-    const jitter = state === "sheathed" && Math.abs(v.sx) < 0.05 ? Math.sin(performance.now() / 30) * 0.004 : 0;
     if (gS.current) {
-      gS.current.position.x = v.sx + jitter;
-      gS.current.rotation.z = (v.sx - 0) * 0.05;
+      gS.current.position.x = v.sx;
+      gS.current.rotation.z = v.sx * 0.05;
     }
     if (gB.current) gB.current.position.x = v.bx;
     sheathed.setOpacity(v.sOp);
@@ -103,6 +102,7 @@ export default function KatanaViewer() {
 
   const toggle = () => {
     flash.current = 1;
+    playSlash(0.5);
     setState((s) => (s === "drawn" ? "sheathed" : "drawn"));
   };
 
@@ -133,6 +133,9 @@ export default function KatanaViewer() {
         </button>
         <p className="font-display text-[10px] uppercase tracking-[0.4em] text-muted-foreground">Drag to turn the blade</p>
       </div>
+      <p className="pointer-events-none absolute bottom-4 right-5 font-body text-sm italic text-paper/50">
+        Model by @rosepath on Roblox
+      </p>
     </div>
   );
 }
