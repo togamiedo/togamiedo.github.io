@@ -3,14 +3,15 @@ import { useRef, type ReactNode } from "react";
 
 const LEFT = ["愚か者", "偽善者", "猪武者"];
 const RIGHT = ["鈍才", "田舎侍", "声だけの男"];
-const BANGS = [
+type Bang = { top?: string; left?: string; right?: string; bottom?: string; mark: string; rot: number; d: number };
+const BANGS: Bang[] = [
   { top: "-5%", left: "3%", mark: "!!", rot: -13, d: 0.15 },
   { top: "-7%", right: "2%", mark: "!!!", rot: 11, d: 0.55 },
   { top: "38%", left: "-3%", mark: "!", rot: -7, d: 1.0 },
   { top: "46%", right: "-4%", mark: "!!", rot: 15, d: 1.45 },
   { bottom: "-7%", left: "10%", mark: "!!", rot: 8, d: 1.9 },
   { bottom: "-9%", right: "9%", mark: "!", rot: -11, d: 2.35 },
-] as const;
+];
 
 /** Togami's jeers shriek in from both flanks while the whole passage trembles. */
 export function InsultStorm({ children }: { children: ReactNode }) {
