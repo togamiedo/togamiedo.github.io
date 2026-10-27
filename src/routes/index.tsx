@@ -139,7 +139,7 @@ function Index() {
           <p className="font-brush text-4xl text-primary">棘ある薔薇</p>
           <p className="mt-3 text-2xl italic">Every rose he keeps was paid for in blood. Most of it wasn't his.</p>
           <Link to="/story" className="mt-6 inline-block font-display text-sm uppercase tracking-[0.3em] text-gold underline-offset-8 hover:underline">
-            Begin with the root →
+            Chapter 1 →
           </Link>
         </div>
       </section>
