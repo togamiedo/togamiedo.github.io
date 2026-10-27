@@ -11,6 +11,8 @@ export const Route = createFileRoute("/story")({
       { name: "description", content: "Three chapters of Togami Genshiro: the root, the bloom and the thorn. A tale of law, roses and blood in Kyoto." },
       { property: "og:title", content: "The Story of Togami Genshiro · 物語" },
       { property: "og:description", content: "The root, the bloom and the thorn. Law, roses and blood in Kyoto." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: StoryPage,

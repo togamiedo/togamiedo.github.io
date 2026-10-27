@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Center, Environment, Lightformer, OrbitControls, useGLTF, useProgress, Html } from "@react-three/drei";
+import { Center, Environment, Lightformer, OrbitControls, useGLTF, useProgress } from "@react-three/drei";
 import type { OrbitControls as OrbitImpl } from "three-stdlib";
 import * as THREE from "three";
 import sheathedAsset from "@/assets/katana-sheathed.glb.asset.json";
@@ -168,14 +168,13 @@ function CamRig({ settle }: { settle: React.MutableRefObject<number> }) {
 }
 
 function Loader() {
-  const { progress } = useProgress();
+  const { progress, active } = useProgress();
+  if (!active) return null;
   return (
-    <Html center>
-      <div className="text-center">
+      <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
         <p className="font-brush animate-pulse text-5xl text-primary">刀</p>
         <p className="mt-2 font-display text-xs tracking-[0.4em] text-gold">{Math.round(progress)}%</p>
       </div>
-    </Html>
   );
 }
 
@@ -215,12 +214,13 @@ export default function KatanaViewer() {
           <Lightformer intensity={1.5} color="#c0392b" position={[-4, 0, 0]} rotation-y={Math.PI / 2} scale={[10, 2, 1]} />
           <Lightformer intensity={0.8} color="#e8d5b0" position={[4, 0, -2]} rotation-y={-Math.PI / 2} scale={[10, 1, 1]} />
         </Environment>
-        <Suspense fallback={<Loader />}>
+        <Suspense fallback={null}>
           <Katanas state={state} flash={flash} onHover={onHover} onRose={() => scrollToId("rose-origin", true)} />
           <CamRig settle={settle} />
         </Suspense>
         <OrbitControls makeDefault enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.8} minPolarAngle={Math.PI / 3} maxPolarAngle={(2 * Math.PI) / 3} />
       </Canvas>
+      <Loader />
 
       <div className="absolute inset-x-0 bottom-14 flex flex-col items-center gap-3">
         <button

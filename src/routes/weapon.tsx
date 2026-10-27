@@ -14,6 +14,8 @@ export const Route = createFileRoute("/weapon")({
       { name: "description", content: "Togami Genshiro's katana in 3D: a family heirloom reforged with a blood-red rose tsuba and an illegal crimson saya." },
       { property: "og:title", content: "The Rose Blade · Togami's Katana" },
       { property: "og:description", content: "A family heirloom reforged with a rose tsuba and an illegal crimson saya." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: WeaponPage,
