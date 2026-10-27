@@ -1,4 +1,5 @@
 # Tasks
+- [ ] Remove Story rose, crushed-petal and coin animations; verify slow, staggered weapon blooms outside the text.
 - [x] Add Togami's face to the Discord share preview for https://togamigenshiro.github.io/.
 - [x] Bloom many roses around the first-flower paragraph, then fade them away.
 - [x] Add prepared, reading-triggered blood, rose, coin and crushed-petal moments to the main story.
