@@ -1,192 +1,130 @@
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useRouter } from "@tanstack/react-router";
 import { playSlash } from "@/lib/sfx";
 
-const PAGES: Record<string, { jp: string; en: string }> = {
-  "/": { jp: "序", en: "Introduction" },
-  "/story": { jp: "物語", en: "Story" },
-  "/weapon": { jp: "刀", en: "Weapon" },
+const PAGES: Record<string, { jp: string; en: string; cut: number }> = {
+  "/": { jp: "序", en: "Introduction", cut: -12 },
+  "/story": { jp: "物語", en: "Story", cut: 12 },
+  "/weapon": { jp: "刀", en: "Weapon", cut: -22 },
 };
-
-const STRIPS = 6;
 const EASE = [0.76, 0, 0.24, 1] as const;
-type Run = { key: number; to: string; x: number; y: number; phase: "cover" | "reveal" };
+const SLICES = [
+  { clip: "polygon(0 0,100% 0,100% 30%,0 55%)", x: "-12%", y: "-110%", rotate: -8 },
+  { clip: "polygon(0 55%,100% 30%,100% 62%,0 87%)", x: "110%", y: "-12%", rotate: 6 },
+  { clip: "polygon(0 87%,100% 62%,100% 100%,0 100%)", x: "-12%", y: "110%", rotate: -6 },
+];
+type Run = { key: number; to: string; phase: "cover" | "reveal" };
 
-/**
- * Tab change, in two acts. Cover: blood ink blooms out from where you clicked,
- * the destination kanji is brushed on stroke by stroke, a blade flashes across.
- * Reveal: the screen splits into shoji panels that slide away one after another.
- * Navigation happens hidden under the ink, so the old page never pops.
- */
+/** One opaque cover hides navigation; three cut fragments carry the same artwork away. */
 export function PageTransition() {
   const router = useRouter();
+  const reduced = useReducedMotion();
   const [run, setRun] = useState<Run | null>(null);
   const busy = useRef(false);
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   useEffect(() => {
+    let alive = true;
+    const later = (fn: () => void, ms: number) => timers.current.push(setTimeout(fn, ms));
     const onClick = (e: MouseEvent) => {
-      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
-      const a = (e.target as HTMLElement).closest("a");
-      if (!a || a.target === "_blank") return;
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const a = e.target instanceof Element ? e.target.closest("a") : null;
+      if (!a || a.target === "_blank" || a.hasAttribute("download")) return;
       const url = new URL(a.href, location.href);
       if (url.origin !== location.origin || url.pathname === location.pathname || !(url.pathname in PAGES)) return;
       e.preventDefault();
       e.stopPropagation();
       if (busy.current) return;
       busy.current = true;
-      const to = url.pathname;
-      setRun({ key: Date.now(), to, x: e.clientX, y: e.clientY, phase: "cover" });
-      setTimeout(() => playSlash(0.22), 650);
-      setTimeout(async () => {
-        await router.navigate({ to });
-        window.scrollTo(0, 0);
-        setRun((r) => (r ? { ...r, phase: "reveal" } : r));
-      }, 1050);
-      setTimeout(() => {
-        setRun(null);
-        busy.current = false;
-      }, 2200);
+      setRun({ key: Date.now(), to: url.pathname, phase: "cover" });
+      if (!reduced) later(() => playSlash(0.16), 780);
+      later(() => {
+        void (async () => {
+          try {
+            await router.navigate({ to: url.pathname, hash: url.hash.slice(1) });
+            if (!alive) return;
+            if (!url.hash) window.scrollTo({ top: 0, behavior: "instant" });
+          } finally {
+            if (alive) setRun((r) => r ? { ...r, phase: "reveal" } : r);
+          }
+        })().catch(() => {});
+      }, reduced ? 100 : 1150);
     };
     document.addEventListener("click", onClick, true);
-    return () => document.removeEventListener("click", onClick, true);
-  }, [router]);
+    return () => {
+      alive = false;
+      document.removeEventListener("click", onClick, true);
+      timers.current.forEach(clearTimeout);
+      timers.current = [];
+      busy.current = false;
+    };
+  }, [router, reduced]);
 
   const page = run ? PAGES[run.to] : null;
   const reveal = run?.phase === "reveal";
+  const finish = () => { setRun(null); busy.current = false; };
 
   return (
     <AnimatePresence>
       {run && page && (
-        <motion.div key={run.key} className="fixed inset-0 z-[90] overflow-hidden" exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
-          {/* Shoji strips: carry the ink while covering, slide away one by one on reveal */}
-          {Array.from({ length: STRIPS }).map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute top-0 h-full bg-lacquer"
-              style={{ left: `${(i * 100) / STRIPS}%`, width: `${100 / STRIPS + 0.2}%` }}
-              initial={{ clipPath: `circle(0% at ${run.x - (i * innerWidth) / STRIPS}px ${run.y}px)` }}
-              animate={
-                reveal
-                  ? { y: i % 2 ? "105%" : "-105%", clipPath: "circle(150% at 50% 50%)" }
-                  : { clipPath: `circle(150% at ${run.x - (i * innerWidth) / STRIPS}px ${run.y}px)` }
-              }
-              transition={reveal ? { duration: 0.75, delay: 0.05 * Math.abs(i - (STRIPS - 1) / 2) * 2, ease: EASE } : { duration: 0.75, ease: EASE }}
-            >
+        <motion.div key={run.key} data-page-transition className="fixed inset-0 z-[90] overflow-hidden" aria-hidden="true"
+          initial={{ opacity: reduced ? 0 : 1 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.12 }}>
+          {/* A fast diagonal ink shutter, not a slow circle leaving the old page exposed. */}
+          <motion.div className="absolute inset-0 bg-lacquer"
+            initial={{ clipPath: reduced ? "inset(0)" : "polygon(-30% 0,0 0,-30% 100%,-60% 100%)" }}
+            animate={{ clipPath: "polygon(0 0,130% 0,100% 100%,-30% 100%)", opacity: reveal ? 0 : 1 }}
+            transition={{ clipPath: { duration: 0.38, ease: EASE }, opacity: { duration: 0, delay: reduced ? 0 : 0.06 } }} />
+
+          {SLICES.map((slice, index) => (
+            <motion.div key={index} className="absolute inset-0 bg-lacquer" style={{ clipPath: slice.clip }}
+              initial={{ opacity: 0 }}
+              animate={reveal && !reduced ? { opacity: 1, x: slice.x, y: slice.y, rotate: slice.rotate } : { opacity: reveal ? 0 : 1, x: 0, y: 0, rotate: 0 }}
+              transition={reveal ? { duration: reduced ? 0.15 : 0.92, delay: reduced ? 0 : index * 0.075, ease: EASE } : { duration: 0.06, delay: 0.36 }}
+              onAnimationComplete={() => { if (reveal && index === 2) finish(); }}>
               <div className="grain absolute inset-0" />
-              <div className="absolute inset-y-0 right-0 w-px bg-gold/15" />
+              {/* Repeated composition aligns exactly across the three cut pieces. */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <motion.svg viewBox="0 0 500 500" className="absolute h-[min(76vh,640px)] w-[min(90vw,640px)] text-primary" fill="none"
+                  initial={{ rotate: -24, scale: 0.8, opacity: 0 }} animate={{ rotate: 0, scale: 1, opacity: 0.6 }} transition={{ delay: 0.3, duration: 0.8, ease: EASE }}>
+                  {[0, 60, 120, 180, 240, 300].map((angle) => (
+                    <motion.path key={angle} d="M250 250 C110 250 105 92 235 70 C385 45 440 245 250 250 C285 170 210 138 183 206"
+                      transform={`rotate(${angle} 250 250)`} stroke="currentColor" strokeWidth="1.2"
+                      initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ delay: 0.33, duration: 0.65 }} />
+                  ))}
+                  <circle cx="250" cy="250" r="222" stroke="currentColor" strokeDasharray="2 24" />
+                </motion.svg>
+                <motion.div className="relative flex flex-col items-center" initial={{ y: 22, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.38, duration: 0.4 }}>
+                  <motion.p className="font-brush text-[7rem] leading-none text-paper transition-kanji sm:text-[10rem] md:text-[13rem]"
+                    initial={{ clipPath: "inset(0 0 100% 0)" }} animate={{ clipPath: "inset(0 0 0% 0)" }} transition={{ delay: 0.4, duration: 0.4, ease: EASE }}>{page.jp}</motion.p>
+                  <motion.span className="absolute -right-5 -top-7 flex h-11 w-11 items-center justify-center border-2 border-primary font-brush text-xl text-primary"
+                    initial={{ scale: 2, rotate: -28, opacity: 0 }} animate={{ scale: 1, rotate: -9, opacity: 1 }} transition={{ delay: 0.67, duration: 0.2 }}>印</motion.span>
+                  <p className="mt-7 font-display text-sm uppercase text-gold">{page.en}</p>
+                  <motion.div className="mt-5 h-px w-16 bg-gold/60" initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ delay: 0.6, duration: 0.35 }} />
+                </motion.div>
+              </div>
+              <div className="absolute inset-5 border border-gold/15 md:inset-10" />
             </motion.div>
           ))}
 
-          {/* Blood bloom chasing the ink */}
-          {!reveal && (
-            <motion.div
-              className="absolute rounded-full bg-primary/25 blur-3xl"
-              style={{ left: run.x, top: run.y, x: "-50%", y: "-50%" }}
-              initial={{ width: 0, height: 0, opacity: 0.9 }}
-              animate={{ width: 1400, height: 1400, opacity: 0 }}
-              transition={{ duration: 1.1, ease: "easeOut" }}
-            />
+          {!reduced && (
+            <>
+              {/* The cutting edge sweeps across, leaving two fine heated seams. */}
+              {[page.cut, page.cut + 32].map((angle, i) => (
+                <motion.div key={angle} className="pointer-events-none absolute left-1/2 top-1/2 h-px w-[170vmax] bg-paper transition-blade"
+                  style={{ rotate: angle, x: "-50%", y: i ? "13vh" : "-8vh" }}
+                  initial={{ scaleX: 0, opacity: 0 }} animate={{ scaleX: [0, 1, 1], opacity: [0, 1, 0] }}
+                  transition={{ delay: 0.78 + i * 0.12, duration: 0.42, times: [0, 0.35, 1], ease: "easeOut" }} />
+              ))}
+              {Array.from({ length: 22 }, (_, i) => (
+                <motion.span key={i} className={`pointer-events-none absolute left-1/2 top-1/2 block ${i % 4 === 0 ? "bg-gold" : "bg-primary"}`}
+                  style={{ width: 7 + i % 5 * 3, height: 5 + i % 3 * 3, borderRadius: "85% 5% 85% 5%" }}
+                  initial={{ x: -120, y: 0, scale: 0, opacity: 0 }}
+                  animate={{ x: [-120, Math.cos(i * 2.4) * (170 + i * 14)], y: [0, Math.sin(i * 2.4) * (110 + i * 9) + 150], rotate: i * 51, scale: [0, 1, 0.5], opacity: [0, 1, 0] }}
+                  transition={{ delay: 0.82 + i % 3 * 0.04, duration: 1.05, ease: "easeOut" }} />
+              ))}
+            </>
           )}
-
-          {/* Kanji brushed on, then sliced */}
-          <motion.div
-            className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center"
-            animate={reveal ? { opacity: 0, scale: 1.15, filter: "blur(10px)" } : { opacity: 1, x: [0, 0, -8, 7, -4, 0] }}
-            transition={reveal ? { duration: 0.45 } : { duration: 0.95, times: [0, 0.7, 0.76, 0.84, 0.92, 1] }}
-          >
-            <div className="relative">
-              <motion.p
-                className="font-brush text-[9rem] leading-none text-paper glow-red md:text-[13rem]"
-                initial={{ clipPath: "inset(0 0 100% 0)", filter: "blur(6px)" }}
-                animate={{ clipPath: "inset(0 0 0% 0)", filter: "blur(0px)" }}
-                transition={{ delay: 0.25, duration: 0.55, ease: EASE }}
-              >
-                {page.jp}
-              </motion.p>
-              <motion.span
-                className="absolute -right-10 -top-4 flex h-12 w-12 items-center justify-center border-2 border-primary font-brush text-xl text-primary"
-                initial={{ scale: 2.5, opacity: 0, rotate: -25 }}
-                animate={{ scale: 1, opacity: 1, rotate: -8 }}
-                transition={{ delay: 0.75, duration: 0.25, ease: "easeIn" }}
-              >
-                印
-              </motion.span>
-            </div>
-            <motion.p
-              className="mt-6 font-display text-xs uppercase text-gold"
-              initial={{ opacity: 0, letterSpacing: "1.4em" }}
-              animate={{ opacity: 1, letterSpacing: "0.6em" }}
-              transition={{ delay: 0.4, duration: 0.7 }}
-            >
-              {page.en}
-            </motion.p>
-          </motion.div>
-
-          {/* Gold seams drawn down each shoji frame */}
-          {!reveal &&
-            Array.from({ length: STRIPS - 1 }).map((_, i) => (
-              <motion.div
-                key={`g${i}`}
-                className="pointer-events-none absolute top-0 h-full w-px origin-top bg-gradient-to-b from-transparent via-gold/50 to-transparent"
-                style={{ left: `${((i + 1) * 100) / STRIPS}%` }}
-                initial={{ scaleY: 0 }}
-                animate={{ scaleY: 1 }}
-                transition={{ delay: 0.3 + i * 0.05, duration: 0.6, ease: EASE }}
-              />
-            ))}
-
-          {/* Ink splatter flung from the brush */}
-          {!reveal &&
-            Array.from({ length: 9 }).map((_, i) => {
-              const ang = i * 0.7 + 0.4;
-              const d = 150 + (i % 3) * 60;
-              return (
-                <motion.span
-                  key={`i${i}`}
-                  className="pointer-events-none absolute left-1/2 top-1/2 block rounded-full bg-primary"
-                  style={{ width: 6 + (i % 4) * 5, height: 6 + (i % 4) * 5, marginLeft: Math.cos(ang) * d, marginTop: Math.sin(ang) * d * 0.7 }}
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: [0, 1.4, 1], opacity: [0, 1, 0.85] }}
-                  transition={{ delay: 0.45 + i * 0.03, duration: 0.35, ease: "backOut" }}
-                />
-              );
-            })}
-
-          {/* Second, crossing cut */}
-          <motion.div
-            className="pointer-events-none absolute left-1/2 top-1/2 h-[2px] w-[180vw] bg-gradient-to-r from-transparent via-primary to-transparent"
-            style={{ x: "-50%", y: "-50%", rotate: 14 }}
-            initial={{ scaleX: 0, opacity: 0 }}
-            animate={{ scaleX: [0, 1, 1], opacity: [0, 1, 0] }}
-            transition={{ delay: 0.82, duration: 0.45, times: [0, 0.4, 1], ease: "easeOut" }}
-          />
-
-          {/* Blade flash */}
-          <motion.div
-            className="pointer-events-none absolute left-1/2 top-1/2 h-[2px] w-[180vw] bg-gradient-to-r from-transparent via-paper to-transparent shadow-[0_0_30px_6px_var(--primary)]"
-            style={{ x: "-50%", y: "-50%", rotate: -18 }}
-            initial={{ scaleX: 0, opacity: 0 }}
-            animate={{ scaleX: [0, 1, 1], opacity: [0, 1, 0] }}
-            transition={{ delay: 0.65, duration: 0.5, times: [0, 0.4, 1], ease: "easeOut" }}
-          />
-
-          {/* Petals thrown by the cut */}
-          {Array.from({ length: 14 }).map((_, i) => (
-            <motion.span
-              key={`p${i}`}
-              className="pointer-events-none absolute left-1/2 top-1/2 block bg-primary"
-              style={{ width: 12, height: 9, borderRadius: "80% 0 80% 0" }}
-              initial={{ x: 0, y: 0, opacity: 0, rotate: 0 }}
-              animate={{
-                x: Math.cos((i / 14) * Math.PI * 2) * (260 + (i % 4) * 90),
-                y: Math.sin((i / 14) * Math.PI * 2) * (180 + (i % 3) * 70) + 120,
-                opacity: [0, 1, 0],
-                rotate: 360 + i * 40,
-              }}
-              transition={{ delay: 0.7, duration: 1.3, ease: "easeOut" }}
-            />
-          ))}
         </motion.div>
       )}
     </AnimatePresence>
