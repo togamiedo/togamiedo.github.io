@@ -2,16 +2,13 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import portrait from "@/assets/togami-notice.png.asset.json";
 import { Petals } from "./Petals";
+import { playCrack, playSlash } from "@/lib/sfx";
 
 type Phase = "idle" | "breaking" | "gone";
 
 /** Opening scene: a bounty notice sealed with a wax rose. Click to cut it open. */
 export function IntroGate() {
   const [phase, setPhase] = useState<Phase>("idle");
-
-  useEffect(() => {
-    if (sessionStorage.getItem("togami-seal") === "broken") setPhase("gone");
-  }, []);
 
   useEffect(() => {
     document.body.style.overflow = phase === "gone" ? "" : "hidden";
@@ -23,7 +20,8 @@ export function IntroGate() {
   const breakSeal = () => {
     if (phase !== "idle") return;
     setPhase("breaking");
-    sessionStorage.setItem("togami-seal", "broken");
+    playCrack();
+    setTimeout(() => playSlash(), 330);
     setTimeout(() => setPhase("gone"), 2300);
   };
 
@@ -66,15 +64,29 @@ export function IntroGate() {
 
             {/* wax rose seal */}
             <motion.div
-              className="absolute left-1/2 top-1/2 z-10 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-primary shadow-2xl ring-4 ring-blood"
+              className="absolute left-1/2 top-1/2 z-10 h-24 w-24 -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_6px_10px_rgba(0,0,0,0.6)]"
               animate={
                 breaking
-                  ? { scale: [1, 1.25, 0], rotate: [0, -20, 90], opacity: [1, 1, 0] }
-                  : { scale: [1, 1.06, 1] }
+                  ? { scale: [1, 1.2, 0], rotate: [0, -15, 60], opacity: [1, 1, 0] }
+                  : { scale: [1, 1.04, 1] }
               }
-              transition={breaking ? { duration: 0.5 } : { duration: 2, repeat: Infinity }}
+              transition={breaking ? { duration: 0.5 } : { duration: 2.4, repeat: Infinity }}
             >
-              <span className="font-brush text-3xl text-paper">薔</span>
+              <svg viewBox="0 0 100 100" className="h-full w-full">
+                <defs>
+                  <radialGradient id="wax" cx="38%" cy="32%" r="75%">
+                    <stop offset="0%" stopColor="var(--primary)" />
+                    <stop offset="100%" stopColor="var(--blood)" />
+                  </radialGradient>
+                </defs>
+                <path
+                  d="M50 4 C62 6 70 2 78 10 C88 18 96 28 95 42 C97 55 98 66 90 76 C82 88 70 96 56 95 C42 98 30 96 20 88 C9 80 3 66 5 52 C3 38 8 24 18 15 C28 6 38 3 50 4Z"
+                  fill="url(#wax)"
+                />
+                <circle cx="50" cy="50" r="31" fill="none" stroke="var(--blood)" strokeWidth="2.5" opacity="0.8" />
+                <circle cx="50" cy="50" r="27" fill="none" stroke="var(--paper)" strokeWidth="0.6" opacity="0.25" />
+                <text x="50" y="62" textAnchor="middle" fontSize="34" fill="var(--paper)" opacity="0.85" style={{ fontFamily: "var(--font-brush)" }}>薔</text>
+              </svg>
             </motion.div>
 
             {/* the slash */}
