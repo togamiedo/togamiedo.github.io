@@ -23,4 +23,4 @@
 - StudyBook is attached via the typed study passage ID, occupies the desktop right margin and flows below on smaller screens to avoid covering story prose.
 - OrchidStomp is attached by passage ID and coordinates one foot impact with local torn-petal trajectories after the sentence reveal; reduced motion keeps a static orchid without falling overlays.
 - BloodRoses owns a single delayed impact trigger for the lord passage, sharing it with ExecutionSplash and persistent petal stains/sway; its preparation and pending trigger are cancelled safely on unmount.
-- StoryObjects renders reading-triggered katana and fan scenes beneath their typed passage IDs; SVG fan ribs rotate in local pivot coordinates to keep the hinge aligned at every viewport size.
+- StoryObjects renders reading-triggered katana and fan scenes beneath their typed passage IDs; the katana uses a staged release/pause/draw/settle with opaque scabbard occlusion and local steel highlights, while SVG fan ribs rotate in local pivot coordinates to keep the hinge aligned at every viewport size. Both scenes remain fully drawn under reduced motion.
