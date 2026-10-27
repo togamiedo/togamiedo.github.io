@@ -6,6 +6,7 @@ import type { Block } from "@/lib/story";
 import { playSplash } from "@/lib/sfx";
 import { PassageMoment } from "./PassageMoment";
 import { StudyBook } from "./StudyBook";
+import { DojoScene } from "./DojoScene";
 import { OrchidStomp } from "./OrchidStomp";
 import { BloodRoses } from "./BloodRoses";
 import { KatanaDraw, SilkFan } from "./StoryObjects";
