@@ -4,7 +4,7 @@
 // writes it as a real HTML file into the static output folder
 // (.output/public): "/" -> index.html, "/story" -> story/index.html, ...
 // That folder is then uploaded to GitHub Pages as-is — no server needed.
-import { defineConfig } from "vite-tanstack-config";
+import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
   tanstackStart: {
