@@ -8,6 +8,7 @@ import { PassageMoment } from "./PassageMoment";
 import { StudyBook } from "./StudyBook";
 import { OrchidStomp } from "./OrchidStomp";
 import { BloodRoses } from "./BloodRoses";
+import { KatanaDraw, SilkFan } from "./StoryObjects";
 
 type Part = { t: "plain" | "bold" | "red" | "bleed" | "rose" | "chiyo"; s: string };
 
@@ -239,7 +240,7 @@ export function StoryFlow({ blocks }: { blocks: Block[] }) {
           const thug = b.who === "thug";
           return (
             <Ink key={i} className={`my-10 flex ${b.side === "right" ? "justify-end text-right" : "justify-start"}`}>
-              <p
+              <div className="min-w-0"><p
                 className={
                   thug
                     ? "font-thug text-2xl tracking-wide text-paper md:text-3xl"
@@ -251,7 +252,7 @@ export function StoryFlow({ blocks }: { blocks: Block[] }) {
                 {emoji && <span className="mr-3 inline-block align-middle text-xl md:text-2xl">{emoji}</span>}
                 「{b.text}」
                 {b.note && <span className="mt-2 block font-body text-base font-normal italic text-muted-foreground">{b.note}</span>}
-              </p>
+              </p>{b.id === "thug-draw" && <KatanaDraw />}</div>
             </Ink>
           );
         }
@@ -345,6 +346,10 @@ export function StoryFlow({ blocks }: { blocks: Block[] }) {
         }
 
         if (look === "whisper") {
+          if (b.id === "silk-fan") return <Ink key={i} className="mx-auto my-14 max-w-lg">
+            <p className="text-center text-lg italic text-muted-foreground md:text-xl"><Rich text={b.text} /></p>
+            <SilkFan />
+          </Ink>;
           return (
             <motion.p
               key={i}

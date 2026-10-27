@@ -8,7 +8,7 @@ export type Speaker = "togami" | "thug" | "chiyo";
 export type Block =
   | { kind: "chapter"; jp: string; en: string; id?: string }
   | { kind: "p"; text: string; fx?: FxKind; look?: Look; id?: string }
-  | { kind: "quote"; text: string; note?: string; side?: "left" | "right"; who?: Speaker }
+  | { kind: "quote"; text: string; note?: string; side?: "left" | "right"; who?: Speaker; id?: string }
   | { kind: "beat"; text: string; fx?: FxKind };
 
 export const story: Block[] = [
@@ -82,7 +82,7 @@ export const story: Block[] = [
     kind: "p",
     text: "To fund his extravagant new life, he took his *first* private contract. While the gang relied on messy brawls, *Togami* cornered a local gang leader alone in an alleyway.",
   },
-  { kind: "quote", text: "A magistrate's exiled son?", note: "The thug sneered, drawing his blade.", side: "right", who: "thug" },
+  { kind: "quote", id: "thug-draw", text: "A magistrate's exiled son?", note: "The thug sneered, drawing his blade.", side: "right", who: "thug" },
   { kind: "quote", text: "Bold assumption.", side: "left", who: "togami" },
   {
     kind: "p",
@@ -109,6 +109,7 @@ export const story: Block[] = [
   { kind: "quote", text: "You are my greatest investment, Togami.", side: "right", who: "chiyo" },
   {
     kind: "p",
+    id: "silk-fan",
     look: "whisper",
     text: "She whispered it one evening, tracing the scars on his chest with the edge of a silk fan.",
   },
