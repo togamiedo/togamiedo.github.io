@@ -51,15 +51,27 @@ export function StoryFlow({ blocks }: { blocks: Block[] }) {
     <div className="mx-auto max-w-3xl px-6">
       {blocks.map((b, i) => {
         if (b.kind === "chapter") return <ChapterTitle key={i} jp={b.jp} en={b.en} />;
-        if (b.kind === "quote")
+        if (b.kind === "quote") {
+          const emoji = b.who === "togami" ? "🌹" : b.who === "chiyo" ? "🌸" : b.who === "thug" ? "🗡️" : null;
+          const thug = b.who === "thug";
           return (
             <Ink key={i} className={`my-10 flex ${b.side === "right" ? "justify-end text-right" : "justify-start"}`}>
-              <p className="font-display text-2xl font-bold text-primary glow-red md:text-3xl">
+              <p
+                className={
+                  thug
+                    ? "font-thug text-2xl tracking-wide text-paper md:text-3xl"
+                    : b.who === "chiyo"
+                      ? "font-display text-2xl font-bold text-sakura md:text-3xl"
+                      : "font-display text-2xl font-bold text-primary glow-red md:text-3xl"
+                }
+              >
+                {emoji && <span className="mr-3 inline-block align-middle text-xl md:text-2xl">{emoji}</span>}
                 「{b.text}」
                 {b.note && <span className="mt-2 block font-body text-base font-normal italic text-muted-foreground">{b.note}</span>}
               </p>
             </Ink>
           );
+        }
         if (b.kind === "beat")
           return (
             <Ink key={i} className="my-12 flex items-center justify-center gap-6">

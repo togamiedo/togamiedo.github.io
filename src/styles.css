@@ -36,6 +36,7 @@
   --font-display: "Shippori Mincho B1", "Cormorant Garamond", serif;
   --font-body: "Cormorant Garamond", Georgia, serif;
   --font-brush: "Yuji Syuku", "Shippori Mincho B1", serif;
+  --font-thug: "Dela Gothic One", Impact, sans-serif;
 }
 
 :root {
@@ -127,4 +128,8 @@
 }
 @utility animate-flicker {
   animation: flicker 2.6s infinite ease-in-out;
+}
+
+@utility text-sakura {
+  color: oklch(0.82 0.08 5);
 }

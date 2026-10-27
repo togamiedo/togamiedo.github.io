@@ -8,9 +8,9 @@ export const Route = createFileRoute("/story")({
   head: () => ({
     meta: [
       { title: "The Story of Togami Genshiro · 物語" },
-      { name: "description", content: "Three chapters of Togami Genshiro: the root, the bloom and the thorn. A tale of law, roses and blood in Edo Kyoto." },
+      { name: "description", content: "Three chapters of Togami Genshiro: the root, the bloom and the thorn. A tale of law, roses and blood in Kyoto." },
       { property: "og:title", content: "The Story of Togami Genshiro · 物語" },
-      { property: "og:description", content: "The root, the bloom and the thorn. Law, roses and blood in Edo Kyoto." },
+      { property: "og:description", content: "The root, the bloom and the thorn. Law, roses and blood in Kyoto." },
     ],
   }),
   component: StoryPage,
