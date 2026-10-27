@@ -7,6 +7,7 @@ import { playSplash } from "@/lib/sfx";
 import { PassageMoment } from "./PassageMoment";
 import { StudyBook } from "./StudyBook";
 import { OrchidStomp } from "./OrchidStomp";
+import { BloodRoses } from "./BloodRoses";
 
 type Part = { t: "plain" | "bold" | "red" | "bleed" | "rose" | "chiyo"; s: string };
 
@@ -263,6 +264,10 @@ export function StoryFlow({ blocks }: { blocks: Block[] }) {
           );
 
         const look = b.look ?? "panel";
+
+        if (b.id === "lord-blood-roses") return <BloodRoses key={i}>
+          <p className="font-body text-xl leading-relaxed text-paper md:text-2xl"><Rich text={b.text.replaceAll("~", "").replaceAll("^", "")} /></p>
+        </BloodRoses>;
 
         if (look === "dropcap") {
           const first = b.text.replace(/^[*{~^#]/, "")[0] ?? "";
