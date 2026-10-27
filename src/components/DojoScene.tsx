@@ -29,36 +29,39 @@ export function DojoScene() {
         </motion.g>
         {/* wall frame + shoji lattice rise */}
         <motion.g {...build(0.55)}>
-          <rect x="58" y="118" width="144" height="124" fill="var(--card)" stroke="var(--lacquer)" strokeWidth="2" />
-          <rect x="104" y="150" width="52" height="90" fill="var(--blood-deep)" opacity="0.55" />
-          <path d="M74 126h112 M74 142h112 M74 250V126 M186 250V126 M104 150h52v90h-52Z M130 150v90" fill="none" stroke="var(--paper)" strokeWidth="1.2" opacity="0.35" />
+          <rect x="58" y="118" width="144" height="124" fill="var(--secondary)" stroke="var(--lacquer)" strokeWidth="2" />
+          <rect x="104" y="150" width="52" height="90" fill="var(--blood-deep)" />
+          <path d="M74 126h112 M74 142h112 M74 250V126 M186 250V126 M104 150h52v90h-52Z M130 150v90 M104 195h52" fill="none" stroke="var(--paper)" strokeWidth="1.4" opacity="0.55" />
+          <rect x="66" y="126" width="30" height="112" fill="var(--paper)" opacity="0.12" />
+          <rect x="164" y="126" width="30" height="112" fill="var(--paper)" opacity="0.12" />
         </motion.g>
         {/* pillars: left, right, and the center beam post settle with a lean */}
         {[
           { x: 62, rot: -2.2, d: 0.8 },
           { x: 178, rot: 2.2, d: 0.95 },
-        ].map(p => <motion.rect key={p.x} x={p.x} y="112" width="13" height="142" rx="1.5" fill="var(--lacquer)" stroke="var(--gold)" strokeWidth="1"
+        ].map(p => <motion.rect key={p.x} x={p.x} y="112" width="13" height="142" rx="1.5" fill="var(--card)" stroke="var(--gold)" strokeWidth="1.2"
           initial={reduced ? false : { opacity: 0, y: 40, rotate: p.rot * 4 }} animate={on ? { opacity: 1, y: 0, rotate: p.rot } : { opacity: 0 }}
           transition={{ duration: reduced ? 0 : 1.1, delay: reduced ? 0 : p.d, ease: [0.34, 1.4, 0.4, 1] }} style={{ transformOrigin: `${p.x + 6}px 254px` }} />)}
         <motion.g {...build(1.1)}>
-          <rect x="58" y="112" width="144" height="12" fill="var(--lacquer)" stroke="var(--gold)" strokeWidth="1" />
-          <rect x="98" y="124" width="64" height="10" fill="var(--primary)" opacity="0.7" stroke="var(--gold)" strokeWidth="0.6" />
-          <text x="130" y="133" textAnchor="middle" fill="var(--gold)" fontSize="8" fontFamily="var(--font-brush)">稽古場</text>
+          <rect x="58" y="112" width="144" height="12" fill="var(--card)" stroke="var(--gold)" strokeWidth="1.2" />
+          <rect x="98" y="124" width="64" height="10" fill="var(--primary)" opacity="0.85" stroke="var(--gold)" strokeWidth="0.6" />
+          <text x="130" y="132.5" textAnchor="middle" fill="var(--paper)" fontSize="8" fontFamily="var(--font-brush)">稽古場</text>
         </motion.g>
         {/* ridge beam drops, then the two roof halves slide together */}
-        <motion.rect x="46" y="86" width="168" height="10" rx="2" fill="var(--gold)" opacity="0.9" {...drop(1.25)} />
-        <motion.path d="M130 62Q84 70 34 100Q60 106 130 96Z" fill="var(--lacquer)" stroke="var(--gold)" strokeWidth="1.2"
+        <motion.rect x="46" y="84" width="168" height="11" rx="2" fill="var(--card)" stroke="var(--gold)" strokeWidth="1.2" {...drop(1.25)} />
+        <motion.path d="M130 54Q76 62 26 102L40 112Q92 78 130 70Z" fill="var(--secondary)" stroke="var(--gold)" strokeWidth="1.4"
           initial={reduced ? false : { opacity: 0, x: -90, rotate: -6 }} animate={on ? { opacity: 1, x: 0, rotate: 0 } : { opacity: 0, x: -90 }}
           transition={{ duration: reduced ? 0 : 1.3, delay: reduced ? 0 : 1.55, ease: [0.16, 1, 0.3, 1] }} style={{ transformOrigin: "130px 96px" }} />
-        <motion.path d="M130 62Q176 70 226 100Q200 106 130 96Z" fill="var(--lacquer)" stroke="var(--gold)" strokeWidth="1.2"
+        <motion.path d="M130 54Q184 62 234 102L220 112Q168 78 130 70Z" fill="var(--secondary)" stroke="var(--gold)" strokeWidth="1.4"
           initial={reduced ? false : { opacity: 0, x: 90, rotate: 6 }} animate={on ? { opacity: 1, x: 0, rotate: 0 } : { opacity: 0, x: 90 }}
           transition={{ duration: reduced ? 0 : 1.3, delay: reduced ? 0 : 1.55, ease: [0.16, 1, 0.3, 1] }} style={{ transformOrigin: "130px 96px" }} />
-        <motion.path d="M40 102Q130 74 220 102" fill="none" stroke="var(--gold)" strokeWidth="2" opacity="0.8"
+        <motion.path d="M130 58Q70 68 30 104 M130 58Q190 68 230 104" fill="none" stroke="var(--gold)" strokeWidth="2" opacity="0.9"
           initial={reduced ? false : { pathLength: 0 }} animate={on ? { pathLength: 1 } : { pathLength: 0 }} transition={{ duration: reduced ? 0 : 1, delay: reduced ? 0 : 2 }} />
+        <motion.path d="M42 112Q130 82 218 112" fill="none" stroke="var(--paper)" strokeWidth="1" opacity="0.35" {...build(2)} />
         {/* noren curtain falls over the entrance */}
         <motion.g {...drop(2.15, -46)}>
           <path d="M102 152h56v34q-9 6-18.5 0q-9.5 6-19 0q-9.5 6-18.5 0Z" fill="var(--primary)" stroke="var(--gold)" strokeWidth="0.8" />
-          <text x="130" y="175" textAnchor="middle" fill="var(--gold)" fontSize="15" fontFamily="var(--font-brush)">道</text>
+          <text x="130" y="175" textAnchor="middle" fill="var(--paper)" fontSize="15" fontFamily="var(--font-brush)">道</text>
         </motion.g>
         {/* signboard rises beside the entrance */}
         <motion.g {...build(2.35)}>
