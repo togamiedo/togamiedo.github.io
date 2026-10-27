@@ -90,21 +90,26 @@ function Katanas({ state, flash, onRose, onHover, reduced }: { state: State; fla
   const t = useRef({ sx: 0, sOp: 1, bx: -2.5, bOp: 0 });
   const light = useRef<THREE.PointLight>(null);
   const elapsed = useRef(2);
-  useEffect(() => { elapsed.current = state === "intro" ? 2 : 0; }, [state]);
+  const amountRef = useRef(0);
+  const startAmount = useRef(0);
+  useEffect(() => {
+    startAmount.current = amountRef.current;
+    elapsed.current = 0;
+  }, [state]);
 
   useFrame((_, raw) => {
     const dt = Math.min(raw, 0.05);
-    const k = (s: number) => 1 - Math.exp(-s * dt);
     const v = t.current;
     const drawn = state === "drawn";
     elapsed.current += dt;
-    const progress = THREE.MathUtils.clamp((elapsed.current - (reduced ? 0 : 0.42)) / (reduced ? 0.15 : 0.68), 0, 1);
-    const eased = progress * progress * (3 - 2 * progress);
-    const amount = drawn ? eased : 1 - eased;
+    const progress = THREE.MathUtils.clamp((elapsed.current - (reduced ? 0 : 0.12)) / (reduced ? 0.15 : 1.35), 0, 1);
+    const eased = progress * progress * progress * (progress * (progress * 6 - 15) + 10);
+    const amount = THREE.MathUtils.lerp(startAmount.current, drawn ? 1 : 0, eased);
+    amountRef.current = amount;
     v.sx = amount * 3.6;
-    v.sOp = 1 - THREE.MathUtils.smoothstep(amount, 0.05, 0.5);
+    v.sOp = 1 - THREE.MathUtils.smoothstep(amount, 0.1, 0.85);
     v.bx = -2.5 * (1 - amount);
-    v.bOp = THREE.MathUtils.smoothstep(amount, 0.3, 0.7);
+    v.bOp = THREE.MathUtils.smoothstep(amount, 0.15, 0.9);
     if (gS.current) {
       gS.current.position.x = v.sx;
       gS.current.position.y = -amount * 0.18;
@@ -112,13 +117,13 @@ function Katanas({ state, flash, onRose, onHover, reduced }: { state: State; fla
     }
     if (gB.current) {
       gB.current.position.x = v.bx;
-      gB.current.position.y = reduced ? 0 : Math.sin(progress * Math.PI) * 0.12;
-      gB.current.rotation.z = reduced ? 0 : Math.sin(progress * Math.PI) * -0.09;
+      gB.current.position.y = reduced ? 0 : Math.sin(progress * Math.PI) ** 2 * 0.06;
+      gB.current.rotation.z = reduced ? 0 : Math.sin(progress * Math.PI) ** 2 * -0.04;
     }
     sheathed.setOpacity(v.sOp);
     blade.setOpacity(v.bOp);
     flash.current = Math.max(0, flash.current - dt * 2.2);
-    if (light.current) light.current.intensity = 2 + (reduced ? 0 : Math.sin(progress * Math.PI) * 10);
+    if (light.current) light.current.intensity = 2 + (reduced ? 0 : Math.sin(progress * Math.PI) ** 2 * 3);
   });
 
   type Ev = { stopPropagation: () => void; point: THREE.Vector3; nativeEvent: PointerEvent | MouseEvent };
@@ -163,7 +168,7 @@ function Katanas({ state, flash, onRose, onHover, reduced }: { state: State; fla
   );
 }
 
-/** While drawing/sheathing, swing the camera to the front so the motion always reads left to right. */
+/** Pause rotation during blade movement without snapping the user's chosen view. */
 function CamRig({ settle, reduced }: { settle: React.MutableRefObject<number>; reduced: boolean }) {
   const controls = useThree((st) => st.controls) as unknown as OrbitImpl | null;
   const camera = useThree((st) => st.camera);
@@ -181,13 +186,6 @@ function CamRig({ settle, reduced }: { settle: React.MutableRefObject<number>; r
     controls.autoRotate = !active && !reduced;
     if (!active) return;
     settle.current -= dt;
-    const az = controls.getAzimuthalAngle();
-    const polar = controls.getPolarAngle();
-    const next = az + (0 - az) * (1 - Math.exp(-6 * dt));
-    const r = camera.position.distanceTo(controls.target);
-    const sph = new THREE.Spherical(r, polar + (Math.PI / 2 - 0.1 - polar) * (1 - Math.exp(-4 * dt)), next);
-    camera.position.setFromSpherical(sph).add(controls.target);
-    controls.update();
   });
   return null;
 }
@@ -242,7 +240,7 @@ export default function KatanaViewer() {
     settle.current = reduced ? 0.3 : 1.8;
     sounds.current.forEach((stop) => stop());
     sounds.current = [playMotionCue("lock")];
-    timers.current.push(setTimeout(() => sounds.current.push(playMotionCue("draw")), reduced ? 0 : 420));
+    timers.current.push(setTimeout(() => sounds.current.push(playMotionCue("draw")), reduced ? 0 : 120));
     timers.current.push(setTimeout(() => {
       sounds.current.push(playMotionCue("lock"));
       setDrawing(false);

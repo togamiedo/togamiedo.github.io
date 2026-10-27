@@ -1,24 +1,17 @@
 import { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { motion, useReducedMotion, useScroll } from "framer-motion";
 import { Fx } from "./Fx";
 import { Rich } from "./StoryFlow";
 import type { Block } from "@/lib/story";
-import forge from "@/assets/rose-forge.jpg";
-import contraband from "@/assets/rose-contraband.jpg";
 
 function ChapterScene({ chapter, rows, index }: { chapter: Extract<Block, { kind: "chapter" }>; rows: Block[]; index: number }) {
   const ref = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], [30, -30]);
-  const image = index === 0 ? forge : contraband;
   return (
     <section ref={ref} id={chapter.id} className="relative scroll-mt-24 border-t border-gold/20" data-weapon-chapter>
-      <div className="relative h-[62vh] min-h-96 overflow-hidden">
-        <motion.img src={image} alt={index === 0 ? "Rose handguard at a swordsmith's forge" : "Rose cuttings hidden in a coastal cave"}
-          width={1536} height={1024} loading="lazy" className="absolute inset-0 h-full w-full object-cover" style={reduced ? {} : { y }} />
-        <div className="absolute inset-0 bg-gradient-to-t from-lacquer via-lacquer/20 to-transparent" />
-        <div className="absolute inset-x-0 bottom-8 mx-auto max-w-6xl px-6 md:bottom-12">
+      <div className="relative mx-auto max-w-6xl px-6 pb-8 pt-16 md:pt-24">
+        <div>
           <p className="mb-4 font-brush text-xl text-gold">{index === 0 ? "壱" : "弐"}</p>
           <h2 className="max-w-3xl font-brush text-3xl text-paper md:text-5xl">{chapter.jp}</h2>
         </div>

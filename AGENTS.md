@@ -13,4 +13,4 @@
 - Katana 3D models are meshopt-compressed GLBs served via Lovable Assets and loaded only client-side (lazy + ClientOnly) because three.js cannot run during SSR.
 - Page transitions cover navigation before revealing three aligned artwork fragments; finish on animation completion rather than a fixed navigation timeout so slow page loads remain hidden.
 - Animation sound cues are cancellable Web Audio textures; cancel pending cues on unmount, and lock katana controls during staged drawing to prevent conflicting sequences.
-- Weapon history uses illustrated chapter bands with sticky reading progress and unframed varied passages; keep its text sourced from the shared typed story blocks.
+- Weapon history uses typographic chapter bands with sticky reading progress and unframed varied passages; keep its text sourced from the shared typed story blocks.
