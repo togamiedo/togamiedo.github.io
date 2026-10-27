@@ -45,8 +45,8 @@ function GardenCanvas({ active, kind }: { active: boolean; kind: FxKind }) {
       const count = kind === "bloom" ? 26 : kind === "coin" ? 18 : 32;
       const particles = Array.from({ length: count }, (_, i) => {
         const t = i / count * Math.PI * 2;
-        return { x: w / 2 + Math.cos(t) * (w * 0.43), y: h / 2 + Math.sin(t) * (h * 0.43),
-          size: 35 + (i * 13 % 47), rotation: i * 2.4, delay: (i % 7) * 0.075 };
+        return { x: w / 2 + Math.cos(t) * (w * 0.47), y: h / 2 + Math.sin(t) * (h * 0.47),
+          size: 28 + (i * 13 % 39), rotation: i * 2.4, delay: (i % 7) * 0.075 };
       });
       prepared.current = { sprite, particles, w, h, paper: color("--paper") };
     };

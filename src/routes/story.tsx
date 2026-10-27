@@ -22,7 +22,7 @@ function StoryPage() {
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 80, damping: 20 });
   return (
-    <main className="relative pb-40">
+    <main className="relative overflow-x-clip pb-40">
       <motion.div className="fixed left-0 top-0 z-[60] h-1 w-full origin-left bg-primary" style={{ scaleX: progress }} />
       <section className="relative flex min-h-[80vh] flex-col items-center justify-center text-center">
         <Petals count={10} />
