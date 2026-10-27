@@ -26,9 +26,14 @@ function useFadeable(url: string) {
       const m = o as THREE.Mesh;
       if (m.isMesh) {
         const mat = m.material as THREE.Material;
-        mat.opacity = v;
-        mat.depthWrite = v > 0.95;
-        m.visible = v > 0.01;
+        const solid = v > 0.98;
+        mat.opacity = solid ? 1 : v;
+        if (mat.transparent === solid) {
+          mat.transparent = !solid;
+          mat.needsUpdate = true;
+        }
+        mat.depthWrite = solid;
+        m.visible = v > 0.02;
       }
     });
   return { obj: clone, setOpacity };
