@@ -1,24 +1,134 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { motion } from "framer-motion";
+import portrait from "@/assets/togami-portrait.png.asset.json";
+import face from "@/assets/togami-face.png.asset.json";
+import { Petals, RoseMark } from "@/components/Petals";
+import { Fx, type FxKind } from "@/components/Fx";
+import { Rich } from "@/components/StoryFlow";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Togami Genshiro · Introduction" },
+      { name: "description", content: "Meet Togami Genshiro, disgraced son of Kyoto magistrates, kabukimono and bounty hunter of the Edo period." },
+      { property: "og:title", content: "Togami Genshiro · Introduction" },
+      { property: "og:description", content: "Disgraced ronin, kabukimono, bounty hunter, and keeper of illegal roses." },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
+const traits: { jp: string; en: string; fx: FxKind; text: string }[] = [
+  {
+    jp: "性格",
+    en: "Personality",
+    fx: "sword",
+    text: "Arrogant, cynical and never without a smug smirk. On a contract he is stern, cold and completely serious. Off the clock he is *shamelessly flirtatious* with women, and openly rude to any man who crosses his path.",
+  },
+  {
+    jp: "好物",
+    en: "Likes",
+    fx: "bloom",
+    text: "Horticulture above all. He spends his hard-earned blood money on rare seeds and a meticulous garden. He also has a weakness for *women with a fierce character*.",
+  },
+  {
+    jp: "嫌物",
+    en: "Dislikes",
+    fx: "kimono",
+    text: "The standardized dress every proper citizen is expected to wear. He respects the laws of the land, yet that uniform disgusts him, and it keeps him in endless arguments. He has also grown to hate {snow}. Although that story is for another time...",
+  },
+  {
+    jp: "趣味",
+    en: "Hobbies",
+    fx: "coin",
+    text: "Hunting *coin-heavy contracts* and any way to make money. Collecting countless flowers, tending his garden, and testing how they react to every environment. He even carries vials of flowers in case the weather turns.",
+  },
+];
+
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <main className="overflow-hidden">
+      {/* Hero */}
+      <section className="relative flex min-h-screen items-center">
+        <Petals />
+        <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-6 pt-28 md:grid-cols-[1fr_1.1fr]">
+          <motion.div
+            className="relative mx-auto aspect-[4/5] w-full max-w-md"
+            initial={{ opacity: 0, x: -40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1.2, delay: 0.3 }}
+          >
+            <div className="absolute -inset-3 border border-gold/40" />
+            <img src={portrait.url} alt="Togami Genshiro in his blood-red kimono" className="h-full w-full object-cover object-top shadow-2xl" />
+            <span className="font-brush text-vertical absolute -right-12 top-4 hidden text-5xl text-primary glow-red md:block">玄城戸上</span>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2, delay: 0.6 }}>
+            <p className="font-display text-xs uppercase tracking-[0.5em] text-gold">Kyōto · Edo period · 江戸時代</p>
+            <h1 className="mt-4 font-display text-6xl font-extrabold leading-none text-paper md:text-8xl">
+              Togami
+              <span className="block text-primary glow-red">Genshiro</span>
+            </h1>
+            <p className="mt-8 max-w-md text-2xl italic text-foreground/90">
+              "The law is a chain. I only read the gaps between its links."
+            </p>
+            <p className="mt-6 max-w-md text-lg text-muted-foreground">
+              A disgraced ronin living the flashy life of a kabukimono. A freelance bounty hunter who bends every local law to his advantage, and who hides a strange, sincere obsession with collecting red roses.
+            </p>
+            <div className="mt-10 flex flex-wrap gap-4">
+              <Link to="/story" className="bg-primary px-7 py-3 font-display text-sm uppercase tracking-[0.3em] text-primary-foreground transition hover:bg-blood">
+                Read his story
+              </Link>
+              <Link to="/weapon" className="border border-gold/50 px-7 py-3 font-display text-sm uppercase tracking-[0.3em] text-gold transition hover:bg-gold/10">
+                The rose blade
+              </Link>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Traits */}
+      <section className="relative mx-auto max-w-6xl px-6 py-24">
+        <div className="mb-16 flex items-center justify-center gap-4">
+          <RoseMark className="h-7 w-7" />
+          <h2 className="font-display text-3xl font-bold tracking-widest text-paper md:text-4xl">- 人物 -</h2>
+          <RoseMark className="h-7 w-7" />
+        </div>
+        <div className="grid gap-8 md:grid-cols-2">
+          {traits.map((t, i) => (
+            <motion.article
+              key={t.en}
+              className="panel grain relative rounded-sm p-8"
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.9, delay: (i % 2) * 0.15 }}
+            >
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="font-brush text-3xl text-primary">{t.jp}</p>
+                  <h3 className="font-display text-sm uppercase tracking-[0.4em] text-gold">{t.en}</h3>
+                </div>
+                <Fx kind={t.fx} />
+              </div>
+              <div className="my-4 h-px w-16 bg-primary" />
+              <p className="text-lg leading-relaxed"><Rich text={t.text} /></p>
+            </motion.article>
+          ))}
+        </div>
+      </section>
+
+      {/* Closing */}
+      <section className="relative mx-auto flex max-w-4xl flex-col items-center gap-10 px-6 pb-32 pt-10 text-center md:flex-row md:text-left">
+        <img src={face.url} alt="Close-up of Togami's face" className="h-64 w-56 object-cover shadow-2xl ring-1 ring-gold/40" />
+        <div>
+          <p className="font-brush text-4xl text-primary">棘ある薔薇</p>
+          <p className="mt-3 text-2xl italic">Every rose he keeps was paid for in blood. Most of it wasn't his.</p>
+          <Link to="/story" className="mt-6 inline-block font-display text-sm uppercase tracking-[0.3em] text-gold underline-offset-8 hover:underline">
+            Begin with the root →
+          </Link>
+        </div>
+      </section>
+    </main>
   );
 }
