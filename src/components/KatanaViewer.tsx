@@ -6,8 +6,8 @@ import * as THREE from "three";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Sword } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import sheathedAsset from "@/assets/katana-sheathed.glb.asset.json";
-import bladeAsset from "@/assets/katana-blade-v2.glb.asset.json";
+const SHEATHED_URL = "/models/katana-sheathed.glb";
+const BLADE_URL = "/models/katana-blade.glb";
 import { playMotionCue } from "@/lib/sfx";
 import { scrollToId } from "@/lib/scroll";
 
@@ -83,8 +83,8 @@ function useFadeable(url: string) {
 type Hover = (p: { x: number; y: number } | null) => void;
 
 function Katanas({ state, flash, onRose, onHover, reduced }: { state: State; flash: React.MutableRefObject<number>; onRose: () => void; onHover: Hover; reduced: boolean }) {
-  const sheathed = useFadeable(sheathedAsset.url);
-  const blade = useFadeable(bladeAsset.url);
+  const sheathed = useFadeable(SHEATHED_URL);
+  const blade = useFadeable(BLADE_URL);
   const gS = useRef<THREE.Group>(null);
   const gB = useRef<THREE.Group>(null);
   const t = useRef({ sx: 0, sOp: 1, bx: -2.5, bOp: 0 });
@@ -311,5 +311,5 @@ export default function KatanaViewer() {
   );
 }
 
-useGLTF.preload(sheathedAsset.url);
-useGLTF.preload(bladeAsset.url);
+useGLTF.preload(SHEATHED_URL);
+useGLTF.preload(BLADE_URL);

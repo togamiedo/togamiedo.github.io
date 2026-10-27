@@ -1,5 +1,5 @@
 // Soft synthesized sound effects (Web Audio) + background music.
-import music from "@/assets/shika-no-tone.mp3.asset.json";
+const MUSIC_URL = "/audio/shika-no-tone.mp3";
 
 let ctx: AudioContext | null = null;
 function ac() {
@@ -118,7 +118,7 @@ export function playMotionCue(kind: "ink" | "cut" | "reveal" | "draw" | "lock") 
 export function getMusic() {
   if (typeof window === "undefined") return null;
   if (!bgm) {
-    bgm = new Audio(music.url);
+    bgm = new Audio(MUSIC_URL);
     bgm.loop = true;
     bgm.volume = 0;
   }
