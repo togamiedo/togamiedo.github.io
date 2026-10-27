@@ -5,6 +5,7 @@ const FACE_CLOSEUP = "/img/togami-face.png";
 import { Petals, RoseMark } from "@/components/Petals";
 import { Fx, type FxKind } from "@/components/Fx";
 import { Rich } from "@/components/StoryFlow";
+import { AudioLines, ArrowUpRight } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -87,6 +88,11 @@ function Index() {
                 The rose blade
               </Link>
             </div>
+            <a href="https://www.youtube.com/watch?v=vlLWYMzNGTE" target="_blank" rel="noopener noreferrer" className="mt-7 inline-flex items-center gap-3 border-b border-gold/40 pb-2 font-body text-lg text-gold transition-colors hover:text-paper">
+              <AudioLines className="h-5 w-5" aria-hidden="true" />
+              <span>Voiceclaim · Gin Ichimaru <span className="text-sm italic text-muted-foreground">— Bleach</span></span>
+              <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+            </a>
           </motion.div>
         </div>
       </section>
