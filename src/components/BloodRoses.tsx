@@ -28,7 +28,7 @@ function Rose({ stained, index, reduced }: { stained: boolean; index: number; re
 /** One trigger owns the slash, spray, lasting petal stains and impact sway. */
 export function BloodRoses({ children }: { children: ReactNode }) {
   const host = useRef<HTMLDivElement>(null);
-  const roses = useRef<HTMLDivElement>(null);
+  const text = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
   const near = useInView(host, { once: true, margin: "100% 0px 100% 0px" });
   const reading = useInView(host, { once: true, margin: "-25% 0px -25% 0px" });
@@ -39,10 +39,13 @@ export function BloodRoses({ children }: { children: ReactNode }) {
     return () => window.clearTimeout(timer);
   }, [reading, reduced]);
   return <div ref={host} id="lord-blood-roses" data-blood-roses className="relative my-16 flow-root">
-    {children}
-    <div ref={roses} className="relative mt-8 flex min-h-36 items-end justify-center gap-0 sm:gap-3" data-rose-bed>
-      {[0, 1, 2, 3].map(index => <Rose key={index} stained={impact} index={index} reduced={Boolean(reduced)} />)}
+    <div ref={text} data-slash-text>{children}</div>
+    <div className="relative mt-8 flex min-h-52 items-start justify-center gap-0 sm:gap-3" data-rose-bed>
+      {["mt-7 -rotate-6", "mt-0 rotate-3", "mt-12 -rotate-3", "mt-4 rotate-6"].map((placement, index) => <div key={index} className={placement}><Rose stained={impact} index={index} reduced={Boolean(reduced)} /></div>)}
+      {impact && !reduced && <svg viewBox="0 0 500 200" preserveAspectRatio="none" className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true">
+        {Array.from({ length: 30 }, (_, i) => <motion.ellipse key={i} cx={35 + i * 73 % 420} cy={25 + i * 37 % 105} rx={1.5 + i % 4} ry={3 + i % 6} fill="var(--blood-wet)" initial={{ y: -85, opacity: 0 }} animate={{ y: [-85, 0, 24], opacity: [0, 1, 0] }} transition={{ duration: 0.85, delay: 0.05 + i % 7 * 0.025 }} />)}
+      </svg>}
     </div>
-    {near && !reduced && <ExecutionSplash active={impact} target={roses} />}
+    {near && !reduced && <ExecutionSplash active={impact} target={text} />}
   </div>;
 }
