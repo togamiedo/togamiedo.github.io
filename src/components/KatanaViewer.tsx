@@ -46,7 +46,7 @@ function Katanas({ state, flash }: { state: State; flash: React.MutableRefObject
     const k = (s: number) => 1 - Math.exp(-s * dt);
     const v = t.current;
     const drawn = state === "drawn";
-    v.sx += ((drawn ? -3.2 : 0) - v.sx) * k(drawn ? 3 : 4);
+    v.sx += ((drawn ? 3.6 : 0) - v.sx) * k(drawn ? 3 : 4);
     v.sOp += ((drawn ? 0 : 1) - v.sOp) * k(3);
     v.bx += ((drawn ? 0 : 2.5) - v.bx) * k(drawn ? 5 : 3);
     v.bOp += ((drawn ? 1 : 0) - v.bOp) * k(drawn ? 4 : 6);

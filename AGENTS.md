@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Story text lives as typed blocks in src/lib/story.ts (with inline *bold* / {red} markers and optional fx), rendered by StoryFlow; edit content there, not in route files.
+- Katana 3D models are meshopt-compressed GLBs served via Lovable Assets and loaded only client-side (lazy + ClientOnly) because three.js cannot run during SSR.
