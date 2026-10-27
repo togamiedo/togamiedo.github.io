@@ -1,89 +1,63 @@
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { Fx } from "./Fx";
 import { Rich } from "./StoryFlow";
 import type { Block } from "@/lib/story";
+import forge from "@/assets/rose-forge.jpg";
+import contraband from "@/assets/rose-contraband.jpg";
 
-const NUM = ["壱", "弐", "参", "肆", "伍", "陸", "漆", "捌", "玖", "拾"];
-
-/** The weapon's history, laid out as a forging record: a vertical gold spine with
- *  numbered steps that hang off alternating sides, and chapter banners like noren. */
-export function WeaponFlow({ blocks }: { blocks: Block[] }) {
-  let step = 0;
+function ChapterScene({ chapter, rows, index }: { chapter: Extract<Block, { kind: "chapter" }>; rows: Block[]; index: number }) {
+  const ref = useRef<HTMLElement>(null);
+  const reduced = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], [30, -30]);
+  const image = index === 0 ? forge : contraband;
   return (
-    <div className="relative mx-auto max-w-5xl px-6">
-      {/* spine */}
-      <motion.div
-        className="absolute bottom-0 left-8 top-0 w-px origin-top bg-gradient-to-b from-gold/0 via-gold/60 to-gold/0 md:left-1/2"
-        initial={{ scaleY: 0 }}
-        whileInView={{ scaleY: 1 }}
-        viewport={{ once: true, amount: 0.05 }}
-        transition={{ duration: 2.5, ease: "easeOut" }}
-      />
-      {blocks.map((b, i) => {
-        if (b.kind === "chapter") {
-          step = 0;
-          return (
-            <motion.div
-              key={i}
-              id={b.id}
-              className="relative z-10 my-28 flex justify-center scroll-mt-28"
-              initial={{ opacity: 0, y: -80 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ type: "spring", stiffness: 60, damping: 12 }}
-            >
-              <div className="relative bg-blood px-10 pb-10 pt-6 text-center shadow-2xl [clip-path:polygon(0_0,100%_0,100%_85%,75%_100%,50%_88%,25%_100%,0_85%)]">
-                <p className="font-brush text-3xl text-paper md:text-4xl">{b.jp}</p>
-              </div>
-            </motion.div>
-          );
-        }
-        if (b.kind !== "p") return null;
-        const n = step++;
-        const right = n % 2 === 1;
-        return (
-          <div key={i} id={b.id} className={`relative my-14 flex scroll-mt-28 pl-16 md:pl-0 ${right ? "md:justify-end" : "md:justify-start"}`}>
-            {/* node on the spine */}
-            <motion.span
-              className="absolute left-8 top-6 z-10 flex h-12 w-12 -translate-x-1/2 items-center justify-center rounded-full border border-gold bg-lacquer font-brush text-xl text-gold md:left-1/2"
-              initial={{ scale: 0, rotate: -180 }}
-              whileInView={{ scale: 1, rotate: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, ease: "backOut" }}
-            >
-              {NUM[n] ?? n + 1}
-            </motion.span>
-            <motion.div
-              className={`group relative w-full md:w-[44%] ${right ? "md:text-left" : "md:text-right"}`}
-              initial={{ opacity: 0, x: right ? 120 : -120, rotateY: right ? -25 : 25 }}
-              whileInView={{ opacity: 1, x: 0, rotateY: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 1.3, ease: [0.16, 1, 0.3, 1] }}
-              style={{ transformPerspective: 900 }}
-            >
-              <div data-card className="relative overflow-hidden border border-gold/30 bg-gradient-to-br from-card to-lacquer p-6 md:p-8">
-                <span className="pointer-events-none absolute -right-4 -top-8 font-brush text-[9rem] leading-none text-primary/10">
-                  {NUM[n] ?? ""}
-                </span>
-                {/* steel glint sweeping across on reveal */}
-                <motion.span
-                  className="pointer-events-none absolute inset-y-0 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-paper/15 to-transparent"
-                  initial={{ left: "-40%" }}
-                  whileInView={{ left: "140%" }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 1.4, delay: 0.6 }}
-                />
-                <p className="relative text-lg leading-relaxed md:text-xl"><Rich text={b.text} /></p>
-              </div>
-              {b.fx && (
-                <div className={`mt-4 flex ${right ? "md:justify-start" : "md:justify-end"} justify-center`}>
-                  <Fx kind={b.fx} />
-                </div>
-              )}
-            </motion.div>
+    <section ref={ref} id={chapter.id} className="relative scroll-mt-24 border-t border-gold/20" data-weapon-chapter>
+      <div className="relative h-[62vh] min-h-96 overflow-hidden">
+        <motion.img src={image} alt={index === 0 ? "Rose handguard at a swordsmith's forge" : "Rose cuttings hidden in a coastal cave"}
+          width={1536} height={1024} loading="lazy" className="absolute inset-0 h-full w-full object-cover" style={reduced ? undefined : { y }} />
+        <div className="absolute inset-0 bg-gradient-to-t from-lacquer via-lacquer/20 to-transparent" />
+        <div className="absolute inset-x-0 bottom-8 mx-auto max-w-6xl px-6 md:bottom-12">
+          <p className="mb-4 font-brush text-xl text-gold">{index === 0 ? "壱" : "弐"}</p>
+          <h2 className="max-w-3xl font-display text-4xl text-paper md:text-6xl">{chapter.en}</h2>
+          <p className="mt-4 font-brush text-xl text-paper/70 md:text-3xl">{chapter.jp}</p>
+        </div>
+      </div>
+      <div className="mx-auto grid max-w-6xl gap-10 px-6 py-16 md:grid-cols-[1fr_1.5fr] md:gap-20 md:py-24">
+        <aside className="hidden md:block">
+          <div className="sticky top-32">
+            <p className="font-brush text-[8rem] leading-none text-primary/30">{index === 0 ? "鍛" : "薔薇"}</p>
+            <div className="mt-8 h-px w-28 bg-gold/50" />
+            <p className="mt-6 max-w-56 font-display text-sm uppercase text-muted-foreground">{chapter.en}</p>
+            <motion.div className="mt-8 h-1 w-40 origin-left bg-primary" style={{ scaleX: scrollYProgress }} />
           </div>
-        );
-      })}
-    </div>
+        </aside>
+        <div className="min-w-0 space-y-20 md:space-y-28">
+          {rows.map((b, n) => {
+            if (b.kind !== "p") return null;
+            const dramatic = b.fx === "bigblood" || b.fx === "sword";
+            return (
+              <motion.article key={n} id={b.id} data-weapon-passage className={`relative scroll-mt-32 ${dramatic ? "border-y border-primary/40 py-10" : n % 3 === 1 ? "border-l border-gold/40 pl-6 md:pl-10" : ""}`}
+                initial={reduced ? false : { opacity: 0, y: 35 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.15 }} transition={{ duration: 0.75 }}>
+                <p className="mb-5 font-display text-xs text-gold/60">{String(n + 1).padStart(2, "0")}</p>
+                <p className={`font-body leading-relaxed text-paper ${dramatic ? "text-3xl italic md:text-4xl" : n === 0 ? "text-2xl md:text-3xl" : "text-xl md:text-2xl"}`}><Rich text={b.text} /></p>
+                {b.fx && <div className="mt-6 flex justify-end"><Fx kind={b.fx} /></div>}
+                {b.fx === "bloom" && <div className="absolute -left-3 top-16 h-20 w-px bg-primary/50" />}
+              </motion.article>
+            );
+          })}
+        </div>
+      </div>
+    </section>
   );
+}
+
+export function WeaponFlow({ blocks }: { blocks: Block[] }) {
+  const chapters: { chapter: Extract<Block, { kind: "chapter" }>; rows: Block[] }[] = [];
+  for (const block of blocks) {
+    if (block.kind === "chapter") chapters.push({ chapter: block, rows: [] });
+    else chapters.at(-1)?.rows.push(block);
+  }
+  return <div>{chapters.map((group, i) => <ChapterScene key={group.chapter.jp} {...group} index={i} />)}</div>;
 }
