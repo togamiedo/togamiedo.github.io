@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, type TargetAndTransition } from "framer-motion";
 import type { ReactNode } from "react";
 import { Fx } from "./Fx";
 import { RoseMark } from "./Petals";
@@ -53,7 +53,7 @@ const SKIN = [
   "text-center",
   "border-t-2 border-t-gold/60",
 ];
-const ENTER = [
+const ENTER: TargetAndTransition[] = [
   { opacity: 0, x: -90, filter: "blur(6px)" },
   { opacity: 0, x: 90, filter: "blur(6px)" },
   { opacity: 0, clipPath: "inset(0 100% 0 0)" },
@@ -109,7 +109,7 @@ export function StoryFlow({ blocks }: { blocks: Block[] }) {
             )}
             <motion.div
               className={`panel grain rounded-sm p-6 leading-relaxed md:p-8 ${SKIN[v]}`}
-              initial={ENTER[v]}
+              initial={ENTER[v]!}
               whileInView={{ opacity: 1, x: 0, y: 0, rotate: v === 3 ? -0.6 : 0, scale: 1, clipPath: "inset(0 0% 0 0)", filter: "blur(0px)" }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: v === 2 ? 1.6 : 1.2, ease: [0.16, 1, 0.3, 1] }}
