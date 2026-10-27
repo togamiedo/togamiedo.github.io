@@ -30,8 +30,7 @@ function StoryPage() {
       </section>
       <StoryFlow blocks={story} />
       <div className="mt-32 text-center">
-        <p className="text-xl italic text-muted-foreground">The tale continues with his blade.</p>
-        <Link to="/weapon" className="mt-6 inline-block bg-primary px-7 py-3 font-display text-sm uppercase tracking-[0.3em] text-primary-foreground hover:bg-blood">
+        <Link to="/weapon" className="inline-block bg-primary px-7 py-3 font-display text-sm uppercase tracking-[0.3em] text-primary-foreground hover:bg-blood">
           See the rose blade
         </Link>
       </div>
