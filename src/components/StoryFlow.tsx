@@ -90,7 +90,7 @@ function Bleed({ s }: { s: string }) {
 
 function ChiyoName({ s }: { s: string }) {
   return (
-    <span className="relative inline-block font-chiyo text-[1.15em] text-sakura">
+    <span className="relative inline-block font-chiyo text-[1.5em] leading-none text-sakura">
       {s.split("").map((c, k) => (
         <motion.span
           key={k}
@@ -240,7 +240,7 @@ export function StoryFlow({ blocks }: { blocks: Block[] }) {
                   thug
                     ? "font-thug text-2xl tracking-wide text-paper md:text-3xl"
                     : b.who === "chiyo"
-                      ? "font-chiyo text-2xl font-semibold text-sakura md:text-3xl"
+                      ? "font-chiyo text-4xl text-sakura md:text-5xl"
                       : "font-display text-2xl font-bold text-primary glow-red md:text-3xl"
                 }
               >
