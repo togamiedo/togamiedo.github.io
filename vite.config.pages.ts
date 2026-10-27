@@ -1,16 +1,17 @@
 // Build config used ONLY by the GitHub Pages workflow:
 //   bunx vite build --config vite.config.pages.ts
-// The normal Lovable build keeps its own SSR target from vite.config.ts.
+// The normal Lovable build keeps its own config from vite.config.ts.
 //
-// Here the app is rendered to plain static files (no server needed):
-// nitro's `github-pages` preset runs the server once at build time to write
-// real HTML for / (and any page the crawler reaches), adds .nojekyll, and
-// emits everything to .output/public
+// The prerender pass renders every page listed below once, at build time, and
+// writes it as a real HTML file into the static output folder
+// (.output/public): "/" -> index.html, "/story" -> story/index.html, ...
+// That folder is then uploaded to GitHub Pages as-is — no server needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
   tanstackStart: {
     server: { entry: "server" },
+    pages: [{ path: "/" }, { path: "/story" }, { path: "/weapon" }],
+    prerender: { enabled: true, autoStaticPathsDiscovery: false },
   },
-  nitro: { preset: "github-pages" },
 });
