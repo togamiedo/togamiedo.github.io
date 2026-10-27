@@ -28,8 +28,8 @@ function useFadeable(url: string) {
     clone.updateMatrixWorld(true);
     const box = new THREE.Box3().setFromObject(clone);
     const size = box.getSize(new THREE.Vector3());
-    const axis = size.x >= size.y && size.x >= size.z ? "x" : size.y >= size.z ? "y" : "z";
-    const others = (["x", "y", "z"] as const).filter((a) => a !== axis);
+    const axis: "x" | "y" | "z" = size.x >= size.y && size.x >= size.z ? "x" : size.y >= size.z ? "y" : "z";
+    const [o0, o1] = (["x", "y", "z"] as const).filter((a) => a !== axis) as ["x" | "y" | "z", "x" | "y" | "z"];
     const center = box.getCenter(new THREE.Vector3());
     const BINS = 80;
     const rad = new Array(BINS).fill(0);
@@ -37,13 +37,13 @@ function useFadeable(url: string) {
     clone.traverse((o) => {
       const m = o as THREE.Mesh;
       if (!m.isMesh) return;
-      const pos = m.geometry.attributes.position;
+      const pos = m.geometry.getAttribute("position");
       if (!pos) return;
       const step = Math.max(1, Math.floor(pos.count / 20000));
       for (let i = 0; i < pos.count; i += step) {
         v.fromBufferAttribute(pos, i).applyMatrix4(m.matrixWorld);
         const b = Math.min(BINS - 1, Math.floor(((v[axis] - box.min[axis]) / size[axis]) * BINS));
-        const r = Math.hypot(v[others[0]] - center[others[0]], v[others[1]] - center[others[1]]);
+        const r = Math.hypot(v[o0] - center[o0], v[o1] - center[o1]);
         if (r > rad[b]) rad[b] = r;
       }
     });
