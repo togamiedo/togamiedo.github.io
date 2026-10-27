@@ -117,7 +117,8 @@ export const story: Block[] = [
   { kind: "quote", text: "You belong in my collection...", side: "right", who: "chiyo" },
   {
     kind: "p",
-    text: "In one fatal, arrogant overstep, *Chiyo* used her vast merchant fortune to bribe the {Genshiro} patriarch. In secret she arranged a grand, forced wedding inside the very estate that had exiled him.",
+    look: "dropcap",
+    text: "In a fatal, arrogant overstep, *Chiyo* used her vast merchant wealth to bribe the {Genshiro} patriarch. She secretly orchestrated a grand, forced wedding back inside the very estate that had just exiled him.",
   },
   { kind: "quote", text: "Surprise, my wild ronin.", side: "right", who: "chiyo" },
   {

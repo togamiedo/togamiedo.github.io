@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Fx, type FxKind } from "./Fx";
 import { RoseMark } from "./Petals";
 import type { Block } from "@/lib/story";
+import { playSplash } from "@/lib/sfx";
 
 type Part = { t: "plain" | "bold" | "red" | "bleed" | "rose" | "chiyo"; s: string };
 
@@ -61,6 +62,7 @@ function Bleed({ s }: { s: string }) {
           backgroundClip: "text",
           color: "transparent",
         }}
+        onViewportEnter={() => playSplash()}
         initial={{ backgroundPosition: "100% 0" }}
         whileInView={{ backgroundPosition: "0% 0" }}
         viewport={{ once: true, amount: 0.8 }}
@@ -88,7 +90,7 @@ function Bleed({ s }: { s: string }) {
 
 function ChiyoName({ s }: { s: string }) {
   return (
-    <span className="relative inline-block font-chiyo text-[1.15em] text-sakura">
+    <span className="relative inline-block font-chiyo text-[1.5em] leading-none text-sakura">
       {s.split("").map((c, k) => (
         <motion.span
           key={k}
@@ -203,19 +205,22 @@ const SKIN = [
 const ENTER: TargetAndTransition[] = [
   { opacity: 0, x: -90, filter: "blur(6px)" },
   { opacity: 0, x: 90, filter: "blur(6px)" },
-  { opacity: 0, clipPath: "inset(0 100% 0 0)" },
+  { opacity: 0, scale: 1.08, filter: "blur(14px)" },
   { opacity: 0, y: 60, rotate: 3, scale: 0.94 },
 ];
 
 function FxSide({ fx, left }: { fx: FxKind; left: boolean }) {
+  const bloody = fx === "blood" || fx === "bigblood";
   return (
-    <div
+    <motion.div
+      onViewportEnter={() => bloody && playSplash(fx === "bigblood" ? 0.24 : 0.16)}
+      viewport={{ once: true, amount: 0.6 }}
       className={`pointer-events-none mb-2 flex justify-center md:absolute md:top-0 md:mb-0 md:block ${
         left ? "md:-left-48 lg:-left-56" : "md:-right-48 lg:-right-60"
       }`}
     >
       <Fx kind={fx} />
-    </div>
+    </motion.div>
   );
 }
 
@@ -235,7 +240,7 @@ export function StoryFlow({ blocks }: { blocks: Block[] }) {
                   thug
                     ? "font-thug text-2xl tracking-wide text-paper md:text-3xl"
                     : b.who === "chiyo"
-                      ? "font-chiyo text-2xl font-semibold text-sakura md:text-3xl"
+                      ? "font-chiyo text-4xl text-sakura md:text-5xl"
                       : "font-display text-2xl font-bold text-primary glow-red md:text-3xl"
                 }
               >
@@ -352,7 +357,7 @@ export function StoryFlow({ blocks }: { blocks: Block[] }) {
             <motion.div
               className={`panel grain rounded-sm p-6 leading-relaxed md:p-8 ${SKIN[v]}`}
               initial={ENTER[v]!}
-              whileInView={{ opacity: 1, x: 0, y: 0, rotate: v === 3 ? -0.6 : 0, scale: 1, clipPath: "inset(0 0% 0 0)", filter: "blur(0px)" }}
+              whileInView={{ opacity: 1, x: 0, y: 0, rotate: v === 3 ? -0.6 : 0, scale: 1, filter: "blur(0px)" }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: v === 2 ? 1.6 : 1.2, ease: [0.16, 1, 0.3, 1] }}
             >
