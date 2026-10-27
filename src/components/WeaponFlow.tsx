@@ -61,7 +61,7 @@ export function WeaponFlow({ blocks }: { blocks: Block[] }) {
               transition={{ duration: 1.3, ease: [0.16, 1, 0.3, 1] }}
               style={{ transformPerspective: 900 }}
             >
-              <div className="relative overflow-hidden border border-gold/30 bg-gradient-to-br from-card to-lacquer p-6 md:p-8">
+              <div data-card className="relative overflow-hidden border border-gold/30 bg-gradient-to-br from-card to-lacquer p-6 md:p-8">
                 <span className="pointer-events-none absolute -right-4 -top-8 font-brush text-[9rem] leading-none text-primary/10">
                   {NUM[n] ?? ""}
                 </span>
