@@ -1,4 +1,5 @@
 # Tasks
+- [ ] Replace the browser icon with Togami's portrait and set the homepage share title to Togami Genshiro, description to .....
 - [x] Minimize removable attribution references and hide the published badge; automatic configuration and old history remain outside this cleanup.
 - [x] Replace Rose Sword history with the user's supplied paragraphs.
 - [x] Add and verify a full-screen slash and liquid blood splash at the thief paragraph, without generated imagery.
