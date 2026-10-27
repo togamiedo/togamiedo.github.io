@@ -129,6 +129,17 @@ function RootComponent() {
       <PageTransition />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <footer className="relative border-t border-gold/20 bg-lacquer/80 px-6 pb-28 pt-12 text-center">
+        <p className="font-brush text-3xl text-primary glow-red">制作</p>
+        <p className="mt-1 font-display text-xs uppercase tracking-[0.5em] text-gold">Credits</p>
+        <p className="mt-5 font-display text-sm uppercase tracking-[0.3em] text-muted-foreground">Made by</p>
+        <ul className="mt-3 flex flex-wrap justify-center gap-x-8 gap-y-2 font-body text-xl italic text-paper">
+          {["f1ras_", "SoLongGONETEDZ", "Siiiilkbind.-.", "velcrozzz", "cu!lan"].map((n) => (
+            <li key={n} className="transition hover:text-primary">🌹 {n}</li>
+          ))}
+        </ul>
+        <p className="mt-6 font-body text-sm italic text-paper/50">Katana model by @rosepath on Roblox · Music: Shika no Tōne, traditional shakuhachi (public domain)</p>
+      </footer>
     </QueryClientProvider>
   );
 }

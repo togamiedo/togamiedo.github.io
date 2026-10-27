@@ -92,12 +92,12 @@ export function PageTransition() {
           {/* Kanji brushed on, then sliced */}
           <motion.div
             className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center"
-            animate={reveal ? { opacity: 0, scale: 1.15, filter: "blur(10px)" } : { opacity: 1 }}
-            transition={{ duration: 0.45 }}
+            animate={reveal ? { opacity: 0, scale: 1.15, filter: "blur(10px)" } : { opacity: 1, x: [0, 0, -8, 7, -4, 0] }}
+            transition={reveal ? { duration: 0.45 } : { duration: 0.95, times: [0, 0.7, 0.76, 0.84, 0.92, 1] }}
           >
             <div className="relative">
               <motion.p
-                className="font-brush text-[9rem] leading-none text-paper md:text-[13rem]"
+                className="font-brush text-[9rem] leading-none text-paper glow-red md:text-[13rem]"
                 initial={{ clipPath: "inset(0 0 100% 0)", filter: "blur(6px)" }}
                 animate={{ clipPath: "inset(0 0 0% 0)", filter: "blur(0px)" }}
                 transition={{ delay: 0.25, duration: 0.55, ease: EASE }}
@@ -122,6 +122,45 @@ export function PageTransition() {
               {page.en}
             </motion.p>
           </motion.div>
+
+          {/* Gold seams drawn down each shoji frame */}
+          {!reveal &&
+            Array.from({ length: STRIPS - 1 }).map((_, i) => (
+              <motion.div
+                key={`g${i}`}
+                className="pointer-events-none absolute top-0 h-full w-px origin-top bg-gradient-to-b from-transparent via-gold/50 to-transparent"
+                style={{ left: `${((i + 1) * 100) / STRIPS}%` }}
+                initial={{ scaleY: 0 }}
+                animate={{ scaleY: 1 }}
+                transition={{ delay: 0.3 + i * 0.05, duration: 0.6, ease: EASE }}
+              />
+            ))}
+
+          {/* Ink splatter flung from the brush */}
+          {!reveal &&
+            Array.from({ length: 9 }).map((_, i) => {
+              const ang = i * 0.7 + 0.4;
+              const d = 150 + (i % 3) * 60;
+              return (
+                <motion.span
+                  key={`i${i}`}
+                  className="pointer-events-none absolute left-1/2 top-1/2 block rounded-full bg-primary"
+                  style={{ width: 6 + (i % 4) * 5, height: 6 + (i % 4) * 5, marginLeft: Math.cos(ang) * d, marginTop: Math.sin(ang) * d * 0.7 }}
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: [0, 1.4, 1], opacity: [0, 1, 0.85] }}
+                  transition={{ delay: 0.45 + i * 0.03, duration: 0.35, ease: "backOut" }}
+                />
+              );
+            })}
+
+          {/* Second, crossing cut */}
+          <motion.div
+            className="pointer-events-none absolute left-1/2 top-1/2 h-[2px] w-[180vw] bg-gradient-to-r from-transparent via-primary to-transparent"
+            style={{ x: "-50%", y: "-50%", rotate: 14 }}
+            initial={{ scaleX: 0, opacity: 0 }}
+            animate={{ scaleX: [0, 1, 1], opacity: [0, 1, 0] }}
+            transition={{ delay: 0.82, duration: 0.45, times: [0, 0.4, 1], ease: "easeOut" }}
+          />
 
           {/* Blade flash */}
           <motion.div
