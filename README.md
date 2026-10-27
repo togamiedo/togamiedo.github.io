@@ -1,26 +1,16 @@
-# Togami Edo Blade Chronicle
+# Togami — Rose Blade Chronicle
 
-Salut lovable ! On va faire un site sur mon OC de la period EDO (sur roblox)
+A story site for **Togami Genshiro**, a disgraced ronin and kabukimono bounty hunter.
 
-Tu vas me faire un site avec une introduction, tout le site doit se baser sur la periode EDO et doit sentir tel quel, maintenant pose moi une liste de 10 questions que tu penses necessaire pour commencer acreer le site
+- **Introduction** — who Togami is.
+- **Story** — three chapters: 根, 開花, 棘.
+- **Weapon** — the Rose Blade in 3D, with its history.
 
-This project was built with [Lovable](https://lovable.dev).
+## Credits
 
-## Build with Lovable
+Made by: f1ras_, SoLongGONETEDZ, Siiiilkbind.-., velcrozzz, cu!lan
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/45b94add-7fd4-4de7-a449-569d29293bd0).
+- Katana model: @rosepath on Roblox
+- Music: *Shika no Tōne* (鹿の遠音), traditional shakuhachi, Wikimedia Commons (public domain)
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
-```
+Live site: https://togami-edo-blade-chronicle.lovable.app
