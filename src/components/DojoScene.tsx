@@ -91,7 +91,7 @@ export function DojoScene() {
           initial={{ opacity: 0 }} animate={active ? { opacity: [0, 0.85, 0] } : { opacity: 0 }}
           transition={{ duration: 0.5, delay: 3.5 + i * 0.55, repeat: 2, repeatDelay: 1.4 }} />)}
         {/* dust puffs where the pieces land */}
-        {!reduced && [[70, 254, 0.9], [190, 254, 1.05], [46, 96, 2.3]].map(([x, y, d], i) => <motion.ellipse key={i} cx={x} cy={y} rx="16" ry="4" fill="var(--paper)" opacity="0"
+        {(!reduced ? [[70, 254, 0.9], [190, 254, 1.05], [46, 96, 2.3]] as const : []).map(([x, y, d], i) => <motion.ellipse key={i} cx={x} cy={y} rx="16" ry="4" fill="var(--paper)" opacity="0"
           initial={{ opacity: 0 }} animate={active ? { opacity: [0, 0.3, 0], rx: [8, 20] } : { opacity: 0 }} transition={{ duration: 1, delay: d }} />)}
       </motion.svg>
     </div>
