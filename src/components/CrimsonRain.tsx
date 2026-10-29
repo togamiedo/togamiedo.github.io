@@ -4,14 +4,19 @@ import { useReducedMotion } from "framer-motion";
 type Drop = { x: number; y: number; depth: number; speed: number; length: number };
 type Splash = { x: number; y: number; vx: number; vy: number; age: number; life: number; size: number };
 type WetMark = { x: number; y: number; age: number; size: number };
+type PaperMark = WetMark & { half: number };
+type PaperSurface = { x: number; y: number; width: number; height: number };
 
-/** Shutter-length streaks at three focal depths; only foreground drops collide with the wax. */
-export function CrimsonRain({ sealRef, breaking }: {
+/** Cached shutter-length streaks, wax collisions, and absorbent paper-face impacts. */
+export function CrimsonRain({ sealRef, paperRefs, breaking }: {
   sealRef: RefObject<HTMLDivElement | null>;
+  paperRefs: readonly RefObject<HTMLDivElement | null>[];
   breaking: boolean;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const reduced = useReducedMotion();
+  const breakingRef = useRef(breaking);
+  useEffect(() => { breakingRef.current = breaking; }, [breaking]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -27,10 +32,13 @@ export function CrimsonRain({ sealRef, breaking }: {
     let drops: Drop[] = [];
     const splashes: Splash[] = [];
     const marks: WetMark[] = [];
+    const paperMarks: PaperMark[] = [];
+    let papers: PaperSurface[] = [];
     const css = getComputedStyle(canvas);
     const wet = css.getPropertyValue("--blood-wet").trim();
     const glint = css.getPropertyValue("--rain-glint").trim();
     const deep = css.getPropertyValue("--blood-deep").trim();
+    const absorbed = css.getPropertyValue("--paper-rain-stain").trim();
     const sprites = [0, 1, 2].map((depth) => {
       const sprite = document.createElement("canvas");
       sprite.width = 32;
@@ -67,6 +75,16 @@ export function CrimsonRain({ sealRef, breaking }: {
       if (!rect) return;
       seal = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2, radius: Math.min(rect.width, rect.height) * 0.39 };
     };
+    const measurePaper = () => {
+      papers = paperRefs.map((ref) => {
+        const rect = ref.current?.getBoundingClientRect();
+        return rect ? { x: rect.left, y: rect.top, width: rect.width, height: rect.height } : { x: 0, y: 0, width: 0, height: 0 };
+      });
+    };
+    const insideHalf = (x: number, y: number, half: number) => {
+      const cut = 0.53 - x * 0.06;
+      return x > 0.015 && x < 0.985 && y > 0.008 && y < 0.992 && (half === 0 ? y < cut : y > cut);
+    };
     const reset = (drop: Drop, initial = false) => {
       drop.x = Math.random() * (width + 100) - 80;
       drop.y = initial ? Math.random() * height : -drop.length - Math.random() * 80;
@@ -79,6 +97,7 @@ export function CrimsonRain({ sealRef, breaking }: {
       canvas.height = height * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       measureSeal();
+      measurePaper();
       drops = Array.from({ length: Math.min(310, Math.max(140, Math.round(width * height / 4700))) }, (_, i) => {
         const depth = i % 5 === 0 ? 2 : i % 3 === 0 ? 1 : 0;
         const drop = { x: 0, y: 0, depth, speed: 620 + depth * 340 + Math.random() * 220, length: 24 + depth * 27 + Math.random() * 25 };
@@ -86,11 +105,11 @@ export function CrimsonRain({ sealRef, breaking }: {
         return drop;
       });
     };
-    const impact = (x: number, y: number) => {
+    const impact = (x: number, y: number, paper = false) => {
       if (splashes.length > 130) return;
-      marks.push({ x: x - seal.x, y: y - seal.y, age: 0, size: 1.2 + Math.random() * 2 });
+      if (!paper) marks.push({ x: x - seal.x, y: y - seal.y, age: 0, size: 1.2 + Math.random() * 2 });
       if (marks.length > 30) marks.shift();
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < (paper ? 3 : 6); i++) {
         splashes.push({ x, y, vx: (Math.random() - 0.5) * 135, vy: -35 - Math.random() * 100,
           age: 0, life: 0.25 + Math.random() * 0.3, size: 0.6 + Math.random() * 1.2 });
       }
@@ -100,6 +119,7 @@ export function CrimsonRain({ sealRef, breaking }: {
       const dt = last ? Math.min((time - last) / 1000, 0.035) : 0;
       last = time;
       ctx.clearRect(0, 0, width, height);
+      if (breakingRef.current) { measureSeal(); measurePaper(); }
       ctx.lineCap = "round";
       const gust = 0.065 + Math.sin(time * 0.00043) * 0.018;
       for (const drop of drops) {
@@ -119,11 +139,56 @@ export function CrimsonRain({ sealRef, breaking }: {
             }
           }
         }
+        if (!hit && !reduced && drop.depth > 0 && Math.random() < dt * 2.4) {
+          for (let half = 0; half < papers.length; half++) {
+            const paper = papers[half];
+            if (!paper || !paper.width || !paper.height) continue;
+            const x = (drop.x - paper.x) / paper.width;
+            const y = (drop.y - paper.y) / paper.height;
+            if (!insideHalf(x, y, half)) continue;
+            paperMarks.push({ x, y, half, age: 0, size: 1.4 + Math.random() * 2.3 });
+            if (paperMarks.length > 95) paperMarks.shift();
+            impact(drop.x, drop.y, true);
+            hit = true;
+            break;
+          }
+        }
         if (hit || drop.y > height + drop.length) { reset(drop); continue; }
         ctx.globalAlpha = reduced ? 0.12 : drop.depth === 2 ? 0.58 : drop.depth === 1 ? 0.42 : 0.2;
         const w = drop.depth === 2 ? 13 : 7;
         const sprite = sprites[drop.depth];
         if (sprite) ctx.drawImage(sprite, drop.x - w * 0.66, drop.y - drop.length, w, drop.length);
+      }
+      // Small translucent feathered stains soak into the moving paper halves.
+      for (let half = 0; half < papers.length; half++) {
+        const paper = papers[half];
+        if (!paper || !paper.width || !paper.height) continue;
+        ctx.save();
+        ctx.translate(paper.x, paper.y);
+        ctx.beginPath();
+        if (half === 0) {
+          ctx.moveTo(0, 0); ctx.lineTo(paper.width, 0); ctx.lineTo(paper.width, paper.height * 0.47); ctx.lineTo(0, paper.height * 0.53);
+        } else {
+          ctx.moveTo(0, paper.height * 0.53); ctx.lineTo(paper.width, paper.height * 0.47); ctx.lineTo(paper.width, paper.height); ctx.lineTo(0, paper.height);
+        }
+        ctx.closePath(); ctx.clip();
+        for (const mark of paperMarks) {
+          if (mark.half !== half) continue;
+          mark.age += dt;
+          const x = mark.x * paper.width;
+          const y = mark.y * paper.height;
+          const radius = mark.size * (1 + Math.min(mark.age, 2) * 0.6);
+          ctx.globalAlpha = Math.min(mark.age * 5, 1) * Math.max(0, 1 - mark.age / 12) * 0.5;
+          ctx.fillStyle = absorbed;
+          ctx.beginPath(); ctx.ellipse(x, y, radius, radius * 1.4, 0.2, 0, Math.PI * 2); ctx.fill();
+          ctx.globalAlpha *= 0.45;
+          ctx.strokeStyle = wet; ctx.lineWidth = mark.size * 0.6;
+          ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + 0.6, y + Math.min(mark.age * 4, 13)); ctx.stroke();
+        }
+        ctx.restore();
+      }
+      for (let i = paperMarks.length - 1; i >= 0; i--) {
+        if ((paperMarks[i]?.age ?? 0) > 12) paperMarks.splice(i, 1);
       }
       // Wet beads cling to the wax rather than accumulating over the notice's text.
       ctx.save();
@@ -184,7 +249,7 @@ export function CrimsonRain({ sealRef, breaking }: {
       window.removeEventListener("resize", resize);
       document.removeEventListener("visibilitychange", visibility);
     };
-  }, [sealRef, reduced]);
+  }, [sealRef, paperRefs, reduced]);
 
-  return <canvas ref={canvasRef} aria-hidden="true" data-crimson-rain className={`pointer-events-none absolute inset-0 z-20 h-full w-full transition-opacity duration-500 ${breaking ? "opacity-0" : "opacity-100"}`} />;
+  return <canvas ref={canvasRef} aria-hidden="true" data-crimson-rain className="pointer-events-none absolute inset-0 z-20 h-full w-full" />;
 }
