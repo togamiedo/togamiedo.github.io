@@ -215,7 +215,7 @@ function Notice({ cut }: { cut: boolean }) {
   return (
     <div className="intro-paper grain flex h-full w-full flex-col items-center bg-paper px-6 py-6 text-lacquer shadow-2xl">
       <svg className="intro-paper-wear pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 420 680" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M4 8 12 65 5 122 11 175 4 226 M417 40 408 107 416 146 409 242 M5 496 12 558 5 624 10 675 M414 440 409 490 416 570 408 638" fill="none" stroke="var(--paper-aged-edge)" strokeWidth="5" opacity="0.5" />
+        <path d="M4 8 7 65 5 122 7 175 4 226 M417 40 414 107 416 146 414 242 M5 496 8 558 5 624 7 675 M414 440 412 490 416 570 413 638" fill="none" stroke="var(--paper-aged-edge)" strokeWidth="2" opacity="0.32" />
         <path d="M6 188 Q150 203 420 177 M0 477 Q205 489 420 466 M147 0 Q133 310 156 680" fill="none" stroke="var(--paper-crease)" strokeWidth="1.8" opacity="0.38" />
         <path d="M6 190 Q150 205 420 179 M0 479 Q205 491 420 468 M150 0 Q136 310 159 680" fill="none" stroke="var(--paper)" strokeWidth="1.1" opacity="0.7" />
         {Array.from({ length: 72 }, (_, i) => <ellipse key={i} cx={6 + i * 137 % 407} cy={9 + i * 191 % 662} rx={0.4 + i % 4 * 0.4} ry={0.6 + i % 3 * 0.3} fill="var(--paper-crease)" opacity="0.13" />)}

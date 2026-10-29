@@ -39,6 +39,28 @@ export function CrimsonRain({ sealRef, paperRefs, breaking }: {
     const glint = css.getPropertyValue("--rain-glint").trim();
     const deep = css.getPropertyValue("--blood-deep").trim();
     const absorbed = css.getPropertyValue("--paper-rain-stain").trim();
+    const stainSprite = document.createElement("canvas");
+    stainSprite.width = 64; stainSprite.height = 80;
+    const stainPaint = stainSprite.getContext("2d");
+    if (stainPaint) {
+      const soak = stainPaint.createRadialGradient(32, 34, 2, 32, 34, 24);
+      soak.addColorStop(0, absorbed); soak.addColorStop(0.4, absorbed); soak.addColorStop(1, "transparent");
+      stainPaint.fillStyle = soak;
+      stainPaint.beginPath();
+      for (let i = 0; i < 24; i++) {
+        const angle = i / 24 * Math.PI * 2;
+        const radius = 17 + Math.sin(i * 4.7) * 4;
+        const x = 32 + Math.cos(angle) * radius;
+        const y = 34 + Math.sin(angle) * radius * 1.2;
+        if (i === 0) stainPaint.moveTo(x, y); else stainPaint.lineTo(x, y);
+      }
+      stainPaint.closePath(); stainPaint.fill();
+      stainPaint.strokeStyle = absorbed; stainPaint.globalAlpha = 0.22;
+      for (let i = 0; i < 15; i++) {
+        stainPaint.beginPath(); stainPaint.moveTo(23 + i % 5 * 4, 20 + i * 2);
+        stainPaint.lineTo(20 + i % 5 * 5, 23 + i * 2); stainPaint.stroke();
+      }
+    }
     const sprites = [0, 1, 2].map((depth) => {
       const sprite = document.createElement("canvas");
       sprite.width = 32;
@@ -146,8 +168,8 @@ export function CrimsonRain({ sealRef, paperRefs, breaking }: {
             const x = (drop.x - paper.x) / paper.width;
             const y = (drop.y - paper.y) / paper.height;
             if (!insideHalf(x, y, half)) continue;
-            paperMarks.push({ x, y, half, age: 0, size: 1.4 + Math.random() * 2.3 });
-            if (paperMarks.length > 95) paperMarks.shift();
+            paperMarks.push({ x, y, half, age: 0, size: 0.8 + Math.random() * 1.4 });
+            if (paperMarks.length > 70) paperMarks.shift();
             impact(drop.x, drop.y, true);
             hit = true;
             break;
@@ -178,9 +200,8 @@ export function CrimsonRain({ sealRef, paperRefs, breaking }: {
           const x = mark.x * paper.width;
           const y = mark.y * paper.height;
           const radius = mark.size * (1 + Math.min(mark.age, 2) * 0.6);
-          ctx.globalAlpha = Math.min(mark.age * 5, 1) * Math.max(0, 1 - mark.age / 12) * 0.5;
-          ctx.fillStyle = absorbed;
-          ctx.beginPath(); ctx.ellipse(x, y, radius, radius * 1.4, 0.2, 0, Math.PI * 2); ctx.fill();
+          ctx.globalAlpha = Math.min(mark.age * 5, 1) * Math.max(0, 1 - mark.age / 12) * 0.42;
+          ctx.drawImage(stainSprite, x - radius * 1.7, y - radius * 2, radius * 3.4, radius * 4);
           ctx.globalAlpha *= 0.45;
           ctx.strokeStyle = wet; ctx.lineWidth = mark.size * 0.6;
           ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + 0.6, y + Math.min(mark.age * 4, 13)); ctx.stroke();
