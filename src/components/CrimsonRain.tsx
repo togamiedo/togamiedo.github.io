@@ -120,9 +120,10 @@ export function CrimsonRain({ sealRef, breaking }: {
           }
         }
         if (hit || drop.y > height + drop.length) { reset(drop); continue; }
-        ctx.globalAlpha = reduced ? 0.12 : [0.2, 0.42, 0.58][drop.depth];
+        ctx.globalAlpha = reduced ? 0.12 : drop.depth === 2 ? 0.58 : drop.depth === 1 ? 0.42 : 0.2;
         const w = drop.depth === 2 ? 13 : 7;
-        ctx.drawImage(sprites[drop.depth], drop.x - w * 0.66, drop.y - drop.length, w, drop.length);
+        const sprite = sprites[drop.depth];
+        if (sprite) ctx.drawImage(sprite, drop.x - w * 0.66, drop.y - drop.length, w, drop.length);
       }
       // Wet beads cling to the wax rather than accumulating over the notice's text.
       ctx.save();
@@ -131,6 +132,7 @@ export function CrimsonRain({ sealRef, breaking }: {
       ctx.clip();
       for (let i = marks.length - 1; i >= 0; i--) {
         const mark = marks[i];
+        if (!mark) continue;
         mark.age += dt;
         if (mark.age > 3.6) { marks.splice(i, 1); continue; }
         const x = seal.x + mark.x;
@@ -149,6 +151,7 @@ export function CrimsonRain({ sealRef, breaking }: {
       ctx.restore();
       for (let i = splashes.length - 1; i >= 0; i--) {
         const p = splashes[i];
+        if (!p) continue;
         p.age += dt;
         if (p.age > p.life) { splashes.splice(i, 1); continue; }
         p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 420 * dt;
