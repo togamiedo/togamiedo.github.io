@@ -69,6 +69,11 @@
   --blood-wet: #8e0914;
   --blood-deep: #310308;
   --blood-glint: #e8807a;
+  --rain-glint: #cb3946;
+  --wax-body: #681c24;
+  --wax-worn: #a05b52;
+  --wax-edge: #26080e;
+  --shadow-wax: 0 7px 10px color-mix(in oklab, var(--lacquer) 85%, transparent);
   --lacquer: oklch(0.09 0.006 30);
 
   --gradient-night: radial-gradient(ellipse at 50% 0%, oklch(0.24 0.07 25 / 0.55), transparent 60%),
@@ -80,6 +85,7 @@
 
 .transition-blade { box-shadow: var(--shadow-transition-blade); }
 .transition-kanji { text-shadow: var(--shadow-transition-kanji); }
+.intro-wax { filter: drop-shadow(var(--shadow-wax)); }
 
 @keyframes blade-calligraphy {
   0% { opacity: 0; transform: translateY(25px); }

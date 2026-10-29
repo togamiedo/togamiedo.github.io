@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 const NOTICE_PORTRAIT = "/img/togami-notice.png";
 import { Petals } from "./Petals";
+import { CrimsonRain } from "./CrimsonRain";
 import { getMusic, playCrack, playSlash, startMusic } from "@/lib/sfx";
 
 type Phase = "idle" | "breaking" | "gone";
@@ -10,6 +11,7 @@ type Phase = "idle" | "breaking" | "gone";
 /** Opening scene: a bounty notice sealed with a wax rose. Click to cut it open. */
 export function IntroGate() {
   const [phase, setPhase] = useState<Phase>("idle");
+  const sealRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const path = useRouterState({ select: (s) => s.location.pathname });
 
@@ -52,9 +54,8 @@ export function IntroGate() {
           role="button"
           aria-label="Break the seal to enter"
         >
-          {/* lantern glow */}
-          <div className="animate-flicker absolute left-1/2 top-1/2 h-[80vmin] w-[80vmin] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/20 blur-3xl" />
-          <Petals count={breaking ? 30 : 8} />
+          <CrimsonRain sealRef={sealRef} breaking={breaking} />
+          {breaking && <Petals count={30} className="z-30" />}
 
           <div className="relative h-[78vh] max-h-[680px] w-[min(86vw,420px)]">
             {/* top half */}
@@ -78,28 +79,48 @@ export function IntroGate() {
 
             {/* wax rose seal */}
             <motion.div
-              className="absolute -right-6 -top-6 z-10 h-24 w-24 rotate-12 drop-shadow-[0_6px_10px_rgba(0,0,0,0.6)]"
+              ref={sealRef}
+              className="intro-wax absolute -right-6 -top-6 z-10 h-24 w-24 rotate-12"
               animate={
                 breaking
                   ? { scale: [1, 1.2, 0], rotate: [0, -15, 60], opacity: [1, 1, 0] }
-                  : { scale: [1, 1.04, 1] }
+                  : { scale: 1, rotate: 12 }
               }
               transition={breaking ? { duration: 0.5 } : { duration: 2.4, repeat: Infinity }}
             >
-              <svg viewBox="0 0 100 100" className="h-full w-full">
+              <svg viewBox="0 0 100 100" className="h-full w-full" aria-hidden="true">
                 <defs>
                   <radialGradient id="wax" cx="38%" cy="32%" r="75%">
-                    <stop offset="0%" stopColor="var(--primary)" />
-                    <stop offset="100%" stopColor="var(--blood)" />
+                    <stop offset="0%" stopColor="var(--wax-worn)" />
+                    <stop offset="42%" stopColor="var(--wax-body)" />
+                    <stop offset="82%" stopColor="var(--blood-deep)" />
+                    <stop offset="100%" stopColor="var(--wax-edge)" />
                   </radialGradient>
+                  <filter id="wax-age" x="-10%" y="-10%" width="120%" height="120%">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.17" numOctaves="3" seed="14" result="grain" />
+                    <feDiffuseLighting in="grain" surfaceScale="1.3" diffuseConstant="0.65" lightingColor="var(--wax-worn)" result="relief">
+                      <feDistantLight azimuth="225" elevation="48" />
+                    </feDiffuseLighting>
+                    <feComposite in="relief" in2="SourceAlpha" operator="in" result="clipped" />
+                    <feBlend in="SourceGraphic" in2="clipped" mode="soft-light" />
+                  </filter>
+                  <clipPath id="wax-outline"><path d="M50 4 C62 6 70 2 78 10 C88 18 96 28 95 42 C97 55 98 66 90 76 C82 88 70 96 56 95 C42 98 30 96 20 88 C9 80 3 66 5 52 C3 38 8 24 18 15 C28 6 38 3 50 4Z" /></clipPath>
                 </defs>
                 <path
                   d="M50 4 C62 6 70 2 78 10 C88 18 96 28 95 42 C97 55 98 66 90 76 C82 88 70 96 56 95 C42 98 30 96 20 88 C9 80 3 66 5 52 C3 38 8 24 18 15 C28 6 38 3 50 4Z"
                   fill="url(#wax)"
+                  filter="url(#wax-age)"
                 />
-                <circle cx="50" cy="50" r="31" fill="none" stroke="var(--blood)" strokeWidth="2.5" opacity="0.8" />
-                <circle cx="50" cy="50" r="27" fill="none" stroke="var(--paper)" strokeWidth="0.6" opacity="0.25" />
-                <text x="50" y="62" textAnchor="middle" fontSize="34" fill="var(--paper)" opacity="0.85" style={{ fontFamily: "var(--font-brush)" }}>薔</text>
+                <g clipPath="url(#wax-outline)">
+                  <path d="M20 13 24 22 20 29 27 35 M76 8 70 20 74 26 M94 60 83 58 78 65 72 67 M31 95 35 83 32 76 M11 69 20 66 23 61" fill="none" stroke="var(--wax-edge)" strokeWidth="1.4" opacity="0.9" />
+                  <path d="M21 13 25 22 21 29 M77 9 71 20 M93 61 84 59 M32 94 36 83" fill="none" stroke="var(--wax-worn)" strokeWidth="0.5" opacity="0.5" />
+                  {Array.from({ length: 48 }, (_, i) => <ellipse key={i} cx={8 + (i * 29) % 83} cy={7 + (i * 43) % 86} rx={0.3 + i % 3 * 0.25} ry={0.2 + i % 4 * 0.15} fill={i % 3 ? "var(--wax-edge)" : "var(--wax-worn)"} opacity="0.45" />)}
+                </g>
+                <circle cx="50" cy="51" r="31" fill="none" stroke="var(--wax-edge)" strokeWidth="3" opacity="0.9" />
+                <circle cx="49.5" cy="49.5" r="31" fill="none" stroke="var(--wax-worn)" strokeWidth="0.8" strokeDasharray="42 5 61 9 31 4" opacity="0.55" />
+                <circle cx="50" cy="50" r="27" fill="none" stroke="var(--wax-worn)" strokeWidth="0.6" opacity="0.24" />
+                <text x="50.7" y="62.8" textAnchor="middle" fontSize="34" fill="var(--wax-edge)" className="font-brush">薔</text>
+                <text x="50" y="62" textAnchor="middle" fontSize="34" fill="var(--wax-worn)" opacity="0.7" className="font-brush">薔</text>
               </svg>
             </motion.div>
 
