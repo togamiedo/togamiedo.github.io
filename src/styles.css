@@ -73,6 +73,13 @@
   --wax-body: #681c24;
   --wax-worn: #a05b52;
   --wax-edge: #26080e;
+  --paper-aged-edge: #78654b;
+  --paper-crease: #8b775d;
+  --paper-torn-edge: #f3e5c9;
+  --paper-rain-stain: #8f2932;
+  --gradient-paper-wear: radial-gradient(ellipse at 1% 8%, color-mix(in oklab, var(--paper-aged-edge) 38%, transparent), transparent 26%), radial-gradient(ellipse at 96% 96%, color-mix(in oklab, var(--paper-aged-edge) 33%, transparent), transparent 28%), linear-gradient(93deg, transparent 32%, color-mix(in oklab, var(--paper-crease) 12%, transparent) 35%, transparent 38%);
+  --shadow-paper-wear: inset 0 0 24px color-mix(in oklab, var(--paper-aged-edge) 32%, transparent), 0 20px 60px color-mix(in oklab, var(--lacquer) 70%, transparent);
+  --shadow-intro-cut: 0 0 6px 1px var(--paper), 0 0 22px 4px color-mix(in oklab, var(--rain-glint) 65%, transparent);
   --shadow-wax: 0 7px 10px color-mix(in oklab, var(--lacquer) 85%, transparent);
   --lacquer: oklch(0.09 0.006 30);
 
@@ -86,6 +93,9 @@
 .transition-blade { box-shadow: var(--shadow-transition-blade); }
 .transition-kanji { text-shadow: var(--shadow-transition-kanji); }
 .intro-wax { filter: drop-shadow(var(--shadow-wax)); }
+.intro-paper { background-image: var(--gradient-paper-wear); box-shadow: var(--shadow-paper-wear); }
+.intro-paper-wear { z-index: 1; }
+.intro-cut-flash { box-shadow: var(--shadow-intro-cut); }
 
 @keyframes blade-calligraphy {
   0% { opacity: 0; transform: translateY(25px); }

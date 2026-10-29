@@ -1,17 +1,22 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 const NOTICE_PORTRAIT = "/img/togami-notice.png";
 import { Petals } from "./Petals";
 import { CrimsonRain } from "./CrimsonRain";
 import { getMusic, playCrack, playSlash, startMusic } from "@/lib/sfx";
 
-type Phase = "idle" | "breaking" | "gone";
+type Phase = "idle" | "breaking" | "revealing" | "gone";
 
 /** Opening scene: a bounty notice sealed with a wax rose. Click to cut it open. */
 export function IntroGate() {
   const [phase, setPhase] = useState<Phase>("idle");
   const sealRef = useRef<HTMLDivElement>(null);
+  const topRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
+  const paperRefs = useMemo(() => [topRef, bottomRef] as const, []);
+  const slashCue = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const reduced = useReducedMotion();
   const navigate = useNavigate();
   const path = useRouterState({ select: (s) => s.location.pathname });
 
@@ -30,16 +35,19 @@ export function IntroGate() {
     };
   }, [phase]);
 
+  useEffect(() => () => {
+    if (slashCue.current !== null) clearTimeout(slashCue.current);
+  }, []);
+
   const breakSeal = () => {
     if (phase !== "idle") return;
     setPhase("breaking");
     playCrack();
     startMusic();
-    setTimeout(() => playSlash(), 330);
-    setTimeout(() => setPhase("gone"), 2300);
+    slashCue.current = setTimeout(() => playSlash(), reduced ? 0 : 460);
   };
 
-  const breaking = phase === "breaking";
+  const breaking = phase === "breaking" || phase === "revealing";
 
   return (
     <>
@@ -49,32 +57,41 @@ export function IntroGate() {
         <motion.div
           className="fixed inset-0 z-[100] flex cursor-pointer items-center justify-center overflow-hidden bg-lacquer"
           onClick={breakSeal}
+          tabIndex={0}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") { event.preventDefault(); breakSeal(); }
+          }}
+          animate={{ opacity: phase === "revealing" ? 0 : 1 }}
+          onAnimationComplete={() => { if (phase === "revealing") setPhase("gone"); }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: reduced ? 0.2 : 0.85 }}
           role="button"
           aria-label="Break the seal to enter"
         >
-          <CrimsonRain sealRef={sealRef} breaking={breaking} />
+          <CrimsonRain sealRef={sealRef} paperRefs={paperRefs} breaking={breaking} />
           {breaking && <Petals count={30} className="z-30" />}
 
           <div className="relative h-[78vh] max-h-[680px] w-[min(86vw,420px)]">
             {/* top half */}
             <motion.div
+              ref={topRef}
               className="absolute inset-0"
               style={{ clipPath: "polygon(0 0,100% 0,100% 47%,0 53%)" }}
-              animate={breaking ? { y: "-70vh", rotate: -8, opacity: 0 } : { y: 0 }}
-              transition={{ delay: 0.55, duration: 1.3, ease: [0.7, 0, 0.3, 1] }}
+              animate={breaking ? { y: [0, -4, -20, -windowHeightDistance()], rotate: [0, -1, -2, -9] } : { y: 0, rotate: 0 }}
+              transition={{ delay: reduced ? 0 : 0.78, duration: reduced ? 0.2 : 2, times: [0, 0.13, 0.36, 1], ease: [0.55, 0, 0.3, 1] }}
             >
-              <Notice />
+              <Notice cut={breaking} />
             </motion.div>
             {/* bottom half */}
             <motion.div
+              ref={bottomRef}
               className="absolute inset-0"
               style={{ clipPath: "polygon(0 53%,100% 47%,100% 100%,0 100%)" }}
-              animate={breaking ? { y: "70vh", rotate: 6, opacity: 0 } : { y: 0 }}
-              transition={{ delay: 0.55, duration: 1.3, ease: [0.7, 0, 0.3, 1] }}
+              animate={breaking ? { y: [0, 5, 24, windowHeightDistance()], rotate: [0, 1, 3, 8] } : { y: 0, rotate: 0 }}
+              transition={{ delay: reduced ? 0 : 0.8, duration: reduced ? 0.2 : 2.15, times: [0, 0.13, 0.36, 1], ease: [0.55, 0, 0.3, 1] }}
+              onAnimationComplete={() => { if (phase === "breaking") setPhase("revealing"); }}
             >
-              <Notice />
+              <Notice cut={breaking} />
             </motion.div>
 
             {/* wax rose seal */}
@@ -86,7 +103,7 @@ export function IntroGate() {
                   ? { scale: [1, 1.2, 0], rotate: [0, -15, 60], opacity: [1, 1, 0] }
                   : { scale: 1, rotate: 12 }
               }
-              transition={breaking ? { duration: 0.5 } : { duration: 2.4, repeat: Infinity }}
+              transition={breaking ? { delay: reduced ? 0 : 0.42, duration: 0.65 } : { duration: 2.4, repeat: Infinity }}
             >
               <svg viewBox="0 0 100 100" className="h-full w-full" aria-hidden="true">
                 <defs>
@@ -127,11 +144,22 @@ export function IntroGate() {
             {/* the slash */}
             {breaking && (
               <motion.div
-                className="absolute left-[-30vw] top-1/2 z-20 h-[3px] w-[160vw] origin-left -rotate-[3deg] bg-paper shadow-[0_0_30px_6px] shadow-primary"
+                className="intro-cut-flash absolute left-[-30vw] top-1/2 z-30 h-px w-[160vw] origin-left -rotate-[3deg] bg-paper"
                 initial={{ scaleX: 0, opacity: 1 }}
-                animate={{ scaleX: 1, opacity: [1, 1, 0] }}
-                transition={{ delay: 0.35, duration: 0.45, ease: "easeIn" }}
+                animate={{ scaleX: [0, 1, 1], opacity: [0, 1, 0] }}
+                transition={{ delay: reduced ? 0 : 0.43, duration: 0.55, times: [0, 0.38, 1], ease: "easeIn" }}
               />
+            )}
+            {breaking && !reduced && (
+              <div className="pointer-events-none absolute inset-0 z-30" aria-hidden="true">
+                {Array.from({ length: 18 }, (_, i) => (
+                  <motion.i key={i} className="absolute h-px w-2 bg-paper/70"
+                    style={{ left: `${4 + i * 5.3}%`, top: `${53 - (4 + i * 5.3) * 0.06}%` }}
+                    initial={{ opacity: 0 }}
+                    animate={{ x: [0, (i % 3 - 1) * 35], y: [0, (i % 2 ? -1 : 1) * (35 + i * 4)], rotate: [0, i * 31], opacity: [0, 0.8, 0] }}
+                    transition={{ delay: 0.57 + i * 0.008, duration: 1.15 }} />
+                ))}
+              </div>
             )}
           </div>
 
@@ -183,9 +211,19 @@ function MusicToggle() {
   );
 }
 
-function Notice() {
+// Viewport units keep the two departing halves fully outside every screen size.
+function windowHeightDistance() { return "105vh"; }
+
+function Notice({ cut }: { cut: boolean }) {
   return (
-    <div className="grain flex h-full w-full flex-col items-center bg-paper px-6 py-6 text-lacquer shadow-2xl">
+    <div className="intro-paper grain flex h-full w-full flex-col items-center bg-paper px-6 py-6 text-lacquer shadow-2xl">
+      <svg className="intro-paper-wear pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 420 680" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M4 8 12 65 5 122 11 175 4 226 M417 40 408 107 416 146 409 242 M5 496 12 558 5 624 10 675 M414 440 409 490 416 570 408 638" fill="none" stroke="var(--paper-aged-edge)" strokeWidth="5" opacity="0.5" />
+        <path d="M6 188 Q150 203 420 177 M0 477 Q205 489 420 466 M147 0 Q133 310 156 680" fill="none" stroke="var(--paper-crease)" strokeWidth="1.8" opacity="0.38" />
+        <path d="M6 190 Q150 205 420 179 M0 479 Q205 491 420 468 M150 0 Q136 310 159 680" fill="none" stroke="var(--paper)" strokeWidth="1.1" opacity="0.7" />
+        {Array.from({ length: 72 }, (_, i) => <ellipse key={i} cx={6 + i * 137 % 407} cy={9 + i * 191 % 662} rx={0.4 + i % 4 * 0.4} ry={0.6 + i % 3 * 0.3} fill="var(--paper-crease)" opacity="0.13" />)}
+        {cut && <path d="M0 360 21 357 38 358 65 353 82 355 112 348 136 349 170 343 194 344 219 338 242 339 270 331 294 332 321 325 340 327 368 321 393 323 420 319" fill="none" stroke="var(--paper-torn-edge)" strokeWidth="3" />}
+      </svg>
       <p className="font-brush text-5xl tracking-widest text-blood">手配書</p>
       <p className="mt-1 font-display text-xs uppercase tracking-[0.4em]">Notice of Bounty · Kyōto</p>
       <div className="mt-4 h-[45%] w-full overflow-hidden border-2 border-lacquer">
