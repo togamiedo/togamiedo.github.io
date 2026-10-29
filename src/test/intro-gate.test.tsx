@@ -25,7 +25,7 @@ vi.mock("@/components/CrimsonRain", () => ({
 vi.mock("framer-motion", () => {
   const component = (tag: string) => (props: Record<string, any>) => {
     const { animate, initial, exit, transition, onAnimationComplete, children, ...rest } = props;
-    if (rest.style?.clipPath?.startsWith("polygon(0 53%")) opening.paperDone = onAnimationComplete;
+    if (rest['style']?.clipPath?.startsWith("polygon(0 53%")) opening.paperDone = onAnimationComplete;
     if (rest["aria-label"] === "Break the seal to enter") opening.revealDone = onAnimationComplete;
     return createElement(tag, rest, children);
   };

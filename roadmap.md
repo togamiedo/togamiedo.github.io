@@ -1,5 +1,5 @@
 # Tasks
-- [ ] Detail opening rain and paper collisions, age the notice, improve the cut and keep rain until the page reveal completes; verify the complete opening.
+- [x] Detail opening rain and paper collisions, age the notice, improve the cut and keep rain until the page reveal completes; verify the complete opening.
 - [x] Weather the opening wax seal, replace idle petals with motion-blurred crimson rain hitting the seal, and retain the break-seal petal burst; verify opening and exit.
 - [x] Polish the Story katana draw with detailed fittings, a slow staged release, and a traveling steel highlight; verify desktop and mobile.
 - [x] Keep lord slash on text and stagger the soaked roses underneath.
