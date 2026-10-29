@@ -4,7 +4,7 @@ import { useReducedMotion } from "framer-motion";
 type Drop = { x: number; y: number; depth: number; speed: number; length: number };
 type Splash = { x: number; y: number; vx: number; vy: number; age: number; life: number; size: number };
 type WetMark = { x: number; y: number; age: number; size: number };
-type PaperMark = WetMark & { half: number };
+type PaperMark = WetMark & { half: number; spread: number; tilt: number };
 type PaperSurface = { x: number; y: number; width: number; height: number };
 
 /** Cached shutter-length streaks, wax collisions, and absorbent paper-face impacts. */
@@ -44,7 +44,7 @@ export function CrimsonRain({ sealRef, paperRefs, breaking }: {
     const stainPaint = stainSprite.getContext("2d");
     if (stainPaint) {
       const soak = stainPaint.createRadialGradient(32, 34, 2, 32, 34, 24);
-      soak.addColorStop(0, absorbed); soak.addColorStop(0.4, absorbed); soak.addColorStop(1, "transparent");
+      soak.addColorStop(0, wet); soak.addColorStop(0.23, absorbed); soak.addColorStop(0.65, absorbed); soak.addColorStop(1, "transparent");
       stainPaint.fillStyle = soak;
       stainPaint.beginPath();
       for (let i = 0; i < 24; i++) {
@@ -55,11 +55,28 @@ export function CrimsonRain({ sealRef, paperRefs, breaking }: {
         if (i === 0) stainPaint.moveTo(x, y); else stainPaint.lineTo(x, y);
       }
       stainPaint.closePath(); stainPaint.fill();
-      stainPaint.strokeStyle = absorbed; stainPaint.globalAlpha = 0.22;
-      for (let i = 0; i < 15; i++) {
-        stainPaint.beginPath(); stainPaint.moveTo(23 + i % 5 * 4, 20 + i * 2);
-        stainPaint.lineTo(20 + i % 5 * 5, 23 + i * 2); stainPaint.stroke();
+      stainPaint.strokeStyle = absorbed; stainPaint.globalAlpha = 0.16;
+      for (let i = 0; i < 28; i++) {
+        const angle = i * 2.399;
+        const radius = 13 + i % 7;
+        stainPaint.beginPath();
+        stainPaint.moveTo(32 + Math.cos(angle) * radius, 34 + Math.sin(angle) * radius * 1.2);
+        stainPaint.lineTo(32 + Math.cos(angle) * (radius + 4), 34 + Math.sin(angle) * (radius + 4) * 1.2);
+        stainPaint.stroke();
       }
+    }
+    // A reusable rounded wet bead: dark meniscus, saturated body, soft reflected sky.
+    const beadSprite = document.createElement("canvas");
+    beadSprite.width = 48; beadSprite.height = 64;
+    const beadPaint = beadSprite.getContext("2d");
+    if (beadPaint) {
+      const body = beadPaint.createRadialGradient(20, 25, 1, 24, 32, 19);
+      body.addColorStop(0, wet); body.addColorStop(0.6, wet); body.addColorStop(1, deep);
+      beadPaint.fillStyle = body;
+      beadPaint.beginPath(); beadPaint.ellipse(24, 32, 13, 18, -0.12, 0, Math.PI * 2); beadPaint.fill();
+      beadPaint.globalAlpha = 0.65;
+      beadPaint.strokeStyle = glint; beadPaint.lineWidth = 1.6; beadPaint.lineCap = "round";
+      beadPaint.beginPath(); beadPaint.ellipse(24, 31, 9, 13, -0.12, Math.PI * 1.05, Math.PI * 1.42); beadPaint.stroke();
     }
     const sprites = [0, 1, 2].map((depth) => {
       const sprite = document.createElement("canvas");
@@ -168,7 +185,7 @@ export function CrimsonRain({ sealRef, paperRefs, breaking }: {
             const x = (drop.x - paper.x) / paper.width;
             const y = (drop.y - paper.y) / paper.height;
             if (!insideHalf(x, y, half)) continue;
-            paperMarks.push({ x, y, half, age: 0, size: 0.8 + Math.random() * 1.4 });
+            paperMarks.push({ x, y, half, age: 0, size: 1.2 + Math.random() * 1.7, spread: 0.65 + Math.random() * 0.8, tilt: (Math.random() - 0.5) * 0.7 });
             if (paperMarks.length > 70) paperMarks.shift();
             impact(drop.x, drop.y, true);
             hit = true;
@@ -199,12 +216,24 @@ export function CrimsonRain({ sealRef, paperRefs, breaking }: {
           mark.age += dt;
           const x = mark.x * paper.width;
           const y = mark.y * paper.height;
-          const radius = mark.size * (1 + Math.min(mark.age, 2) * 0.6);
-          ctx.globalAlpha = Math.min(mark.age * 5, 1) * Math.max(0, 1 - mark.age / 12) * 0.42;
-          ctx.drawImage(stainSprite, x - radius * 1.7, y - radius * 2, radius * 3.4, radius * 4);
-          ctx.globalAlpha *= 0.45;
-          ctx.strokeStyle = wet; ctx.lineWidth = mark.size * 0.6;
-          ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + 0.6, y + Math.min(mark.age * 4, 13)); ctx.stroke();
+          const absorbedAmount = 1 - Math.exp(-mark.age * 1.6);
+          const radius = mark.size * (1 + absorbedAmount * mark.spread);
+          const fade = Math.min(1, (12 - mark.age) / 3);
+          ctx.save(); ctx.translate(x, y); ctx.rotate(mark.tilt);
+          ctx.globalAlpha = absorbedAmount * fade * 0.34;
+          ctx.drawImage(stainSprite, -radius * 1.7, -radius * 2, radius * 3.4, radius * 4);
+          // A fresh raised drop gently flattens and loses its highlight as it soaks in.
+          const wetness = Math.exp(-mark.age * 0.9);
+          ctx.globalAlpha = wetness * 0.85;
+          const beadSize = mark.size * (1 + absorbedAmount * 0.35);
+          ctx.drawImage(beadSprite, -beadSize, -beadSize * 1.3, beadSize * 2, beadSize * 2.6);
+          if (mark.size > 2.2) {
+            ctx.globalAlpha = wetness * 0.35;
+            ctx.strokeStyle = wet; ctx.lineWidth = mark.size * 0.35;
+            ctx.beginPath(); ctx.moveTo(0, 0);
+            ctx.quadraticCurveTo(0.5, mark.age * 2, 0.4, Math.min(mark.age * 3, 7)); ctx.stroke();
+          }
+          ctx.restore();
         }
         ctx.restore();
       }
