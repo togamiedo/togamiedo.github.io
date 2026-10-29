@@ -76,7 +76,7 @@ export function IntroGate() {
             <motion.div
               ref={topRef}
               className="absolute inset-0"
-              style={{ clipPath: "polygon(0 0,100% 0,100% 47%,0 53%)" }}
+              style={{ clipPath: breaking ? "polygon(0 0,100% 0,100% 47%,0 53%)" : "none" }}
               animate={breaking ? { y: ["0vh", "-0.5vh", "-3vh", "-105vh"], rotate: [0, -1, -2, -9] } : { y: 0, rotate: 0 }}
               transition={{ delay: reduced ? 0 : 0.78, duration: reduced ? 0.2 : 2, times: [0, 0.13, 0.36, 1], ease: [0.55, 0, 0.3, 1] }}
             >
@@ -86,7 +86,7 @@ export function IntroGate() {
             <motion.div
               ref={bottomRef}
               className="absolute inset-0"
-              style={{ clipPath: "polygon(0 53%,100% 47%,100% 100%,0 100%)" }}
+              style={{ clipPath: "polygon(0 53%,100% 47%,100% 100%,0 100%)", visibility: breaking ? "visible" : "hidden" }}
               animate={breaking ? { y: ["0vh", "0.6vh", "3.5vh", "105vh"], rotate: [0, 1, 3, 8] } : { y: 0, rotate: 0 }}
               transition={{ delay: reduced ? 0 : 0.8, duration: reduced ? 0.2 : 2.15, times: [0, 0.13, 0.36, 1], ease: [0.55, 0, 0.3, 1] }}
               onAnimationComplete={() => { if (phase === "breaking") setPhase("revealing"); }}
@@ -215,9 +215,16 @@ function Notice({ cut }: { cut: boolean }) {
   return (
     <div className="intro-paper grain flex h-full w-full flex-col items-center bg-paper px-6 py-6 text-lacquer shadow-2xl">
       <svg className="intro-paper-wear pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 420 680" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M4 8 7 65 5 122 7 175 4 226 M417 40 414 107 416 146 414 242 M5 496 8 558 5 624 7 675 M414 440 412 490 416 570 413 638" fill="none" stroke="var(--paper-aged-edge)" strokeWidth="2" opacity="0.32" />
-        <path d="M6 188 Q150 203 420 177 M0 477 Q205 489 420 466 M147 0 Q133 310 156 680" fill="none" stroke="var(--paper-crease)" strokeWidth="1.8" opacity="0.38" />
-        <path d="M6 190 Q150 205 420 179 M0 479 Q205 491 420 468 M150 0 Q136 310 159 680" fill="none" stroke="var(--paper)" strokeWidth="1.1" opacity="0.7" />
+        <defs>
+          <filter id="paper-soft-wear"><feGaussianBlur stdDeviation="2.8" /></filter>
+        </defs>
+        <g filter="url(#paper-soft-wear)" fill="none" stroke="var(--paper-aged-edge)" opacity="0.2">
+          <path d="M5 12 Q12 56 6 113 M416 68 Q408 104 415 155 M6 524 Q15 589 7 670 M414 480 Q405 544 413 626" strokeWidth="5" />
+          <path d="M9 25 Q33 32 44 62 M380 620 Q391 645 414 656 M11 393 Q29 410 32 437" strokeWidth="2" />
+        </g>
+        <g fill="none" stroke="var(--paper-crease)" strokeWidth="0.7" opacity="0.14">
+          <path d="M8 28 Q28 35 36 54 M10 31 Q25 40 31 57 M383 632 Q394 645 412 648 M11 402 Q20 413 23 430" />
+        </g>
         {Array.from({ length: 72 }, (_, i) => <ellipse key={i} cx={6 + i * 137 % 407} cy={9 + i * 191 % 662} rx={0.4 + i % 4 * 0.4} ry={0.6 + i % 3 * 0.3} fill="var(--paper-crease)" opacity="0.13" />)}
         {cut && <path d="M0 360 21 357 38 358 65 353 82 355 112 348 136 349 170 343 194 344 219 338 242 339 270 331 294 332 321 325 340 327 368 321 393 323 420 319" fill="none" stroke="var(--paper-torn-edge)" strokeWidth="3" />}
       </svg>
