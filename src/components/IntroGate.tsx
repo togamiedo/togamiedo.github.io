@@ -77,7 +77,7 @@ export function IntroGate() {
               ref={topRef}
               className="absolute inset-0"
               style={{ clipPath: "polygon(0 0,100% 0,100% 47%,0 53%)" }}
-              animate={breaking ? { y: [0, -4, -20, -windowHeightDistance()], rotate: [0, -1, -2, -9] } : { y: 0, rotate: 0 }}
+              animate={breaking ? { y: ["0vh", "-0.5vh", "-3vh", "-105vh"], rotate: [0, -1, -2, -9] } : { y: 0, rotate: 0 }}
               transition={{ delay: reduced ? 0 : 0.78, duration: reduced ? 0.2 : 2, times: [0, 0.13, 0.36, 1], ease: [0.55, 0, 0.3, 1] }}
             >
               <Notice cut={breaking} />
@@ -87,7 +87,7 @@ export function IntroGate() {
               ref={bottomRef}
               className="absolute inset-0"
               style={{ clipPath: "polygon(0 53%,100% 47%,100% 100%,0 100%)" }}
-              animate={breaking ? { y: [0, 5, 24, windowHeightDistance()], rotate: [0, 1, 3, 8] } : { y: 0, rotate: 0 }}
+              animate={breaking ? { y: ["0vh", "0.6vh", "3.5vh", "105vh"], rotate: [0, 1, 3, 8] } : { y: 0, rotate: 0 }}
               transition={{ delay: reduced ? 0 : 0.8, duration: reduced ? 0.2 : 2.15, times: [0, 0.13, 0.36, 1], ease: [0.55, 0, 0.3, 1] }}
               onAnimationComplete={() => { if (phase === "breaking") setPhase("revealing"); }}
             >
@@ -210,9 +210,6 @@ function MusicToggle() {
     </div>
   );
 }
-
-// Viewport units keep the two departing halves fully outside every screen size.
-function windowHeightDistance() { return "105vh"; }
 
 function Notice({ cut }: { cut: boolean }) {
   return (
